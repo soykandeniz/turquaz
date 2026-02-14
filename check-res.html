@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b3c47" />
+  <title>Turquaz | Admin Reservations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/admin.css" />
+</head>
+<body class="admin-body">
+  <header class="site-header scrolled">
+    <nav class="nav container" aria-label="Admin navigation">
+      <a href="index.html" class="brand">turquaz</a>
+      <ul class="nav-links">
+        <li><a href="index.html#reservation">Back to Site</a></li>
+        <li><a href="check-res.html">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="admin-main">
+    <section class="admin-panel container">
+
+      <form id="adminLoginForm" class="admin-form" autocomplete="off">
+        <h2>Login</h2>
+        <label>
+          <input type="text" name="username" placeholder=" " required />
+          <span>Username</span>
+        </label>
+        <label>
+          <input type="password" name="password" placeholder=" " required />
+          <span>Password</span>
+        </label>
+        <button class="btn btn-solid" type="submit">Sign In</button>
+        <p class="admin-message" id="adminMessage" aria-live="polite"></p>
+      </form>
+
+      <section id="adminDashboard" class="admin-dashboard hidden" aria-label="Reservation dashboard">
+        <div class="admin-toolbar">
+          <div class="date-nav" aria-label="Day controls">
+            <button type="button" class="btn btn-nav admin-arrow" id="prevDayBtn" aria-label="Previous day">←</button>
+            <button type="button" class="btn btn-nav date-picker-btn" id="datePickerBtn" aria-label="Open date picker">Select Day</button>
+            <input type="date" id="filterDate" class="hidden-date-input" />
+            <button type="button" class="btn btn-nav admin-arrow" id="nextDayBtn" aria-label="Next day">→</button>
+          </div>
+        </div>
+
+        <div class="admin-kpis" id="kpis"></div>
+
+        <div class="admin-loading hidden" id="adminLoading" aria-live="polite">
+          <span class="loading-dot"></span>
+          <span>Loading reservations...</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Meal</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Guests</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody id="reservationRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="scripts/admin.js"></script>
+</body>
+</html>

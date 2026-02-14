@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Turquaz — Fine Dining, Mediterranean elegance, contemporary gastronomy." />
+  <meta name="theme-color" content="#0b3c47" />
+  <title>Turquaz | Fine Dining</title>
+  <link rel="preload" as="image" href="assets/images/hero.jpeg" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <nav class="nav container" aria-label="Main navigation">
+      <a href="#top" class="brand">turquaz</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#dishes">Dishes</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#gallery">Atmosphere</a></li>
+      </ul>
+      <a class="btn btn-nav" href="#reservation">Reserve</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-label="Hero">
+      <div class="hero-media" data-parallax="0.12"></div>
+      <div class="hero-gradient" aria-hidden="true"></div>
+      <div class="container hero-content">
+        <div class="hero-emblem reveal">
+          <p class="hero-kicker" data-stagger>KITCHEN · BAKERY · COFFEE</p>
+          <h1 class="hero-title" data-stagger>turquaz</h1>
+          <p class="hero-est">est 2025</p>
+        </div>
+        <p class="hero-tagline reveal">Where the Aegean Meets Modern Gastronomy</p>
+        <div class="hero-actions reveal">
+          <a class="btn btn-primary" href="#reservation">Reserve a Table</a>
+          <a class="btn btn-text" href="#dishes">Discover Menu</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="about section" id="about">
+      <div class="container about-grid">
+        <div class="about-image-wrap reveal">
+          <img src="assets/images/about-interior.jpeg" alt="Elegant interior of Turquaz" loading="eager" fetchpriority="high" decoding="async" />
+        </div>
+        <div class="about-content reveal">
+          <p class="section-kicker">Mediterranean Elegance</p>
+          <h2>Crafted with Aegean Soul</h2>
+          <span class="signature-line" aria-hidden="true"></span>
+          <p>
+            Turquaz is an intimate dining atelier where coastal memory, modern precision, and warm hospitality converge.
+            Every course is built as a sensory narrative — restrained, expressive, and deeply rooted in Aegean character.
+          </p>
+          <p>
+            From daylight brunch to candlelit tasting evenings, each detail is curated with calm confidence, tactile beauty,
+            and contemporary Mediterranean finesse.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="dishes section" id="dishes">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">Signature Selection</p>
+          <h2>A Curated Culinary Narrative</h2>
+        </div>
+
+        <div class="dish-grid">
+          <figure class="dish dish-feature reveal">
+            <img src="assets/images/dish-feature.jpeg" alt="Featured signature dish" loading="lazy" decoding="async" />
+            <figcaption>
+              <span>Turkish Breakfast</span>
+            </figcaption>
+          </figure>
+          <figure class="dish reveal">
+            <img src="assets/images/dish-1.jpeg" alt="Refined plated starter" loading="lazy" decoding="async" />
+            <figcaption><span>Salmon Sandwich</span></figcaption>
+          </figure>
+          <figure class="dish reveal">
+              <figcaption><span>Layer of Taste</span></figcaption>
+            <img src="assets/images/dish-2.jpeg" alt="Mediterranean main course" loading="lazy" decoding="async" />
+          </figure>
+          <figure class="dish reveal">
+            <img src="assets/images/dish-3.jpeg" alt="Contemporary dessert" loading="lazy" decoding="async" />
+            <figcaption><span>Desserts</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="experience section" id="experience">
+      <div class="container experience-grid">
+        <div class="experience-copy reveal">
+          <p class="section-kicker">Beyond The Table</p>
+          <h2>Order Online & Catering</h2>
+          <p>
+            Enjoy Turquaz at home or host a refined event experience with our curated catering service.
+          </p>
+          <div class="experience-actions">
+            <a class="btn btn-primary" href="https://order.toasttab.com/online/turquaz" target="_blank" rel="noopener noreferrer">Order Online</a>
+            <a class="btn btn-text" href="https://www.ezcater.com/catering/turquaz-3?fulfillmentDetailId=bc135a60-553c-49b1-83ab-621c89a9761f" target="_blank" rel="noopener noreferrer">Catering</a>
+          </div>
+        </div>
+        <div class="experience-image reveal" data-parallax="0.08">
+          <img src="assets/images/chef-portrait.jpeg" alt="Turquaz culinary service" loading="lazy" decoding="async" />
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery section" id="gallery" aria-label="Interior and atmosphere gallery">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">Interior & Atmosphere</p>
+          <h2>Evenings in Turquaz</h2>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid">
+          <figure class="gallery-item reveal mask-reveal"><img src="assets/images/gallery-1.jpeg" alt="Ambient dining table setup" loading="lazy" decoding="async" /></figure>
+          <figure class="gallery-item reveal mask-reveal"><img src="assets/images/gallery-2.jpeg" alt="Bar and coffee corner" loading="lazy" decoding="async" /></figure>
+          <figure class="gallery-item reveal mask-reveal"><img src="assets/images/gallery-3.jpeg" alt="Warm lighting in dining room" loading="lazy" decoding="async" /></figure>
+          <figure class="gallery-item reveal mask-reveal"><img src="assets/images/gallery-4.jpeg" alt="Artful architectural interior detail" loading="lazy" decoding="async" /></figure>
+          <figure class="gallery-item reveal mask-reveal"><img src="assets/images/gallery-5.jpeg" alt="Fine dining atmosphere with guests" loading="lazy" decoding="async" /></figure>
+          <figure class="gallery-item reveal mask-reveal"><img src="assets/images/gallery-6.jpeg" alt="Plating and table styling close-up" loading="lazy" decoding="async" /></figure>
+        </div>
+      </div>
+      <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+    </section>
+
+    <section class="reservation section" id="reservation">
+      <div class="container reservation-wrap reveal">
+        <h2>Reserve Your Table</h2>
+        <span class="signature-line" aria-hidden="true"></span>
+
+        <form class="reservation-form" action="#" method="post" novalidate aria-label="Reservation form">
+          <div class="booking-picker" aria-label="Select date and time">
+            <p class="booking-label">Choose Date & Time</p>
+            <div class="reservation-date-nav" aria-label="Date controls">
+              <button type="button" class="btn btn-nav date-arrow" id="resPrevDayBtn" aria-label="Previous day">←</button>
+              <button type="button" class="btn btn-nav date-picker-btn" id="resDatePickerBtn" aria-label="Open date picker">Select Day</button>
+              <input type="date" id="reservationDatePicker" class="hidden-date-input" />
+              <button type="button" class="btn btn-nav date-arrow" id="resNextDayBtn" aria-label="Next day">→</button>
+            </div>
+
+            <div class="meal-tabs" id="mealTabs" role="tablist" aria-label="Meal periods"></div>
+            <div class="slot-grid" id="slotGrid" role="listbox" aria-label="Available timeslots"></div>
+
+            <div class="slot-legend" aria-label="Timeslot legend">
+              <span><i class="dot dot-open"></i> Available</span>
+              <span><i class="dot dot-limited"></i> Limited</span>
+              <span><i class="dot dot-full"></i> Full</span>
+            </div>
+          </div>
+
+          <input type="hidden" name="date" id="dateField" required />
+          <input type="hidden" name="time" id="timeField" required />
+
+          <label>
+            <input type="text" name="name" placeholder=" " required />
+            <span>Full Name</span>
+          </label>
+          <label>
+            <input type="tel" name="phone" placeholder=" " required />
+            <span>Phone Number</span>
+          </label>
+          <label>
+            <input type="number" min="1" max="10" name="guests" placeholder=" " required />
+            <span>Guests</span>
+          </label>
+          <label>
+            <input type="text" name="note" placeholder=" " />
+            <span>Special Request (Optional)</span>
+          </label>
+          <button type="submit" class="btn btn-solid">Reserve a Table</button>
+          <p class="reservation-message" id="reservationMessage" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div>
+        <p class="brand-foot">turquaz</p>
+        <p class="muted">Turkish · Mediterranean Concept</p>
+        <p class="muted">1198 Mission St, San Francisco, CA 94102</p>
+        <p class="muted">+1 415-791-0770</p>
+        <p class="muted"><a href="mailto:sf@turquazsf.com">sf@turquazsf.com</a></p>
+      </div>
+      <div class="footer-social" aria-label="Social links">
+        <a href="check-res.html" aria-label="Admin reservations">AR</a>
+        <a href="https://www.instagram.com/turquazsf" aria-label="Instagram">IG</a>
+        <a href="https://www.facebook.com/profile.php?id=61586856590487" aria-label="Facebook">FB</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>
