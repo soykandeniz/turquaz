@@ -5,8 +5,51 @@ const parallaxTargets = document.querySelectorAll('[data-parallax]');
 const navLinks = document.querySelectorAll('a[href^="#"]');
 const gallery = document.getElementById('galleryGrid');
 const cursorGlow = document.getElementById('cursorGlow');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navLinksMenu = document.getElementById('navLinks');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let rafScheduled = false;
+
+/* ─── Mobile Nav Toggle ─── */
+if (hamburgerBtn && navLinksMenu) {
+  const closeMobileMenu = () => {
+    navLinksMenu.classList.remove('is-open');
+    header?.classList.remove('menu-open');
+    hamburgerBtn.classList.remove('is-active');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  };
+
+  hamburgerBtn.addEventListener('click', () => {
+    const isOpen = navLinksMenu.classList.toggle('is-open');
+    header?.classList.toggle('menu-open', isOpen);
+    if (header) {
+      const navHeight = Math.round(header.getBoundingClientRect().height || 64);
+      document.documentElement.style.setProperty('--mobile-nav-top', `${navHeight}px`);
+    }
+    hamburgerBtn.classList.toggle('is-active', isOpen);
+    hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  navLinksMenu.addEventListener('click', (e) => {
+    if (e.target.closest('a')) {
+      closeMobileMenu();
+    }
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeMobileMenu();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 1024) {
+      closeMobileMenu();
+    }
+  });
+}
 
 const reservationForm = document.querySelector('.reservation-form');
 const reservationDatePicker = document.getElementById('reservationDatePicker');
