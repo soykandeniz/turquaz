@@ -110,7 +110,7 @@ const renderKpis = (rows) => {
 
 const renderRows = (rows) => {
   if (!rows.length) {
-    reservationRows.innerHTML = '<tr><td colspan="6">No reservations for this day.</td></tr>';
+    reservationRows.innerHTML = '<tr><td colspan="7">No reservations for this day.</td></tr>';
     renderKpis([]);
     return;
   }
@@ -123,6 +123,7 @@ const renderRows = (rows) => {
         <td><span class="badge ${row.meal || 'dinner'}">${row.meal || 'dinner'}</span></td>
         <td>${row.name}</td>
         <td>${row.phone || '-'}</td>
+        <td>${row.email || '-'}</td>
         <td>${row.guests}</td>
         <td>${row.note || '-'}</td>
       </tr>

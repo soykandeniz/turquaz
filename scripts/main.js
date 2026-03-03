@@ -180,6 +180,49 @@ const setMessage = (text, kind = '') => {
   }
 };
 
+const showSuccessModal = (payload) => {
+  const backdrop = document.getElementById('successModalBackdrop');
+  const details = document.getElementById('modalDetails');
+  const emailNote = document.getElementById('modalEmailNote');
+  const closeBtn = document.getElementById('modalCloseBtn');
+  if (!backdrop || !details) return;
+
+  const mealLabel = (payload.meal || '').charAt(0).toUpperCase() + (payload.meal || '').slice(1);
+  const dateObj = new Date(`${payload.date}T00:00:00`);
+  const prettyDateStr = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' });
+
+  details.innerHTML = [
+    ['Date', prettyDateStr],
+    ['Time', payload.time],
+    ['Guests', payload.guests],
+    ['Meal', mealLabel],
+    ['Name', payload.name],
+    ['Phone', payload.phone]
+  ].map(([label, value]) =>
+    `<span class="detail-label">${label}</span><span class="detail-value">${value}</span>`
+  ).join('');
+
+  emailNote.textContent = payload.email
+    ? `A confirmation email has been sent to ${payload.email}`
+    : '';
+
+  backdrop.classList.remove('hidden', 'fade-out');
+  backdrop.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  const closeModal = () => {
+    backdrop.classList.add('fade-out');
+    setTimeout(() => {
+      backdrop.classList.add('hidden');
+      backdrop.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }, 400);
+  };
+
+  closeBtn.onclick = closeModal;
+  backdrop.onclick = (e) => { if (e.target === backdrop) closeModal(); };
+};
+
 const requestAvailability = async (dateKey) => {
   if (!APPS_SCRIPT_URL) {
     throw new Error('Reservation API is not configured');
@@ -394,6 +437,7 @@ const initializeReservation = async () => {
     const formData = new FormData(reservationForm);
     const guests = Number(formData.get('guests') || 0);
     const phone = String(formData.get('phone') ?? '').trim();
+    const email = String(formData.get('email') ?? '').trim();
 
     if (!state.selectedDate || !state.selectedTime) {
       setMessage('Please select both a date and a timeslot.', 'error');
@@ -414,6 +458,11 @@ const initializeReservation = async () => {
       return;
     }
 
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setMessage('Please enter a valid email address.', 'error');
+      return;
+    }
+
     const dateAvailability = state.availabilityByDate[state.selectedDate] ?? {};
     const occupied = Number(dateAvailability[state.selectedTime] ?? 0);
     if (occupied + guests > SLOT_CAPACITY) {
@@ -426,6 +475,7 @@ const initializeReservation = async () => {
     const payload = {
       name: String(formData.get('name') ?? '').trim(),
       phone,
+      email,
       guests,
       note: String(formData.get('note') ?? '').trim(),
       date: state.selectedDate,
@@ -440,7 +490,8 @@ const initializeReservation = async () => {
         throw new Error('Reservation failed');
       }
 
-      setMessage('Your reservation has been received.', 'success');
+      setMessage('', '');
+      showSuccessModal(payload);
       reservationForm.reset();
       dateField.value = state.selectedDate;
       timeField.value = state.selectedTime;
@@ -463,10 +514,23 @@ window.addEventListener('resize', requestParallaxUpdate);
 window.addEventListener('load', requestParallaxUpdate);
 window.addEventListener('load', initializeReservation);
 
+const scrollToSection = (destination) => {
+  const headerHeight = header ? header.getBoundingClientRect().height : 0;
+  const top = destination.getBoundingClientRect().top + window.scrollY - headerHeight + 2;
+  window.scrollTo({ top, behavior: 'smooth' });
+};
+
 navLinks.forEach((link) => {
   link.addEventListener('click', (event) => {
     const targetSelector = link.getAttribute('href');
     if (!targetSelector || targetSelector === '#') {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (targetSelector === '#top') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -475,8 +539,10 @@ navLinks.forEach((link) => {
       return;
     }
 
-    event.preventDefault();
-    destination.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToSection(destination);
+
+    // Re-scroll after lazy images above may have loaded and shifted layout
+    setTimeout(() => scrollToSection(destination), 400);
   });
 });
 

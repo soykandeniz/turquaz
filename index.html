@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Turquaz — Fine Dining, Mediterranean elegance, contemporary gastronomy." />
-  <meta name="theme-color" content="#0b3c47" />
+  <meta name="theme-color" content="#2a4192" />
   <title>Turquaz | Fine Dining</title>
   <link rel="preload" as="image" href="assets/images/hero.jpeg" fetchpriority="high" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -42,7 +42,7 @@
           <h1 class="hero-title" data-stagger>turquaz</h1>
           <p class="hero-est">est 2025</p>
         </div>
-        <p class="hero-tagline reveal">Where the Aegean Meets Modern Gastronomy</p>
+        <p class="hero-tagline reveal">every small bite tells a story</p>
         <div class="hero-actions reveal">
           <a class="btn btn-primary" href="#reservation">Reserve a Table</a>
           <a class="btn btn-text" href="#dishes">Discover Menu</a>
@@ -80,22 +80,58 @@
 
         <div class="dish-grid">
           <figure class="dish dish-feature reveal">
-            <img src="assets/images/dish-feature.jpeg" alt="Featured signature dish" loading="lazy" decoding="async" />
+            <div class="dish-img-wrap">
+              <img src="assets/images/dish-feature.jpeg" alt="Featured signature dish" width="800" height="450" loading="lazy" decoding="async" />
+            </div>
             <figcaption>
               <span>Turkish Breakfast</span>
+              <small class="dish-desc">A ceremonial spread — eggs, cheeses, olives, honey, fresh bread and more</small>
             </figcaption>
           </figure>
           <figure class="dish reveal">
-            <img src="assets/images/dish-1.jpeg" alt="Refined plated starter" loading="lazy" decoding="async" />
-            <figcaption><span>Salmon Sandwich</span></figcaption>
+            <div class="dish-img-wrap">
+              <img src="assets/images/dish-mixgrill.jpeg" alt="Mixed grill platter with lamb chops and kebabs" width="600" height="450" loading="lazy" decoding="async" />
+            </div>
+            <figcaption>
+              <span>Mix Grill</span>
+              <small class="dish-desc">A grand platter of lamb chops, Adana kebab, chicken şiş and grilled vegetables on copper</small>
+            </figcaption>
           </figure>
           <figure class="dish reveal">
-              <figcaption><span>Layer of Taste</span></figcaption>
-            <img src="assets/images/dish-2.jpeg" alt="Mediterranean main course" loading="lazy" decoding="async" />
+            <div class="dish-img-wrap">
+              <img src="assets/images/dish-2.jpeg" alt="Mediterranean main course" width="600" height="450" loading="lazy" decoding="async" />
+            </div>
+            <figcaption>
+              <span>Layer of Taste</span>
+              <small class="dish-desc">An irresistible assortment of handcrafted baklava—walnut, chocolate milky, Turkuaz roll, mussel, and rolled pistachio</small>
+            </figcaption>
           </figure>
           <figure class="dish reveal">
-            <img src="assets/images/dish-3.jpeg" alt="Contemporary dessert" loading="lazy" decoding="async" />
-            <figcaption><span>Desserts</span></figcaption>
+            <div class="dish-img-wrap">
+              <img src="assets/images/dish-3.jpeg" alt="Contemporary dessert" width="600" height="450" loading="lazy" decoding="async" />
+            </div>
+            <figcaption>
+              <span>Desserts</span>
+              <small class="dish-desc">Mediterranean-inspired pastries and handcrafted sweets</small>
+            </figcaption>
+          </figure>
+          <figure class="dish dish-wide reveal">
+            <div class="dish-img-wrap">
+              <img src="assets/images/dish-feast.jpeg" alt="Turkish feast spread with meze and salads" width="800" height="450" loading="lazy" decoding="async" />
+            </div>
+            <figcaption>
+              <span>Turkish Feast</span>
+              <small class="dish-desc">A bountiful table of meze, salads, pilav, lentil soup and freshly brewed Turkish tea</small>
+            </figcaption>
+          </figure>
+          <figure class="dish reveal">
+            <div class="dish-img-wrap">
+              <img src="assets/images/dish-pastries.jpeg" alt="Freshly baked Turkish pastries" width="600" height="450" loading="lazy" decoding="async" />
+            </div>
+            <figcaption>
+              <span>Artisan Pastries</span>
+              <small class="dish-desc">Freshly baked börek, açma, poğaça and traditional Turkish breads from our oven</small>
+            </figcaption>
           </figure>
         </div>
       </div>
@@ -124,7 +160,7 @@
       <div class="container">
         <div class="section-head reveal">
           <p class="section-kicker">Interior & Atmosphere</p>
-          <h2>Evenings in Turquaz</h2>
+          <h2>Gather Beautifully</h2>
         </div>
 
         <div class="gallery-grid" id="galleryGrid">
@@ -176,6 +212,10 @@
             <span>Phone Number</span>
           </label>
           <label>
+            <input type="email" name="email" placeholder=" " required />
+            <span>Email Address</span>
+          </label>
+          <label>
             <input type="number" min="1" max="10" name="guests" placeholder=" " required />
             <span>Guests</span>
           </label>
@@ -225,6 +265,22 @@
   </footer>
 
   <a class="admin-shortcut" href="check-res.html" aria-label="Admin reservations">AR</a>
+
+  <div class="success-modal-backdrop hidden" id="successModalBackdrop" aria-hidden="true">
+    <div class="success-modal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+      <div class="success-modal-accent"></div>
+      <div class="success-modal-body">
+        <div class="success-modal-check" aria-hidden="true">
+          <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M14.1 27.2 21.7 34.8 37.9 18.6"/></svg>
+        </div>
+        <h3 id="modalTitle" class="success-modal-title">Reservation Confirmed</h3>
+        <p class="success-modal-lead">We look forward to hosting you at Turquaz.</p>
+        <div class="success-modal-details" id="modalDetails"></div>
+        <p class="success-modal-email-note" id="modalEmailNote"></p>
+        <button type="button" class="btn btn-solid success-modal-close" id="modalCloseBtn">Done</button>
+      </div>
+    </div>
+  </div>
 
   <script src="scripts/main.js"></script>
 </body>
