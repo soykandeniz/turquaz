@@ -1,0 +1,238 @@
+/* ─── Catalog Page ────────────────────────────────────── */
+
+/* Hero */
+.catalog-hero {
+  position: relative;
+  min-height: 20vh;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(5rem, 12vw, 10rem) 0 clamp(2rem, 5vw, 4rem);
+  overflow: hidden;
+}
+
+.catalog-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(30, 50, 100, 0.55), rgba(22, 37, 80, 0.85));
+  z-index: -1;
+}
+
+.catalog-hero-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 60%, rgba(201, 169, 110, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 30%, rgba(42, 65, 146, 0.18) 0%, transparent 50%);
+  z-index: -1;
+}
+
+.catalog-hero-content {
+  text-align: center;
+}
+
+.catalog-hero-content h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 600;
+  color: var(--ivory);
+  line-height: 1.08;
+  margin: 0.25rem 0 0.6rem;
+  letter-spacing: 0.02em;
+}
+
+.catalog-hero-sub {
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  color: rgba(245, 243, 239, 0.65);
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* Hero quick-nav pills */
+.catalog-hero-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: clamp(1.2rem, 2.5vw, 2rem);
+}
+
+.catalog-hero-pill {
+  font-family: var(--font-body);
+  font-size: clamp(0.72rem, 1vw, 0.82rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 100px;
+  padding: 0.45em 1.2em;
+  text-decoration: none;
+  transition:
+    background var(--transition-soft) var(--ease-lux),
+    border-color var(--transition-soft) var(--ease-lux),
+    color var(--transition-soft) var(--ease-lux);
+}
+
+.catalog-hero-pill:hover {
+  background: rgba(201, 169, 110, 0.12);
+  border-color: var(--accent);
+  color: var(--ivory);
+}
+
+/* Section alternating bg */
+.catalog-section {
+  padding-top: clamp(3rem, 6vw, 5rem);
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.catalog-section-alt {
+  background: rgba(201, 169, 110, 0.035);
+}
+
+/* Group Titles (subcategory headings) */
+.catalog-group-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 2.8vw, 2rem);
+  font-weight: 500;
+  color: var(--accent);
+  margin: clamp(2rem, 4vw, 3.5rem) 0 clamp(1rem, 2vw, 1.5rem);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.18);
+  letter-spacing: 0.015em;
+}
+
+.catalog-group-title:first-of-type {
+  margin-top: clamp(1rem, 2vw, 2rem);
+}
+
+/* Card Grid */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+
+/* Card */
+.catalog-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition:
+    transform var(--transition-soft) var(--ease-lux),
+    box-shadow var(--transition-soft) var(--ease-lux);
+  cursor: default;
+}
+
+.catalog-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(201, 169, 110, 0.08);
+}
+
+/* Card Image */
+.catalog-card-img {
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+}
+
+.catalog-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow) var(--ease-lux);
+}
+
+.catalog-card:hover .catalog-card-img img {
+  transform: scale(1.06);
+}
+
+/* Card Caption */
+.catalog-card figcaption {
+  padding: clamp(0.6rem, 1.2vw, 1rem) clamp(0.75rem, 1.5vw, 1.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.catalog-card figcaption span {
+  font-family: var(--font-heading);
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  font-weight: 600;
+  color: var(--ivory);
+  line-height: 1.25;
+}
+
+.catalog-card figcaption small {
+  font-family: var(--font-body);
+  font-size: clamp(0.72rem, 1vw, 0.82rem);
+  color: rgba(245, 243, 239, 0.5);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.catalog-card figcaption em {
+  font-family: var(--font-heading);
+  font-style: normal;
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 0.2rem;
+}
+
+/* CTA block */
+.catalog-cta {
+  text-align: center;
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  border-top: 1px solid rgba(201, 169, 110, 0.12);
+}
+
+.catalog-cta p {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  color: rgba(245, 243, 239, 0.55);
+  margin-bottom: 1.2rem;
+}
+
+/* ─── Responsive ──────────────────────────────────────── */
+
+@media (min-width: 480px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .catalog-card-img {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (min-width: 640px) {
+  .catalog-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .catalog-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(1rem, 1.5vw, 1.5rem);
+  }
+
+  .catalog-card-img {
+    aspect-ratio: 3 / 2;
+  }
+}
+
+@media (min-width: 1280px) {
+  .catalog-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

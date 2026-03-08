@@ -85,6 +85,11 @@ const setLoading = (isLoading) => {
   prevDayBtn && (prevDayBtn.disabled = isLoading || (filterDate?.value || '') <= minDate);
   nextDayBtn && (nextDayBtn.disabled = isLoading);
   datePickerBtn && (datePickerBtn.disabled = isLoading);
+
+  const tableWrap = document.querySelector('.table-wrap');
+  const kpiWrap = document.querySelector('.admin-kpis');
+  if (tableWrap) tableWrap.classList.toggle('is-loading-overlay', isLoading);
+  if (kpiWrap) kpiWrap.classList.toggle('is-loading-overlay', isLoading);
 };
 
 const getLocalReservations = () => {

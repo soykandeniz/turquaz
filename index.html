@@ -23,9 +23,14 @@
         <li><a href="#dishes">Dishes</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#gallery">Atmosphere</a></li>
+        <li><a href="#contact" id="contactNavLink">Contact</a></li>
+        <li><a href="menu.html">Menu</a></li>
         <li class="nav-links-cta"><a class="btn btn-nav" href="#reservation">Reserve</a></li>
       </ul>
-      <a class="btn btn-nav btn-nav-desktop" href="#reservation">Reserve</a>
+      <div class="nav-desktop-actions">
+        <a class="btn btn-nav btn-nav-desktop" href="#reservation">Reserve</a>
+        <a class="btn btn-nav btn-nav-desktop" href="menu.html">Menu</a>
+      </div>
       <button class="hamburger" id="hamburgerBtn" type="button" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -147,7 +152,7 @@
           </p>
           <div class="experience-actions">
             <a class="btn btn-primary" href="https://order.toasttab.com/online/turquaz" target="_blank" rel="noopener noreferrer">Order Online</a>
-            <a class="btn btn-text" href="https://www.ezcater.com/catering/turquaz-3?fulfillmentDetailId=bc135a60-553c-49b1-83ab-621c89a9761f" target="_blank" rel="noopener noreferrer">Catering</a>
+            <button class="btn btn-primary" type="button" id="cateringBtn">Catering</button>
           </div>
         </div>
         <div class="experience-image reveal" data-parallax="0.08">
@@ -217,17 +222,18 @@
           </label>
           <label>
             <input type="number" min="1" max="10" name="guests" placeholder=" " required />
-            <span>Guests</span>
+            <span>Number of Guests</span>
           </label>
           <label>
             <input type="text" name="note" placeholder=" " />
             <span>Special Request (Optional)</span>
           </label>
-          <button type="submit" class="btn btn-solid">Reserve a Table</button>
+          <button type="submit" class="btn btn-solid" id="reserveBtn"><span class="btn-label">Reserve a Table</span><span class="btn-spinner hidden" aria-hidden="true"></span></button>
           <p class="reservation-message" id="reservationMessage" aria-live="polite"></p>
         </form>
       </div>
     </section>
+
   </main>
 
   <footer class="site-footer">
@@ -279,6 +285,62 @@
         <p class="success-modal-email-note" id="modalEmailNote"></p>
         <button type="button" class="btn btn-solid success-modal-close" id="modalCloseBtn">Done</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Contact Modal -->
+  <div class="contact-modal-backdrop hidden" id="contactModalBackdrop" aria-hidden="true">
+    <div class="contact-modal" role="dialog" aria-labelledby="contactModalTitle" aria-modal="true">
+      <button type="button" class="catering-popup-close" id="contactModalClose" aria-label="Close">&times;</button>
+      <h3 id="contactModalTitle">Get in Touch</h3>
+      <span class="signature-line" aria-hidden="true"></span>
+      <form class="contact-form" id="contactForm" action="#" method="post" novalidate aria-label="Contact form">
+        <label class="select-label">
+          <select name="subject" required>
+            <option value="" disabled selected>Select a topic</option>
+            <option value="General Inquiry">General Inquiry</option>
+            <option value="Feedback">Feedback</option>
+            <option value="Complaint">Complaint</option>
+            <option value="Custom Catering">Custom Catering</option>
+            <option value="Private Event">Private Event</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <label>
+          <input type="text" name="name" placeholder=" " required />
+          <span>Full Name</span>
+        </label>
+        <label>
+          <input type="email" name="email" placeholder=" " required />
+          <span>Email Address</span>
+        </label>
+        <label>
+          <input type="tel" name="phone" placeholder=" " />
+          <span>Phone (Optional)</span>
+        </label>
+        <label class="textarea-label">
+          <textarea name="message" rows="4" placeholder=" " required></textarea>
+          <span>Your Message</span>
+        </label>
+        <button type="submit" class="btn btn-solid" id="contactSubmitBtn"><span class="btn-label">Send Message</span><span class="btn-spinner hidden" aria-hidden="true"></span></button>
+        <p class="contact-message" id="contactMessage" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Catering Popup -->
+  <div class="catering-popup-backdrop hidden" id="cateringPopupBackdrop" aria-hidden="true">
+    <div class="catering-popup" role="dialog" aria-labelledby="cateringPopupTitle" aria-modal="true">
+      <button type="button" class="catering-popup-close" id="cateringPopupClose" aria-label="Close">&times;</button>
+      <h3 id="cateringPopupTitle">Catering Options</h3>
+      <p class="catering-popup-lead">Place your catering order quickly and easily through EZCater.</p>
+      <a class="btn btn-primary catering-ezcater-btn" href="https://www.ezcater.com/catering/turquaz-3?fulfillmentDetailId=bc135a60-553c-49b1-83ab-621c89a9761f" target="_blank" rel="noopener noreferrer">
+        <img src="https://cdn.brandfetch.io/idS9o8VMjv/w/512/h/110/theme/light/logo.png" alt="ezCater" class="ezcater-logo" />
+        Order on ezCater
+      </a>
+      <div class="catering-divider"><span>or</span></div>
+      <p class="catering-popup-custom">For custom catering requests and private events, please reach out to us directly.</p>
+      <button type="button" class="btn btn-primary catering-contact-btn" id="cateringContactBtn">Contact Us</button>
     </div>
   </div>
 

@@ -189,6 +189,10 @@ h2 {
   display: none;
 }
 
+.nav-desktop-actions {
+  display: none;
+}
+
 /* Hamburger */
 .hamburger {
   display: flex;
@@ -260,6 +264,8 @@ h2 {
   .site-header.menu-open .nav-links li:nth-child(3) { animation-delay: 200ms; }
   .site-header.menu-open .nav-links li:nth-child(4) { animation-delay: 260ms; }
   .site-header.menu-open .nav-links li:nth-child(5) { animation-delay: 320ms; }
+  .site-header.menu-open .nav-links li:nth-child(6) { animation-delay: 380ms; }
+  .site-header.menu-open .nav-links li:nth-child(7) { animation-delay: 440ms; }
 
   .site-header.menu-open .nav-links a {
     font-size: clamp(1.15rem, 5vw, 1.45rem);
@@ -314,6 +320,7 @@ h2 {
 .btn-primary {
   border-color: color-mix(in srgb, var(--accent), #fff 12%);
   color: var(--ivory);
+  background: transparent;
 }
 
 .btn-primary:hover,
@@ -1196,6 +1203,321 @@ h2 {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   BUTTON SPINNER
+   ══════════════════════════════════════════════════════════════ */
+
+.btn-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(22, 37, 80, 0.3);
+  border-top-color: var(--brand-dark);
+  border-radius: 50%;
+  animation: btnSpin 0.6s linear infinite;
+}
+
+.btn-spinner.hidden {
+  display: none;
+}
+
+.btn.is-loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.btn.is-loading .btn-label {
+  display: none;
+}
+
+.btn.is-loading .btn-spinner {
+  display: inline-block;
+}
+
+@keyframes btnSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CONTACT MODAL
+   ══════════════════════════════════════════════════════════════ */
+
+.contact-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  background: rgba(10, 16, 36, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: 1;
+  transition: opacity 400ms var(--ease-lux);
+}
+
+.contact-modal-backdrop.hidden {
+  display: none;
+}
+
+.contact-modal-backdrop.fade-out {
+  opacity: 0;
+}
+
+.contact-modal {
+  width: min(500px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: linear-gradient(170deg, #1a2c5c 0%, var(--brand-dark) 100%);
+  border: 1px solid rgba(201, 169, 110, 0.28);
+  border-radius: 20px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+  text-align: center;
+  position: relative;
+  animation: modalIn 500ms var(--ease-lux) both;
+}
+
+.contact-modal h3 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-weight: 500;
+  margin: 0 0 0.4rem;
+  color: var(--ivory);
+}
+
+.contact-modal .signature-line {
+  margin: 0.6rem 0 1.2rem;
+}
+
+.contact-form {
+  display: grid;
+  gap: 1.1rem;
+  justify-items: center;
+}
+
+.contact-form label {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(248, 245, 240, 0.28);
+  background: transparent;
+  color: var(--ivory);
+  padding: 1rem 0.2rem 0.5rem;
+  font: inherit;
+  font-size: 16px;
+  transition: border-color var(--transition-soft), box-shadow var(--transition-soft);
+  resize: vertical;
+}
+
+.contact-form textarea {
+  min-height: 80px;
+  line-height: 1.6;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent), #e5d2a0 28%);
+  box-shadow: 0 8px 24px -16px rgba(201, 169, 110, 0.6);
+}
+
+.contact-form label span {
+  position: absolute;
+  inset: 1rem auto auto 0.2rem;
+  color: rgba(248, 245, 240, 0.6);
+  font-size: 0.9rem;
+  transition: transform 300ms var(--ease-lux), font-size 300ms var(--ease-lux), color 300ms var(--ease-lux);
+  pointer-events: none;
+}
+
+.contact-form input:focus + span,
+.contact-form input:not(:placeholder-shown) + span,
+.contact-form textarea:focus + span,
+.contact-form textarea:not(:placeholder-shown) + span {
+  transform: translateY(-1rem);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--accent), var(--ivory) 24%);
+}
+
+.select-label {
+  width: 100%;
+  max-width: 560px;
+}
+
+.select-label select {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(248, 245, 240, 0.28);
+  background: transparent;
+  color: var(--ivory);
+  padding: 0.85rem 0.2rem 0.5rem;
+  font: inherit;
+  font-size: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color var(--transition-soft);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='rgba(248,245,240,0.5)' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.4rem center;
+}
+
+.select-label select:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent), #e5d2a0 28%);
+}
+
+.select-label select option {
+  background: var(--brand-dark);
+  color: var(--ivory);
+}
+
+.contact-message {
+  margin: 0.3rem 0 0;
+  min-height: 1.4rem;
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--accent), var(--ivory) 20%);
+}
+
+.contact-message.error {
+  color: rgba(231, 122, 122, 0.9);
+}
+
+.contact-message.success {
+  color: rgba(138, 198, 161, 0.92);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CATERING POPUP
+   ══════════════════════════════════════════════════════════════ */
+
+.catering-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  background: rgba(10, 16, 36, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: 1;
+  transition: opacity 400ms var(--ease-lux);
+}
+
+.catering-popup-backdrop.hidden {
+  display: none;
+}
+
+.catering-popup-backdrop.fade-out {
+  opacity: 0;
+}
+
+.catering-popup {
+  width: min(440px, 100%);
+  background: linear-gradient(170deg, #1a2c5c 0%, var(--brand-dark) 100%);
+  border: 1px solid rgba(201, 169, 110, 0.28);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+  text-align: center;
+  position: relative;
+  animation: modalIn 500ms var(--ease-lux) both;
+}
+
+.catering-popup-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  background: none;
+  border: none;
+  color: rgba(248, 245, 240, 0.6);
+  font-size: 1.6rem;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  transition: color 300ms var(--ease-lux);
+}
+
+.catering-popup-close:hover {
+  color: var(--ivory);
+}
+
+.catering-popup h3 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-weight: 500;
+  margin: 0 0 0.6rem;
+  color: var(--ivory);
+}
+
+.catering-popup-lead {
+  font-size: 0.88rem;
+  color: rgba(248, 245, 240, 0.75);
+  margin: 0 0 1.2rem;
+  line-height: 1.6;
+}
+
+.catering-ezcater-btn {
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0;
+}
+
+.ezcater-logo {
+  width: auto;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  filter: brightness(0) invert(1);
+}
+
+.catering-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1.2rem 0;
+  color: rgba(248, 245, 240, 0.4);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.catering-divider::before,
+.catering-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(201, 169, 110, 0.2);
+}
+
+.catering-popup-custom {
+  font-size: 0.85rem;
+  color: rgba(248, 245, 240, 0.7);
+  margin: 0 0 1rem;
+  line-height: 1.6;
+}
+
+.catering-contact-btn {
+  width: 100%;
+  margin-top: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
    ANIMATIONS — Reveal & Stagger
    ══════════════════════════════════════════════════════════════ */
 
@@ -1349,7 +1671,13 @@ h2 {
     display: none;
   }
 
-  .btn-nav-desktop {
+  .nav-desktop-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-desktop-actions .btn-nav-desktop {
     display: inline-flex;
   }
 

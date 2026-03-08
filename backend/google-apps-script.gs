@@ -63,6 +63,11 @@ function doPost(e) {
       return seedData_(startDate, days);
     }
 
+    if (action === 'contact') {
+      const contactPayload = (body && typeof body.payload === 'object' && body.payload) ? body.payload : body;
+      return handleContact_(contactPayload || {});
+    }
+
     return json({ ok: false, error: 'Unsupported action' });
   } catch (error) {
     return json({ ok: false, error: String(error) });
@@ -188,6 +193,61 @@ function inferMeal_(time) {
   if (time >= '08:00' && time <= '11:00') return 'breakfast';
   if (time >= '12:00' && time <= '15:30') return 'lunch';
   return 'dinner';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONTACT FORM
+   ═══════════════════════════════════════════════════════════ */
+
+function handleContact_(payload) {
+  var name = String(payload.name || '').trim();
+  var email = String(payload.email || '').trim();
+  var phone = String(payload.phone || '').trim();
+  var subject = String(payload.subject || '').trim();
+  var message = String(payload.message || '').trim();
+
+  if (!name || !email || !subject || !message) {
+    return json({ ok: false, error: 'Missing required fields' });
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return json({ ok: false, error: 'Invalid email address' });
+  }
+
+  try {
+    var properties = PropertiesService.getScriptProperties();
+    var adminEmail = String(properties.getProperty('ADMIN_EMAIL') || DEFAULT_ADMIN_EMAIL).trim();
+    var notificationEmail = String(properties.getProperty('NOTIFICATION_EMAIL') || DEFAULT_NOTIFICATION_EMAIL).trim();
+    var recipients = uniqueEmails_([adminEmail, notificationEmail]);
+
+    if (!recipients.length) {
+      return json({ ok: false, error: 'No recipient configured' });
+    }
+
+    var htmlBody = '<div style="font-family:Helvetica,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#fafafa;border:1px solid #e0e0e0;border-radius:8px;">'
+      + '<h2 style="margin:0 0 16px;color:#2a4192;">New Contact Message</h2>'
+      + '<table style="width:100%;border-collapse:collapse;font-size:14px;">'
+      + '<tr><td style="padding:6px 12px 6px 0;color:#666;font-weight:600;white-space:nowrap;">Subject</td><td style="padding:6px 0;">' + subject + '</td></tr>'
+      + '<tr><td style="padding:6px 12px 6px 0;color:#666;font-weight:600;white-space:nowrap;">Name</td><td style="padding:6px 0;">' + name + '</td></tr>'
+      + '<tr><td style="padding:6px 12px 6px 0;color:#666;font-weight:600;white-space:nowrap;">Email</td><td style="padding:6px 0;"><a href="mailto:' + email + '">' + email + '</a></td></tr>'
+      + (phone ? '<tr><td style="padding:6px 12px 6px 0;color:#666;font-weight:600;white-space:nowrap;">Phone</td><td style="padding:6px 0;">' + phone + '</td></tr>' : '')
+      + '</table>'
+      + '<div style="margin:16px 0 0;padding:12px;background:#fff;border:1px solid #eee;border-radius:6px;white-space:pre-wrap;font-size:14px;line-height:1.6;color:#333;">' + message + '</div>'
+      + '<p style="margin:16px 0 0;font-size:12px;color:#999;">Sent from turquazsf.com contact form</p>'
+      + '</div>';
+
+    sendEmail_(
+      recipients.join(','),
+      'Turquaz Contact · ' + subject + ' · ' + name,
+      htmlBody,
+      properties
+    );
+
+    return json({ ok: true });
+  } catch (error) {
+    Logger.log('Contact email send failed: ' + error);
+    return json({ ok: false, error: String(error) });
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════

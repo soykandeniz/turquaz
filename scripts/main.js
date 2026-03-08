@@ -484,6 +484,10 @@ const initializeReservation = async () => {
       createdAt: new Date().toISOString()
     };
 
+    const reserveBtn = document.getElementById('reserveBtn');
+    reserveBtn?.classList.add('is-loading');
+    reserveBtn && (reserveBtn.disabled = true);
+
     try {
       const result = await submitReservation(payload);
       if (!result.ok) {
@@ -499,6 +503,9 @@ const initializeReservation = async () => {
       renderSlots();
     } catch {
       setMessage('Reservation could not be saved right now. Please try again.', 'error');
+    } finally {
+      reserveBtn?.classList.remove('is-loading');
+      reserveBtn && (reserveBtn.disabled = false);
     }
   });
 };
@@ -560,3 +567,143 @@ window.setTimeout(() => {
     item.classList.add('is-visible');
   });
 }, 1800);
+
+/* ─── Catering Popup ─── */
+
+const openContactModal = (presetSubject) => {
+  const backdrop = document.getElementById('contactModalBackdrop');
+  if (!backdrop) return;
+  backdrop.classList.remove('hidden', 'fade-out');
+  backdrop.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  if (presetSubject) {
+    const subjectSelect = document.querySelector('#contactForm select[name="subject"]');
+    if (subjectSelect) subjectSelect.value = presetSubject;
+  }
+};
+
+const closeContactModal = () => {
+  const backdrop = document.getElementById('contactModalBackdrop');
+  if (!backdrop) return;
+  backdrop.classList.add('fade-out');
+  document.body.style.overflow = '';
+  setTimeout(() => {
+    backdrop.classList.add('hidden');
+    backdrop.setAttribute('aria-hidden', 'true');
+  }, 400);
+};
+
+(() => {
+  const backdrop = document.getElementById('contactModalBackdrop');
+  const closeBtn = document.getElementById('contactModalClose');
+  if (!backdrop) return;
+
+  closeBtn?.addEventListener('click', closeContactModal);
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeContactModal(); });
+
+  // Nav "Contact" link opens modal
+  const contactNavLink = document.getElementById('contactNavLink');
+  contactNavLink?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openContactModal();
+  });
+})();
+
+(() => {
+  const cateringBtn = document.getElementById('cateringBtn');
+  const backdrop = document.getElementById('cateringPopupBackdrop');
+  const closeBtn = document.getElementById('cateringPopupClose');
+  const contactBtn = document.getElementById('cateringContactBtn');
+  if (!cateringBtn || !backdrop) return;
+
+  const openPopup = () => {
+    backdrop.classList.remove('hidden', 'fade-out');
+    backdrop.setAttribute('aria-hidden', 'false');
+  };
+
+  const closePopup = () => {
+    backdrop.classList.add('fade-out');
+    setTimeout(() => {
+      backdrop.classList.add('hidden');
+      backdrop.setAttribute('aria-hidden', 'true');
+    }, 400);
+  };
+
+  cateringBtn.addEventListener('click', openPopup);
+  closeBtn?.addEventListener('click', closePopup);
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closePopup(); });
+
+  contactBtn?.addEventListener('click', () => {
+    closePopup();
+    setTimeout(() => openContactModal('Custom Catering'), 450);
+  });
+})();
+
+/* ─── Contact Form ─── */
+
+(() => {
+  const contactForm = document.getElementById('contactForm');
+  const contactMessage = document.getElementById('contactMessage');
+  if (!contactForm) return;
+
+  const setContactMessage = (text, kind = '') => {
+    if (!contactMessage) return;
+    contactMessage.textContent = text;
+    contactMessage.classList.remove('error', 'success');
+    if (kind) contactMessage.classList.add(kind);
+  };
+
+  contactForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(contactForm);
+    const subject = String(formData.get('subject') ?? '').trim();
+    const name = String(formData.get('name') ?? '').trim();
+    const email = String(formData.get('email') ?? '').trim();
+    const phone = String(formData.get('phone') ?? '').trim();
+    const message = String(formData.get('message') ?? '').trim();
+
+    if (!subject) {
+      setContactMessage('Please select a topic.', 'error');
+      return;
+    }
+    if (!name) {
+      setContactMessage('Please enter your name.', 'error');
+      return;
+    }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setContactMessage('Please enter a valid email address.', 'error');
+      return;
+    }
+    if (!message) {
+      setContactMessage('Please enter your message.', 'error');
+      return;
+    }
+
+    const submitBtn = document.getElementById('contactSubmitBtn');
+    submitBtn?.classList.add('is-loading');
+    submitBtn && (submitBtn.disabled = true);
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'contact',
+          payload: { subject, name, email, phone, message, createdAt: new Date().toISOString() }
+        })
+      });
+
+      const data = await response.json();
+      if (!data.ok) throw new Error(data.error || 'Failed');
+
+      setContactMessage('Thank you! Your message has been sent.', 'success');
+      contactForm.reset();
+    } catch {
+      setContactMessage('Could not send your message right now. Please try again.', 'error');
+    } finally {
+      submitBtn?.classList.remove('is-loading');
+      submitBtn && (submitBtn.disabled = false);
+    }
+  });
+})();

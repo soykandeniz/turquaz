@@ -154,6 +154,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.65rem;
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .admin-loading {
@@ -181,6 +182,27 @@
   100% { transform: scale(0.8); opacity: 0.5; }
 }
 
+.is-loading-overlay {
+  position: relative;
+  pointer-events: none;
+}
+
+.is-loading-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 33, 40, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 10;
+  animation: fadeIn 200ms ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .kpi-card {
   border: 1px solid rgba(184, 154, 79, 0.32);
   background: rgba(255, 255, 255, 0.02);
@@ -206,6 +228,7 @@
 
 .table-wrap {
   overflow-x: auto;
+  position: relative;
 }
 
 table {
