@@ -1,5 +1,5 @@
 const SHEET_NAME = 'Reservations';
-const SLOT_CAPACITY = 10;
+const SLOT_CAPACITY = 15;
 const DEFAULT_ADMIN_USER = 'admin';
 const DEFAULT_ADMIN_PASS = 'turquaz2026';
 const DEFAULT_NOTIFICATION_EMAIL = 'sf@oklavacafe.com';
@@ -51,6 +51,14 @@ function doPost(e) {
       const date = String(body.date || '');
       const rows = getReservationsByDate_(date);
       return json({ ok: true, rows });
+    }
+
+    if (action === 'adminDelete') {
+      if (!isAdminAuthorized_(body.username, body.password)) {
+        return json({ ok: false, error: 'Unauthorized' });
+      }
+
+      return adminDeleteReservation_(body);
     }
 
     if (action === 'seedData') {
@@ -360,6 +368,31 @@ function isAdminAuthorized_(username, password) {
   const adminUser = properties.getProperty('ADMIN_USER') || DEFAULT_ADMIN_USER;
   const adminPass = properties.getProperty('ADMIN_PASS') || DEFAULT_ADMIN_PASS;
   return String(username || '') === adminUser && String(password || '') === adminPass;
+}
+
+function adminDeleteReservation_(body) {
+  var date = normalizeDateKey_(body.date || '');
+  var time = normalizeTimeKey_(body.time || '');
+  var name = String(body.name || '').trim();
+
+  if (!date || !time || !name) {
+    return json({ ok: false, error: 'Missing reservation identifiers' });
+  }
+
+  var sheet = ensureSheet();
+  var values = sheet.getDataRange().getValues();
+
+  for (var i = values.length - 1; i >= 1; i--) {
+    var mapped = mapReservationRow_(values[i]);
+    if (normalizeDateKey_(mapped.date) === date &&
+        normalizeTimeKey_(mapped.time) === time &&
+        String(mapped.name || '').trim() === name) {
+      sheet.deleteRow(i + 1);
+      return json({ ok: true });
+    }
+  }
+
+  return json({ ok: false, error: 'Reservation not found' });
 }
 
 function getAvailabilityByDate(date) {

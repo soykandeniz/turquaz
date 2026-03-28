@@ -11,6 +11,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles/main.css" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTGPBFN65C"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BTGPBFN65C');
+  </script>
 </head>
 <body>
   <div class="grain-overlay" aria-hidden="true"></div>
@@ -221,9 +230,10 @@
             <span>Email Address</span>
           </label>
           <label>
-            <input type="number" min="1" max="10" name="guests" placeholder=" " required />
+            <input type="number" min="1" max="15" name="guests" placeholder=" " required />
             <span>Number of Guests</span>
           </label>
+          <p class="reservation-large-party-note">For parties larger than 15, please call us at <a href="tel:+14157910770">+1 415-791-0770</a>.</p>
           <label>
             <input type="text" name="note" placeholder=" " />
             <span>Special Request (Optional)</span>
@@ -282,6 +292,7 @@
         <h3 id="modalTitle" class="success-modal-title">Reservation Confirmed</h3>
         <p class="success-modal-lead">We look forward to hosting you at Turquaz.</p>
         <div class="success-modal-details" id="modalDetails"></div>
+        <p class="success-modal-hold-note" id="modalHoldNote">Please note: your table will be held for a maximum of 20 minutes from your reservation time.</p>
         <p class="success-modal-email-note" id="modalEmailNote"></p>
         <button type="button" class="btn btn-solid success-modal-close" id="modalCloseBtn">Done</button>
       </div>

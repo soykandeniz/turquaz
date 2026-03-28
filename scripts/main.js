@@ -62,7 +62,7 @@ const dateField = document.getElementById('dateField');
 const timeField = document.getElementById('timeField');
 const reservationMessage = document.getElementById('reservationMessage');
 
-const SLOT_CAPACITY = 10;
+const SLOT_CAPACITY = 15;
 const OPEN_DAYS = 21;
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfnVWOZ2uzz5JGCcnR_IyV0OFMciQzE5Kyq59JwIGIYV28X4Yepg9rWsQ1vIooJMo9Jw/exec';
 

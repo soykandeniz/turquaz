@@ -115,7 +115,7 @@ const renderKpis = (rows) => {
 
 const renderRows = (rows) => {
   if (!rows.length) {
-    reservationRows.innerHTML = '<tr><td colspan="7">No reservations for this day.</td></tr>';
+    reservationRows.innerHTML = '<tr><td colspan="8">No reservations for this day.</td></tr>';
     renderKpis([]);
     return;
   }
@@ -131,9 +131,14 @@ const renderRows = (rows) => {
         <td>${row.email || '-'}</td>
         <td>${row.guests}</td>
         <td>${row.note || '-'}</td>
+        <td><button class="btn btn-delete" data-date="${row.date}" data-time="${normalizeTimeValue(row.time)}" data-name="${row.name}">Delete</button></td>
       </tr>
     `)
     .join('');
+
+  reservationRows.querySelectorAll('.btn-delete').forEach((btn) => {
+    btn.addEventListener('click', () => handleDeleteReservation(btn.dataset.date, btn.dataset.time, btn.dataset.name));
+  });
 
   renderKpis(sorted);
 };
@@ -168,6 +173,40 @@ const fetchReservations = async (date) => {
     date: normalizeDateValue(row.date),
     time: normalizeTimeValue(row.time)
   }));
+};
+
+const handleDeleteReservation = async (date, time, name) => {
+  if (!confirm(`Delete reservation for ${name} at ${time}?`)) {
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'adminDelete',
+        username: auth.username,
+        password: auth.password,
+        date,
+        time,
+        name
+      })
+    });
+
+    const data = await response.json();
+    if (!data.ok) {
+      throw new Error(data.error || 'Delete failed');
+    }
+
+    setMessage('Reservation deleted.', '');
+    await handleLoadReservations();
+  } catch (error) {
+    setMessage(String(error.message || error), 'error');
+  } finally {
+    setLoading(false);
+  }
 };
 
 const handleLoadReservations = async () => {
