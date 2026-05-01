@@ -197,6 +197,7 @@
         <form class="reservation-form" action="#" method="post" novalidate aria-label="Reservation form">
           <div class="booking-picker" aria-label="Select date and time">
             <p class="booking-label">Choose Date & Time</p>
+            <p class="booking-window-note">Reservations are available up to 90 days in advance.</p>
             <div class="reservation-date-nav" aria-label="Date controls">
               <button type="button" class="btn btn-nav date-arrow" id="resPrevDayBtn" aria-label="Previous day">←</button>
               <button type="button" class="btn btn-nav date-picker-btn" id="resDatePickerBtn" aria-label="Open date picker">Select Day</button>
@@ -281,6 +282,25 @@
   </footer>
 
   <a class="admin-shortcut" href="check-res.html" aria-label="Admin reservations">AR</a>
+
+  <div class="reservation-calendar-backdrop hidden" id="reservationCalendarBackdrop" aria-hidden="true">
+    <div class="reservation-calendar" role="dialog" aria-labelledby="reservationCalendarTitle" aria-modal="true">
+      <button type="button" class="reservation-calendar-close" id="calendarCloseBtn" aria-label="Close date picker">×</button>
+      <p class="section-kicker">Select A Date</p>
+      <div class="reservation-calendar-toolbar">
+        <button type="button" class="reservation-calendar-nav" id="calendarPrevMonthBtn" aria-label="Previous month">←</button>
+        <h3 class="reservation-calendar-title" id="reservationCalendarTitle">Month Year</h3>
+        <button type="button" class="reservation-calendar-nav" id="calendarNextMonthBtn" aria-label="Next month">→</button>
+      </div>
+      <p class="reservation-calendar-selected" id="reservationCalendarSelected">Selected: Select Day</p>
+      <div class="reservation-calendar-grid" id="reservationCalendarGrid" aria-label="Calendar dates"></div>
+      <p class="reservation-calendar-hint">Choose any available day in the next 90 days.</p>
+      <div class="reservation-calendar-loader" id="reservationCalendarLoader" aria-hidden="true">
+        <span class="btn-spinner reservation-calendar-spinner" aria-hidden="true"></span>
+        <span class="reservation-calendar-loader-text">Loading available times...</span>
+      </div>
+    </div>
+  </div>
 
   <div class="success-modal-backdrop hidden" id="successModalBackdrop" aria-hidden="true">
     <div class="success-modal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">

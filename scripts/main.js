@@ -56,6 +56,14 @@ const reservationDatePicker = document.getElementById('reservationDatePicker');
 const resDatePickerBtn = document.getElementById('resDatePickerBtn');
 const resPrevDayBtn = document.getElementById('resPrevDayBtn');
 const resNextDayBtn = document.getElementById('resNextDayBtn');
+const reservationCalendarBackdrop = document.getElementById('reservationCalendarBackdrop');
+const reservationCalendarGrid = document.getElementById('reservationCalendarGrid');
+const reservationCalendarTitle = document.getElementById('reservationCalendarTitle');
+const reservationCalendarSelected = document.getElementById('reservationCalendarSelected');
+const reservationCalendarLoader = document.getElementById('reservationCalendarLoader');
+const calendarPrevMonthBtn = document.getElementById('calendarPrevMonthBtn');
+const calendarNextMonthBtn = document.getElementById('calendarNextMonthBtn');
+const calendarCloseBtn = document.getElementById('calendarCloseBtn');
 const slotGrid = document.getElementById('slotGrid');
 const mealTabs = document.getElementById('mealTabs');
 const dateField = document.getElementById('dateField');
@@ -63,8 +71,9 @@ const timeField = document.getElementById('timeField');
 const reservationMessage = document.getElementById('reservationMessage');
 
 const SLOT_CAPACITY = 15;
-const OPEN_DAYS = 21;
+const OPEN_DAYS = 90;
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfnVWOZ2uzz5JGCcnR_IyV0OFMciQzE5Kyq59JwIGIYV28X4Yepg9rWsQ1vIooJMo9Jw/exec';
+const CALENDAR_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const MEALS = [
   { id: 'breakfast', label: 'Breakfast', slots: ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30'] },
@@ -81,6 +90,8 @@ const state = {
 
 let reservationMinDate = '';
 let reservationMaxDate = '';
+let reservationViewDate = null;
+let isReservationCalendarLoading = false;
 
 const splitToStagger = (element) => {
   const text = element.textContent;
@@ -146,7 +157,25 @@ const requestParallaxUpdate = () => {
   });
 };
 
-const toDateKey = (date) => date.toISOString().slice(0, 10);
+const toDateKey = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const parseDateKey = (dateKey) => {
+  if (!dateKey) {
+    return null;
+  }
+
+  const [year, month, day] = String(dateKey).split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const startOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1);
+
+const addMonths = (date, months) => new Date(date.getFullYear(), date.getMonth() + months, 1);
 
 const prettyDate = (date) => ({
   day: date.toLocaleDateString('en-US', { weekday: 'short' }),
@@ -159,7 +188,7 @@ const formatDateLabel = (dateKey) => {
     return 'Select Day';
   }
 
-  const date = new Date(`${dateKey}T00:00:00`);
+  const date = parseDateKey(dateKey);
   return date.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
@@ -188,7 +217,7 @@ const showSuccessModal = (payload) => {
   if (!backdrop || !details) return;
 
   const mealLabel = (payload.meal || '').charAt(0).toUpperCase() + (payload.meal || '').slice(1);
-  const dateObj = new Date(`${payload.date}T00:00:00`);
+  const dateObj = parseDateKey(payload.date);
   const prettyDateStr = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' });
 
   details.innerHTML = [
@@ -308,6 +337,144 @@ const renderSlots = () => {
   });
 };
 
+const renderReservationCalendar = () => {
+  if (!reservationCalendarGrid || !reservationMinDate || !reservationMaxDate) {
+    return;
+  }
+
+  const selectedDate = parseDateKey(state.selectedDate || reservationMinDate);
+  const minDate = parseDateKey(reservationMinDate);
+  const maxDate = parseDateKey(reservationMaxDate);
+  const visibleMonth = startOfMonth(reservationViewDate || selectedDate || minDate);
+  const currentDayKey = toDateKey(new Date());
+  const totalDays = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0).getDate();
+  const firstWeekday = visibleMonth.getDay();
+  const minMonthKey = toDateKey(startOfMonth(minDate));
+  const maxMonthKey = toDateKey(startOfMonth(maxDate));
+
+  reservationViewDate = visibleMonth;
+
+  if (reservationCalendarTitle) {
+    reservationCalendarTitle.textContent = visibleMonth.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+
+  if (reservationCalendarSelected) {
+    reservationCalendarSelected.textContent = `Selected: ${formatDateLabel(state.selectedDate)}`;
+  }
+
+  if (calendarPrevMonthBtn) {
+    calendarPrevMonthBtn.disabled = isReservationCalendarLoading || toDateKey(visibleMonth) <= minMonthKey;
+  }
+
+  if (calendarNextMonthBtn) {
+    calendarNextMonthBtn.disabled = isReservationCalendarLoading || toDateKey(visibleMonth) >= maxMonthKey;
+  }
+
+  reservationCalendarGrid.innerHTML = '';
+
+  CALENDAR_WEEKDAYS.forEach((weekday) => {
+    const label = document.createElement('span');
+    label.className = 'reservation-calendar-weekday';
+    label.textContent = weekday;
+    reservationCalendarGrid.appendChild(label);
+  });
+
+  for (let emptyIndex = 0; emptyIndex < firstWeekday; emptyIndex += 1) {
+    const emptyCell = document.createElement('span');
+    emptyCell.className = 'reservation-calendar-day is-empty';
+    emptyCell.setAttribute('aria-hidden', 'true');
+    reservationCalendarGrid.appendChild(emptyCell);
+  }
+
+  for (let day = 1; day <= totalDays; day += 1) {
+    const button = document.createElement('button');
+    const date = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), day);
+    const dateKey = toDateKey(date);
+    const isOutOfRange = dateKey < reservationMinDate || dateKey > reservationMaxDate;
+
+    button.type = 'button';
+    button.className = 'reservation-calendar-day';
+    button.textContent = String(day);
+    button.disabled = isReservationCalendarLoading || isOutOfRange;
+    button.setAttribute('aria-label', formatDateLabel(dateKey));
+
+    if (dateKey === state.selectedDate) {
+      button.classList.add('is-selected');
+    }
+
+    if (dateKey === currentDayKey) {
+      button.classList.add('is-today');
+    }
+
+    button.addEventListener('click', async () => {
+      if (isReservationCalendarLoading) {
+        return;
+      }
+
+      setReservationCalendarLoading(true);
+
+      try {
+        await setReservationDate(dateKey);
+        await closeReservationCalendar();
+      } finally {
+        setReservationCalendarLoading(false);
+      }
+    });
+
+    reservationCalendarGrid.appendChild(button);
+  }
+};
+
+const setReservationCalendarLoading = (isLoading) => {
+  isReservationCalendarLoading = isLoading;
+
+  if (reservationCalendarBackdrop) {
+    reservationCalendarBackdrop.classList.toggle('is-loading', isLoading);
+  }
+
+  if (reservationCalendarLoader) {
+    reservationCalendarLoader.setAttribute('aria-hidden', String(!isLoading));
+  }
+
+  if (calendarCloseBtn) {
+    calendarCloseBtn.disabled = isLoading;
+  }
+
+  renderReservationCalendar();
+};
+
+const openReservationCalendar = () => {
+  if (!reservationCalendarBackdrop) {
+    return;
+  }
+
+  setReservationCalendarLoading(false);
+  reservationViewDate = startOfMonth(parseDateKey(state.selectedDate || reservationMinDate));
+  renderReservationCalendar();
+  reservationCalendarBackdrop.classList.remove('hidden', 'fade-out');
+  reservationCalendarBackdrop.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+};
+
+const closeReservationCalendar = () => {
+  if (!reservationCalendarBackdrop || reservationCalendarBackdrop.classList.contains('hidden')) {
+    return Promise.resolve();
+  }
+
+  reservationCalendarBackdrop.classList.add('fade-out');
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      reservationCalendarBackdrop.classList.add('hidden');
+      reservationCalendarBackdrop.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      resolve();
+    }, 300);
+  });
+};
+
 const updateReservationDateUi = () => {
   if (resDatePickerBtn) {
     resDatePickerBtn.textContent = formatDateLabel(state.selectedDate);
@@ -324,6 +491,14 @@ const updateReservationDateUi = () => {
   if (resNextDayBtn) {
     resNextDayBtn.disabled = state.selectedDate >= reservationMaxDate;
   }
+
+  if (reservationCalendarSelected) {
+    reservationCalendarSelected.textContent = `Selected: ${formatDateLabel(state.selectedDate)}`;
+  }
+
+  if (reservationCalendarBackdrop && !reservationCalendarBackdrop.classList.contains('hidden')) {
+    renderReservationCalendar();
+  }
 };
 
 const setReservationDate = async (dateKey) => {
@@ -334,6 +509,7 @@ const setReservationDate = async (dateKey) => {
   const boundedDate = dateKey < reservationMinDate ? reservationMinDate : (dateKey > reservationMaxDate ? reservationMaxDate : dateKey);
 
   state.selectedDate = boundedDate;
+  reservationViewDate = startOfMonth(parseDateKey(boundedDate));
   state.selectedTime = '';
   dateField.value = boundedDate;
   timeField.value = '';
@@ -415,12 +591,7 @@ const initializeReservation = async () => {
   });
 
   resDatePickerBtn.addEventListener('click', () => {
-    if (typeof reservationDatePicker.showPicker === 'function') {
-      reservationDatePicker.showPicker();
-      return;
-    }
-    reservationDatePicker.focus();
-    reservationDatePicker.click();
+    openReservationCalendar();
   });
 
   resPrevDayBtn.addEventListener('click', async () => {
@@ -429,6 +600,29 @@ const initializeReservation = async () => {
 
   resNextDayBtn.addEventListener('click', async () => {
     await shiftReservationDate(1);
+  });
+
+  calendarPrevMonthBtn?.addEventListener('click', () => {
+    reservationViewDate = addMonths(reservationViewDate || parseDateKey(state.selectedDate || reservationMinDate), -1);
+    renderReservationCalendar();
+  });
+
+  calendarNextMonthBtn?.addEventListener('click', () => {
+    reservationViewDate = addMonths(reservationViewDate || parseDateKey(state.selectedDate || reservationMinDate), 1);
+    renderReservationCalendar();
+  });
+
+  calendarCloseBtn?.addEventListener('click', closeReservationCalendar);
+  reservationCalendarBackdrop?.addEventListener('click', (event) => {
+    if (event.target === reservationCalendarBackdrop) {
+      closeReservationCalendar();
+    }
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeReservationCalendar();
+    }
   });
 
   reservationForm.addEventListener('submit', async (event) => {
