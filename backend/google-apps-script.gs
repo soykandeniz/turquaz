@@ -198,8 +198,8 @@ function validatePayload(payload) {
 }
 
 function inferMeal_(time) {
-  if (time >= '08:00' && time <= '11:00') return 'breakfast';
-  if (time >= '12:00' && time <= '15:30') return 'lunch';
+  if (time >= '08:00' && time <= '11:30') return 'breakfast';
+  if (time >= '12:00' && time <= '16:30') return 'lunch';
   return 'dinner';
 }
 
