@@ -1753,6 +1753,139 @@ h2 {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   CANCEL MODAL
+   ══════════════════════════════════════════════════════════════ */
+
+.cancel-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  background: rgba(10, 16, 36, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: 1;
+  transition: opacity 400ms var(--ease-lux);
+}
+
+.cancel-modal-backdrop.hidden {
+  display: none;
+}
+
+.cancel-modal-backdrop.fade-out {
+  opacity: 0;
+}
+
+.cancel-modal {
+  width: min(420px, 100%);
+  background: linear-gradient(170deg, #1a2c5c 0%, var(--brand-dark) 100%);
+  border: 1px solid rgba(201, 169, 110, 0.28);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  animation: modalIn 500ms var(--ease-lux) both;
+}
+
+.cancel-modal-accent {
+  height: 5px;
+  background: linear-gradient(90deg, var(--brand-deep) 0%, var(--brand-mid) 45%, var(--accent) 100%);
+}
+
+.cancel-modal-body {
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+  text-align: center;
+}
+
+.cancel-modal-panel.hidden {
+  display: none;
+}
+
+.cancel-modal-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1rem;
+}
+
+.cancel-modal-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cancel-icon-warning { color: var(--accent); }
+.cancel-icon-success { color: #6abf7b; }
+.cancel-icon-error   { color: #d85c55; }
+.cancel-icon-info    { color: #7aa6d4; }
+
+.cancel-modal-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  font-weight: 500;
+  margin: 0 0 0.4rem;
+  color: var(--ivory);
+}
+
+.cancel-modal-lead {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 1.4rem;
+}
+
+.cancel-modal-lead a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.cancel-modal-lead a:hover {
+  text-decoration: underline;
+}
+
+.cancel-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cancel-btn-keep {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.cancel-btn-confirm {
+  width: 100%;
+  border-radius: 8px;
+  padding: 0.75rem 1.4rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  min-height: 48px;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(216, 92, 85, 0.55);
+  background: rgba(216, 92, 85, 0.1);
+  color: #e8817b;
+  transition: var(--transition-soft);
+}
+
+.cancel-btn-confirm:hover {
+  background: rgba(216, 92, 85, 0.2);
+  border-color: #d85c55;
+  color: #f09590;
+}
+
+.cancel-modal-done {
+  width: 100%;
+  max-width: 260px;
+  margin-top: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
    ANIMATIONS — Reveal & Stagger
    ══════════════════════════════════════════════════════════════ */
 

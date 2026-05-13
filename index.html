@@ -375,6 +375,40 @@
     </div>
   </div>
 
+  <!-- Cancel Reservation Modal -->
+  <div class="cancel-modal-backdrop hidden" id="cancelModalBackdrop" aria-hidden="true">
+    <div class="cancel-modal" role="dialog" aria-modal="true">
+      <div class="cancel-modal-accent"></div>
+      <div class="cancel-modal-body">
+
+        <!-- Confirm panel -->
+        <div class="cancel-modal-panel" id="cancelPanelConfirm">
+          <div class="cancel-modal-icon cancel-icon-warning" aria-hidden="true">
+            <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/><line x1="26" y1="15" x2="26" y2="30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="26" cy="37" r="2.2" fill="currentColor"/></svg>
+          </div>
+          <h3 id="cancelModalTitle" class="cancel-modal-title">Cancel Reservation</h3>
+          <p class="cancel-modal-lead">Are you sure you want to cancel your reservation? This action cannot be undone.</p>
+          <div class="cancel-modal-actions">
+            <button type="button" class="btn btn-primary cancel-btn-keep" id="cancelModalKeepBtn">Keep Reservation</button>
+            <button type="button" class="btn cancel-btn-confirm" id="cancelModalConfirmBtn">
+              <span class="btn-label">Yes, Cancel It</span>
+              <span class="btn-spinner hidden" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Result panel -->
+        <div class="cancel-modal-panel hidden" id="cancelPanelResult">
+          <div class="cancel-modal-icon" id="cancelResultIcon" aria-hidden="true"></div>
+          <h3 class="cancel-modal-title" id="cancelResultTitle"></h3>
+          <p class="cancel-modal-lead" id="cancelResultLead"></p>
+          <button type="button" class="btn btn-solid cancel-modal-done" id="cancelModalDoneBtn">Done</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <script src="scripts/main.js"></script>
 </body>
 </html>

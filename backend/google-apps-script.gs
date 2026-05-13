@@ -76,6 +76,10 @@ function doPost(e) {
       return handleContact_(contactPayload || {});
     }
 
+    if (action === 'cancelByToken') {
+      return cancelByToken_(body.token);
+    }
+
     return json({ ok: false, error: 'Unsupported action' });
   } catch (error) {
     return json({ ok: false, error: String(error) });
@@ -370,6 +374,35 @@ function isAdminAuthorized_(username, password) {
   return String(username || '') === adminUser && String(password || '') === adminPass;
 }
 
+function cancelByToken_(token) {
+  var tokenValue = String(token || '').trim();
+  if (!tokenValue) {
+    return json({ ok: false, error: 'missing_token' });
+  }
+
+  var found = findReservationByToken_(tokenValue);
+  if (!found) {
+    return json({ ok: false, error: 'not_found' });
+  }
+
+  var status = String(found.row.status || 'active').toLowerCase();
+  if (status === 'canceled') {
+    return json({ ok: false, error: 'already_canceled' });
+  }
+
+  found.sheet.getRange(found.rowIndex, 12).setValue('canceled');
+  found.sheet.getRange(found.rowIndex, 13).setValue(new Date());
+  found.sheet.getRange(found.rowIndex, 10).setValue('');
+  found.sheet.getRange(found.rowIndex, 11).setValue('');
+
+  return json({
+    ok: true,
+    date: normalizeDateKey_(found.row.date),
+    time: normalizeTimeKey_(found.row.time),
+    name: String(found.row.name || '')
+  });
+}
+
 function adminDeleteReservation_(body) {
   var date = normalizeDateKey_(body.date || '');
   var time = normalizeTimeKey_(body.time || '');
@@ -640,14 +673,16 @@ function rowHtml_(label, value) {
    ═══════════════════════════════════════════════════════════ */
 
 function buildManageUrl_(mode, token, properties) {
-  var baseUrl = String(properties.getProperty('WEB_APP_URL') || ScriptApp.getService().getUrl() || '').trim();
-  if (!baseUrl || !token) {
+  if (!token) {
     return '';
   }
 
-  return baseUrl
-    + '?action=manage&mode=' + encodeURIComponent(mode)
-    + '&token=' + encodeURIComponent(token);
+  var reservationPageUrl = String(properties.getProperty('RESERVATION_PAGE_URL') || DEFAULT_RESERVATION_PAGE_URL).trim();
+  var hashIndex = reservationPageUrl.indexOf('#');
+  var baseUrl = (hashIndex >= 0 ? reservationPageUrl.slice(0, hashIndex) : reservationPageUrl).replace(/\/$/, '') + '/';
+
+  var param = mode === 'cancel' ? 'cancel' : 'modify';
+  return baseUrl + '?' + param + '=' + encodeURIComponent(token);
 }
 
 function findReservationByToken_(token) {

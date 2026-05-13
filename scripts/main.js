@@ -901,3 +901,125 @@ const closeContactModal = () => {
     }
   });
 })();
+
+/* ─── Cancel Flow ─── */
+
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  const cancelToken = params.get('cancel');
+  const modifyToken = params.get('modify');
+
+  if (!cancelToken && !modifyToken) return;
+
+  const CANCEL_ICONS = {
+    check: '<svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M14.1 27.2 21.7 34.8 37.9 18.6"/></svg>',
+    info:  '<svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/><line x1="26" y1="24" x2="26" y2="37" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="26" cy="16" r="2.2" fill="currentColor"/></svg>',
+    clock: '<svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="26,14 26,27 33,32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    x:     '<svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/><line x1="18" y1="18" x2="34" y2="34" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><line x1="34" y1="18" x2="18" y2="34" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>'
+  };
+
+  const backdrop    = document.getElementById('cancelModalBackdrop');
+  const panelConfirm = document.getElementById('cancelPanelConfirm');
+  const panelResult  = document.getElementById('cancelPanelResult');
+  const keepBtn     = document.getElementById('cancelModalKeepBtn');
+  const confirmBtn  = document.getElementById('cancelModalConfirmBtn');
+  const doneBtn     = document.getElementById('cancelModalDoneBtn');
+  const resultIcon  = document.getElementById('cancelResultIcon');
+  const resultTitle = document.getElementById('cancelResultTitle');
+  const resultLead  = document.getElementById('cancelResultLead');
+
+  const closeCancelModal = () => {
+    if (!backdrop) return;
+    backdrop.classList.add('fade-out');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      backdrop.classList.add('hidden');
+      backdrop.setAttribute('aria-hidden', 'true');
+    }, 400);
+  };
+
+  const showResult = ({ icon, iconClass, title, lead }) => {
+    panelConfirm?.classList.add('hidden');
+    panelResult?.classList.remove('hidden');
+    if (resultIcon) { resultIcon.className = `cancel-modal-icon ${iconClass}`; resultIcon.innerHTML = icon; }
+    if (resultTitle) resultTitle.textContent = title;
+    if (resultLead) resultLead.innerHTML = lead;
+  };
+
+  if (cancelToken) {
+    window.history.replaceState({}, '', window.location.pathname + window.location.hash);
+
+    if (backdrop) {
+      backdrop.classList.remove('hidden', 'fade-out');
+      backdrop.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    keepBtn?.addEventListener('click', closeCancelModal, { once: true });
+    backdrop?.addEventListener('click', (e) => { if (e.target === backdrop) closeCancelModal(); });
+    doneBtn?.addEventListener('click', closeCancelModal);
+
+    confirmBtn?.addEventListener('click', async () => {
+      if (!confirmBtn) return;
+      confirmBtn.classList.add('is-loading');
+      confirmBtn.disabled = true;
+
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'cancelByToken', token: cancelToken })
+        });
+        const result = await response.json();
+
+        if (result.ok) {
+          const dateObj = result.date ? parseDateKey(result.date) : null;
+          const prettyDateStr = dateObj
+            ? dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' })
+            : (result.date || '');
+          showResult({
+            icon: CANCEL_ICONS.check,
+            iconClass: 'cancel-icon-success',
+            title: 'Reservation Canceled',
+            lead: `Your reservation on <strong>${prettyDateStr}</strong> at <strong>${result.time}</strong> has been successfully canceled.`
+          });
+        } else if (result.error === 'already_canceled') {
+          showResult({
+            icon: CANCEL_ICONS.info,
+            iconClass: 'cancel-icon-info',
+            title: 'Already Canceled',
+            lead: 'This reservation has already been canceled.'
+          });
+        } else {
+          showResult({
+            icon: CANCEL_ICONS.x,
+            iconClass: 'cancel-icon-error',
+            title: 'Link Not Found',
+            lead: 'This cancellation link is no longer valid. Please contact us at <a href="mailto:sf@oklavacafe.com">sf@oklavacafe.com</a> for assistance.'
+          });
+        }
+      } catch {
+        showResult({
+          icon: CANCEL_ICONS.x,
+          iconClass: 'cancel-icon-error',
+          title: 'Something Went Wrong',
+          lead: 'We couldn\'t process your request right now. Please contact us at <a href="mailto:sf@oklavacafe.com">sf@oklavacafe.com</a>.'
+        });
+      } finally {
+        confirmBtn.classList.remove('is-loading');
+        confirmBtn.disabled = false;
+      }
+    }, { once: true });
+  }
+
+  if (modifyToken) {
+    window.history.replaceState({}, '', window.location.pathname + '#reservation');
+    const reservationSection = document.getElementById('reservation');
+    if (reservationSection) {
+      window.addEventListener('load', () => {
+        setTimeout(() => scrollToSection(reservationSection), 500);
+      }, { once: true });
+    }
+  }
+})();
+
