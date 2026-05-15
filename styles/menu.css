@@ -50,6 +50,17 @@
   line-height: 1.65;
 }
 
+.catalog-policy-note {
+  font-family: var(--font-body);
+  font-size: clamp(0.7rem, 1.1vw, 0.8rem);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(201, 169, 110, 0.72);
+  margin: 1.1rem auto 0;
+  max-width: 480px;
+  line-height: 1.7;
+}
+
 /* Hero quick-nav pills */
 .catalog-hero-nav {
   display: flex;

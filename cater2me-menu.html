@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turquaz — Catering Menu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700&family=Manrope:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #2a4192;
+      --navy-dark:  #1c2e6e;
+      --gold:       #c9a96e;
+      --cream:      #faf8f4;
+      --cream-dark: #f0e8d8;
+      --text:       #1a1a2e;
+      --text-light: #5a5a7a;
+      --border:     #d8ccb4;
+    }
+
+    html { font-size: 10pt; }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      color: var(--text);
+      background: #e8e4dc;
+      line-height: 1.5;
+    }
+
+    .page {
+      width: 8.5in;
+      min-height: 11in;
+      margin: 0.4in auto;
+      background: #fff;
+      padding: 0.45in 0.55in 0.4in;
+      box-shadow: 0 6px 48px rgba(0,0,0,0.14);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media print {
+      body { background: white; }
+      .page { width: 100%; min-height: 100vh; margin: 0; padding: 0.4in 0.5in 0.35in; box-shadow: none; }
+    }
+
+    @page { size: letter; margin: 0; }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--navy);
+      padding-bottom: 0.08in;
+      margin-bottom: 0.15in;
+    }
+
+    .top-bar-left { display: flex; align-items: baseline; gap: 0.18in; }
+
+    .brand-mark {
+      font-family: 'Great Vibes', cursive;
+      font-size: 36pt;
+      color: var(--navy);
+      line-height: 0.9;
+    }
+
+    .brand-tag {
+      font-size: 7pt;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .doc-title-block { text-align: right; }
+
+    .doc-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16pt;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+
+    .doc-sub {
+      font-size: 6.5pt;
+      color: var(--text-light);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 0.04in;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15pt;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1;
+    }
+
+    .section-rule {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, var(--navy) 25%, transparent);
+      margin: 0.04in 0 0.06in;
+    }
+
+    .section-meta {
+      font-size: 6.5pt;
+      color: var(--text-light);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.05in;
+    }
+
+    .sub-heading {
+      font-size: 6pt;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 0.05in 0 0.02in;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      column-gap: 0.08in;
+      padding: 0.045in 0;
+      border-bottom: 1px dotted var(--cream-dark);
+    }
+
+    .item:last-child { border-bottom: none; }
+
+    .item-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.05in;
+      flex-wrap: wrap;
+    }
+
+    .item-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10.5pt;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .item-desc {
+      grid-column: 1;
+      font-size: 7pt;
+      color: var(--text-light);
+      line-height: 1.35;
+      padding-right: 0.05in;
+    }
+
+    .item-price {
+      grid-column: 2;
+      grid-row: 1 / 3;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--navy);
+      align-self: center;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .badges { display: inline-flex; gap: 2px; flex-wrap: wrap; }
+
+    .badge {
+      font-size: 5pt;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 2px;
+      letter-spacing: 0.04em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .gf { background: #e6f3e6; color: #1f5c1f; border: 1px solid #b3d4b3; }
+    .vg { background: #e8f4e2; color: #175217; border: 1px solid #a5cc95; }
+    .v  { background: #f5f0e4; color: #5c4a12; border: 1px solid #d4c490; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 0.3in;
+    }
+
+    .key-row {
+      display: flex;
+      gap: 0.18in;
+      flex-wrap: wrap;
+      align-items: center;
+      font-size: 6.5pt;
+      color: var(--text-light);
+    }
+    .key-item { display: inline-flex; align-items: center; gap: 3px; }
+
+    .footer {
+      margin-top: auto;
+      padding-top: 0.1in;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .footer-brand {
+      font-family: 'Great Vibes', cursive;
+      font-size: 16pt;
+      color: var(--navy);
+      line-height: 1;
+    }
+
+    .footer-meta {
+      font-size: 6.5pt;
+      color: var(--text-light);
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    .footer-meta a { color: inherit; text-decoration: none; }
+
+    .pkg-link {
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 7pt;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="brand-mark">turquaz</div>
+      <div class="brand-tag">Turkish Kitchen &amp; Bakery</div>
+    </div>
+    <div class="doc-title-block">
+      <div class="doc-title">Catering Menu</div>
+      <div class="doc-sub">À La Carte · 2026</div>
+    </div>
+  </div>
+
+  <!-- BOWLS & PLATES -->
+  <div class="section-title">Bowls &amp; Plates</div>
+  <div class="section-rule"></div>
+  <div class="section-meta">Individually portioned · Each bowl includes rice or bulgur and accompaniments</div>
+
+  <div class="grid-2">
+    <div>
+      <div class="sub-heading">Bowls</div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Chicken Döner Bowl</span></div>
+        <div class="item-price">$19</div>
+        <div class="item-desc">Sliced rotisserie chicken with rice or bulgur, sumac onions, pickles and salad</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Meat Döner Bowl</span></div>
+        <div class="item-price">$22</div>
+        <div class="item-desc">Sliced rotisserie beef &amp; lamb with rice or bulgur, sumac onions, pickles</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Köfte Bowl</span></div>
+        <div class="item-price">$19</div>
+        <div class="item-desc">Grilled Turkish meatballs with rice or bulgur, piyaz salad, greens and cherry tomatoes</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Salmon Bowl</span></div>
+        <div class="item-price">$19</div>
+        <div class="item-desc">Grilled salmon fillet, cucumber, avocado, radish, arugula, lemon with rice or bulgur</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Falafel Bowl</span><span class="badges"><span class="badge vg">Vegan</span></span></div>
+        <div class="item-price">$16</div>
+        <div class="item-desc">Crispy falafel with hummus, greens, pickled vegetables, and warm pita</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sub-heading">Plates &amp; Stews</div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Chicken Kebap Plate</span></div>
+        <div class="item-price">$18</div>
+        <div class="item-desc">Grilled chicken thigh skewers with onions, hummus or yoghurt, grilled tomato and pepper</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Adana Kebap Plate</span></div>
+        <div class="item-price">$24</div>
+        <div class="item-desc">Spicy minced lamb kebab, chargrilled with yogurt or hummus, grilled tomato and pepper</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Lamb Shish Plate</span></div>
+        <div class="item-price">$25</div>
+        <div class="item-desc">Marinated lamb skewers, grilled to perfection, with yogurt or hummus</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Chicken Quarter</span><span class="badges"><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$22</div>
+        <div class="item-desc">Oven-roasted chicken quarter with potatoes, carrots, and bell peppers</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Kavurma (Braised Meat)</span><span class="badges"><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$25</div>
+        <div class="item-desc">Tender slow-cooked beef sautéed with aromatic spices, with rice or bulgur</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Kuru Fasulye</span><span class="badges"><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$22</div>
+        <div class="item-desc">Slow-cooked white beans with tender meat, onions, tomatoes, and olive oil</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SALADS + MEZES/SIDES -->
+  <div class="grid-2" style="margin-top:0.2in;">
+    <div>
+      <div class="section-title">Salads</div>
+      <div class="section-rule"></div>
+      <div class="section-meta">Full bowl · Serves 2–3 as a side</div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Green Pasha Salad</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$14</div>
+        <div class="item-desc">Arugula, olives, fresh veggies, pomegranate dressing, creamy avocado</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Greek / Mediterranean Salad</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$14</div>
+        <div class="item-desc">Tomatoes, cucumbers, red onion, Ezine cheese, capers, and sumac</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Beet &amp; Goat Cheese</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$14</div>
+        <div class="item-desc">Arugula, roasted beets, orange slices, red onion, walnut, goat cheese</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Red Lentil Soup</span><span class="badges"><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$7</div>
+        <div class="item-desc">Traditional Turkish red lentil soup with a hint of spices</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Mezes &amp; Sides</div>
+      <div class="section-rule"></div>
+      <div class="section-meta">Add-on portions · Pair with any plate or buffet</div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Hummus</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Creamy chickpea dip with garlic, lemon juice and olive oil</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Acili Ezme</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Spicy mashed tomatoes &amp; pepper salad with herbs and olive oil</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Stuffed Grape Leaves</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Hand-rolled grape leaves stuffed with herbed rice and spices</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Imam Bayildi</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$12</div>
+        <div class="item-desc">Tender roasted eggplant topped with caramelized onions, tomatoes, garlic, and herbs</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Falafel (6 pcs)</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Crispy chickpea fritters seasoned with herbs and spices</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Meze Trio · Feast</span></div>
+        <div class="item-price">$17 / $28</div>
+        <div class="item-desc">Choose any 3 mezes ($17) or any 5 mezes ($28) for the table</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARING PLATTERS -->
+  <div style="margin-top:0.2in;">
+    <div class="section-title">Sharing Platters</div>
+    <div class="section-rule"></div>
+    <div class="section-meta">Built for groups · Ideal as a buffet centerpiece</div>
+
+    <div class="grid-2">
+      <div class="item">
+        <div class="item-head"><span class="item-name">Mix Grill (1 serving)</span></div>
+        <div class="item-price">$36</div>
+        <div class="item-desc">Adana kebab, lamb shish, chicken shish, and köfte with rice, salad, and grilled vegetables</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Anatolia Feast (serves 4)</span></div>
+        <div class="item-price">$130</div>
+        <div class="item-desc">Adana kebab, lamb shish, chicken shish, köfte, and lamb chops — perfect for sharing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM KEY -->
+  <div style="margin-top:0.18in;padding:0.06in 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="key-row">
+      <div class="key-item"><span class="badge gf">GF</span> Gluten-Free</div>
+      <div class="key-item"><span class="badge vg">Vegan</span> Vegan</div>
+      <div class="key-item"><span class="badge v">Veg</span> Vegetarian</div>
+      <div class="key-item">All prices match our à la carte menu (turquazsf.com/menu)</div>
+      <div class="key-item" style="margin-left:auto;color:var(--navy);">
+        Pre-built packages → <a href="cater2me-catering.html" class="pkg-link">Catering Packages</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">turquaz</div>
+    <div class="footer-meta">
+      <a href="https://turquazsf.com">turquazsf.com</a> &nbsp;·&nbsp; <a href="mailto:sf@turquazsf.com">sf@turquazsf.com</a><br>
+      1198 Mission St, San Francisco · +1 415-791-0770
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
