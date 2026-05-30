@@ -42,8 +42,25 @@
     }
 
     @media print {
-      body { background: white; }
-      .page { width: 100%; min-height: 100vh; margin: 0; padding: 0.4in 0.5in 0.35in; box-shadow: none; }
+      html, body {
+        background: white;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .page {
+        width: 8.5in;
+        height: 11in;
+        min-height: 11in;
+        max-height: 11in;
+        margin: 0;
+        padding: 0.4in 0.5in 0.35in;
+        box-shadow: none;
+        overflow: hidden;
+      }
     }
 
     @page { size: letter; margin: 0; }
@@ -190,6 +207,14 @@
       gap: 0 0.3in;
     }
 
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0 0.22in;
+    }
+
+    .page + .page { page-break-before: always; }
+
     .key-row {
       display: flex;
       gap: 0.18in;
@@ -200,8 +225,15 @@
     }
     .key-item { display: inline-flex; align-items: center; gap: 3px; }
 
-    .footer {
+    .key-block {
       margin-top: auto;
+      padding: 0.06in 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .footer {
+      margin-top: 0;
       padding-top: 0.1in;
       border-top: 1px solid var(--border);
       display: flex;
@@ -261,13 +293,13 @@
 
       <div class="item">
         <div class="item-head"><span class="item-name">Chicken Döner Bowl</span></div>
-        <div class="item-price">$19</div>
+        <div class="item-price">$18</div>
         <div class="item-desc">Sliced rotisserie chicken with rice or bulgur, sumac onions, pickles and salad</div>
       </div>
 
       <div class="item">
         <div class="item-head"><span class="item-name">Meat Döner Bowl</span></div>
-        <div class="item-price">$22</div>
+        <div class="item-price">$18</div>
         <div class="item-desc">Sliced rotisserie beef &amp; lamb with rice or bulgur, sumac onions, pickles</div>
       </div>
 
@@ -312,12 +344,6 @@
       </div>
 
       <div class="item">
-        <div class="item-head"><span class="item-name">Chicken Quarter</span><span class="badges"><span class="badge gf">GF</span></span></div>
-        <div class="item-price">$22</div>
-        <div class="item-desc">Oven-roasted chicken quarter with potatoes, carrots, and bell peppers</div>
-      </div>
-
-      <div class="item">
         <div class="item-head"><span class="item-name">Kavurma (Braised Meat)</span><span class="badges"><span class="badge gf">GF</span></span></div>
         <div class="item-price">$25</div>
         <div class="item-desc">Tender slow-cooked beef sautéed with aromatic spices, with rice or bulgur</div>
@@ -331,7 +357,7 @@
     </div>
   </div>
 
-  <!-- SALADS + MEZES/SIDES -->
+  <!-- SALADS + SOUP (full width grid-2) -->
   <div class="grid-2" style="margin-top:0.2in;">
     <div>
       <div class="section-title">Salads</div>
@@ -364,71 +390,50 @@
     </div>
 
     <div>
-      <div class="section-title">Mezes &amp; Sides</div>
+      <div class="section-title">Wraps</div>
       <div class="section-rule"></div>
-      <div class="section-meta">Add-on portions · Pair with any plate or buffet</div>
+      <div class="section-meta">Hand-rolled in lavash · Great for boxed lunches</div>
 
       <div class="item">
-        <div class="item-head"><span class="item-name">Hummus</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
-        <div class="item-price">$8</div>
-        <div class="item-desc">Creamy chickpea dip with garlic, lemon juice and olive oil</div>
+        <div class="item-head"><span class="item-name">Chicken Döner Wrap</span></div>
+        <div class="item-price">$13</div>
+        <div class="item-desc">Marinated chicken, tomatoes, pickles, arugula, tahini-yogurt sauce</div>
       </div>
 
       <div class="item">
-        <div class="item-head"><span class="item-name">Acili Ezme</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
-        <div class="item-price">$8</div>
-        <div class="item-desc">Spicy mashed tomatoes &amp; pepper salad with herbs and olive oil</div>
+        <div class="item-head"><span class="item-name">Döner Wrap</span></div>
+        <div class="item-price">$16</div>
+        <div class="item-desc">Seasoned beef and lamb with tomatoes, pickles, arugula, tahini-yogurt</div>
       </div>
 
       <div class="item">
-        <div class="item-head"><span class="item-name">Stuffed Grape Leaves</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
-        <div class="item-price">$8</div>
-        <div class="item-desc">Hand-rolled grape leaves stuffed with herbed rice and spices</div>
+        <div class="item-head"><span class="item-name">Chicken Şiş Wrap</span></div>
+        <div class="item-price">$15</div>
+        <div class="item-desc">Grilled marinated chicken breast with tomatoes, pickles, arugula</div>
       </div>
 
       <div class="item">
-        <div class="item-head"><span class="item-name">Imam Bayildi</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+        <div class="item-head"><span class="item-name">Adana Wrap</span></div>
+        <div class="item-price">$18</div>
+        <div class="item-desc">Spicy grilled minced beef and lamb skewer with tahini-yogurt</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Falafel Wrap</span><span class="badges"><span class="badge v">Veg</span></span></div>
         <div class="item-price">$12</div>
-        <div class="item-desc">Tender roasted eggplant topped with caramelized onions, tomatoes, garlic, and herbs</div>
+        <div class="item-desc">Crispy chickpea fritters, tomatoes, pickles, arugula, tahini-yogurt</div>
       </div>
 
       <div class="item">
-        <div class="item-head"><span class="item-name">Falafel (6 pcs)</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
-        <div class="item-price">$8</div>
-        <div class="item-desc">Crispy chickpea fritters seasoned with herbs and spices</div>
-      </div>
-
-      <div class="item">
-        <div class="item-head"><span class="item-name">Meze Trio · Feast</span></div>
-        <div class="item-price">$17 / $28</div>
-        <div class="item-desc">Choose any 3 mezes ($17) or any 5 mezes ($28) for the table</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SHARING PLATTERS -->
-  <div style="margin-top:0.2in;">
-    <div class="section-title">Sharing Platters</div>
-    <div class="section-rule"></div>
-    <div class="section-meta">Built for groups · Ideal as a buffet centerpiece</div>
-
-    <div class="grid-2">
-      <div class="item">
-        <div class="item-head"><span class="item-name">Mix Grill (1 serving)</span></div>
-        <div class="item-price">$36</div>
-        <div class="item-desc">Adana kebab, lamb shish, chicken shish, and köfte with rice, salad, and grilled vegetables</div>
-      </div>
-
-      <div class="item">
-        <div class="item-head"><span class="item-name">Anatolia Feast (serves 4)</span></div>
-        <div class="item-price">$130</div>
-        <div class="item-desc">Adana kebab, lamb shish, chicken shish, köfte, and lamb chops — perfect for sharing</div>
+        <div class="item-head"><span class="item-name">Çiğköfte Wrap</span><span class="badges"><span class="badge vg">Vegan</span></span></div>
+        <div class="item-price">$12</div>
+        <div class="item-desc">Spicy bulgur balls with lettuce, parsley, mint, pickles, pomegranate molasses</div>
       </div>
     </div>
   </div>
 
   <!-- BOTTOM KEY -->
-  <div style="margin-top:0.18in;padding:0.06in 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="key-block">
     <div class="key-row">
       <div class="key-item"><span class="badge gf">GF</span> Gluten-Free</div>
       <div class="key-item"><span class="badge vg">Vegan</span> Vegan</div>
@@ -445,7 +450,410 @@
     <div class="footer-brand">turquaz</div>
     <div class="footer-meta">
       <a href="https://turquazsf.com">turquazsf.com</a> &nbsp;·&nbsp; <a href="mailto:sf@turquazsf.com">sf@turquazsf.com</a><br>
-      1198 Mission St, San Francisco · +1 415-791-0770
+      1198 Mission St, San Francisco · +1 415-791-0770 &nbsp;·&nbsp; Page 1 of 3
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================== -->
+<!-- PAGE 2 — MEZES & HOT APPETIZERS                                -->
+<!-- ============================================================== -->
+<div class="page">
+
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="brand-mark">turquaz</div>
+      <div class="brand-tag">Turkish Kitchen &amp; Bakery</div>
+    </div>
+    <div class="doc-title-block">
+      <div class="doc-title">Catering Menu</div>
+      <div class="doc-sub">Mezes &amp; Hot Appetizers · 2026</div>
+    </div>
+  </div>
+
+  <!-- MEZES -->
+  <div class="section-title">Mezes</div>
+  <div class="section-rule"></div>
+  <div class="section-meta">Cold spreads &amp; small plates · Served chilled or room temperature · All $8 unless noted</div>
+
+  <div class="grid-3" style="margin-top:0.05in;">
+    <div class="item">
+      <div class="item-head"><span class="item-name">Acili Ezme</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+      <div class="item-price">$8</div>
+      <div class="item-desc">Spicy mashed tomatoes &amp; pepper salad with herbs and olive oil</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Hummus</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+      <div class="item-price">$8</div>
+      <div class="item-desc">Creamy chickpea dip with garlic, lemon juice and olive oil</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Pinklady</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+      <div class="item-price">$8</div>
+      <div class="item-desc">Beets, olive oil, garlic and yoghurt</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Tzatziki</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+      <div class="item-price">$8</div>
+      <div class="item-desc">Yogurt with cucumber, garlic, olive oil and mint</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Carrot Tarator</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+      <div class="item-price">$8</div>
+      <div class="item-desc">Sautéed carrots mixed with creamy yogurt, garlic, and olive oil</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Eggplant Yogurt</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+      <div class="item-price">$8</div>
+      <div class="item-desc">Smoked eggplant puree with yogurt and garlic</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Pickles</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+      <div class="item-price">$8</div>
+      <div class="item-desc">Traditional Turkish-style pickled vegetables</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Meze Trio</span></div>
+      <div class="item-price">$17</div>
+      <div class="item-desc">Any 3 mezes of your selection</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Meze Feast</span></div>
+      <div class="item-price">$28</div>
+      <div class="item-desc">Any 5 mezes of your selection</div>
+    </div>
+  </div>
+
+  <!-- HOT APPETIZERS -->
+  <div style="margin-top:0.22in;">
+    <div class="section-title">Hot Appetizers &amp; Sides</div>
+    <div class="section-rule"></div>
+    <div class="section-meta">Served warm · Perfect as starters, sides or boxed meal add-ons</div>
+
+    <div class="grid-3" style="margin-top:0.05in;">
+      <div class="item">
+        <div class="item-head"><span class="item-name">Sigara Böregi</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">4 pcs of crispy Turkish filo rolls filled with feta cheese and fresh parsley</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Falafel (6 pcs)</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Crispy chickpea fritters seasoned with herbs and spices</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Imam Bayildi</span><span class="badges"><span class="badge vg">Vegan</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$12</div>
+        <div class="item-desc">Tender roasted eggplant topped with caramelized onions, tomatoes, garlic, and herbs</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Tulum Cheese Plate</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$13</div>
+        <div class="item-desc">Aged Tulum cheese and butter, served with warm homemade balloon bread</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Stuffed Grape Leaves</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Hand-rolled grape leaves stuffed with herbed rice and spices</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Çiğ Köfte</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Spicy hand-kneaded bulgur patties with tomato, pepper paste, herbs, and spices</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Köfte (3 pcs)</span></div>
+        <div class="item-price">$12</div>
+        <div class="item-desc">Grilled Turkish meatballs</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Fries</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$4+</div>
+        <div class="item-desc">Crispy golden fries, perfectly seasoned</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM KEY -->
+  <div class="key-block">
+    <div class="key-row">
+      <div class="key-item"><span class="badge gf">GF</span> Gluten-Free</div>
+      <div class="key-item"><span class="badge vg">Vegan</span> Vegan</div>
+      <div class="key-item"><span class="badge v">Veg</span> Vegetarian</div>
+      <div class="key-item">All prices match our à la carte menu (turquazsf.com/menu)</div>
+      <div class="key-item" style="margin-left:auto;color:var(--navy);">
+        Pre-built packages → <a href="cater2me-catering.html" class="pkg-link">Catering Packages</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">turquaz</div>
+    <div class="footer-meta">
+      <a href="https://turquazsf.com">turquazsf.com</a> &nbsp;·&nbsp; <a href="mailto:sf@turquazsf.com">sf@turquazsf.com</a><br>
+      1198 Mission St, San Francisco · +1 415-791-0770 &nbsp;·&nbsp; Page 2 of 3
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================== -->
+<!-- PAGE 3 — PASTRIES, DESSERTS & BAKLAVAS                         -->
+<!-- ============================================================== -->
+<div class="page">
+
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="brand-mark">turquaz</div>
+      <div class="brand-tag">Turkish Kitchen &amp; Bakery</div>
+    </div>
+    <div class="doc-title-block">
+      <div class="doc-title">Catering Menu</div>
+      <div class="doc-sub">Pastries · Desserts · Baklavas · 2026</div>
+    </div>
+  </div>
+
+  <!-- PASTRIES -->
+  <div class="section-title">Pastries &amp; Bakery</div>
+  <div class="section-rule"></div>
+  <div class="section-meta">Freshly baked daily · Great for breakfast spreads, coffee breaks &amp; grazing tables</div>
+
+  <div class="grid-3" style="margin-top:0.05in;">
+    <div class="item">
+      <div class="item-head"><span class="item-name">Street Simit</span><span class="badges"><span class="badge v">Veg</span></span></div>
+      <div class="item-price">$4</div>
+      <div class="item-desc">Traditional Turkish sesame bagel — crispy outside, soft inside</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Butter Simit</span><span class="badges"><span class="badge v">Veg</span></span></div>
+      <div class="item-price">$4</div>
+      <div class="item-desc">Classic sesame simit with a buttery, richer dough</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Classic Açma</span><span class="badges"><span class="badge v">Veg</span></span></div>
+      <div class="item-price">$4</div>
+      <div class="item-desc">Soft, fluffy Turkish-style pastry with a light, buttery taste</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Choco Açma</span><span class="badges"><span class="badge v">Veg</span></span></div>
+      <div class="item-price">$4</div>
+      <div class="item-desc">Tender açma filled with rich chocolate</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Classic Poğaça</span><span class="badges"><span class="badge v">Veg</span></span></div>
+      <div class="item-price">$4</div>
+      <div class="item-desc">Fluffy Turkish pastry with soft, slightly sweet dough</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Three Cheese Börek</span><span class="badges"><span class="badge v">Veg</span></span></div>
+      <div class="item-price">$9</div>
+      <div class="item-desc">Filo pastry filled with mozzarella, feta, and Turkish white cheese</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Anatolian Cheese Börek</span><span class="badges"><span class="badge v">Veg</span></span></div>
+      <div class="item-price">$11</div>
+      <div class="item-desc">Golden-baked börek stuffed with a traditional mix of Turkish cheeses</div>
+    </div>
+
+    <div class="item">
+      <div class="item-head"><span class="item-name">Roll Börek</span><span class="badges"><span class="badge v">Veg</span></span></div>
+      <div class="item-price">$10+</div>
+      <div class="item-desc">Flaky, hand-rolled pastry filled with savory Turkish white cheese</div>
+    </div>
+  </div>
+
+  <!-- DESSERTS -->
+  <div style="margin-top:0.2in;">
+    <div class="section-title">Desserts</div>
+    <div class="section-rule"></div>
+    <div class="section-meta">House-made puddings, cakes &amp; sweets · Perfect finale for any event</div>
+
+    <div class="grid-3" style="margin-top:0.05in;">
+      <div class="item">
+        <div class="item-head"><span class="item-name">Sütlaç (Rice Pudding)</span><span class="badges"><span class="badge v">Veg</span><span class="badge gf">GF</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Creamy, oven-baked rice pudding with a caramelized top</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Supangle</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Rich and velvety Turkish chocolate pudding</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Muhallebi</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$9</div>
+        <div class="item-desc">Creamy Turkish milk pudding, delicately sweetened with toppings</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Profiterole</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$9</div>
+        <div class="item-desc">Homemade choux pastry filled with cream, topped with chocolate sauce</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Tres Leches</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$7</div>
+        <div class="item-desc">Light, airy sponge cake soaked in a blend of milks, topped with caramel</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Dubai Cup</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$13</div>
+        <div class="item-desc">Layers of rich cream, crushed pistachios, and sweetened pastry</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Tiramisu</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$11</div>
+        <div class="item-desc">Espresso-soaked ladyfingers &amp; creamy mascarpone, dusted with cocoa</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">San Sebastian Cheesecake</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$13</div>
+        <div class="item-desc">Basque-style cheesecake with caramelized top and creamy center</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Chocolate Sponge Cake</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$8</div>
+        <div class="item-desc">Decadent and moist chocolate cake</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Malaga</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$11</div>
+        <div class="item-desc">Soft sponge cake, fresh banana, creamy custard, rich chocolate coating</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Izmir Bomb</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$5</div>
+        <div class="item-desc">Rich, gooey chocolate-filled pastry with a thin, tender shell</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Mosaic Cake</span><span class="badges"><span class="badge v">Veg</span></span></div>
+        <div class="item-price">$9</div>
+        <div class="item-desc">Classic no-bake chocolate cake with crunchy biscuit pieces</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAKLAVAS -->
+  <div style="margin-top:0.2in;">
+    <div class="section-title">Baklavas</div>
+    <div class="section-rule"></div>
+    <div class="section-meta">Handcrafted with layers of crisp filo, nuts &amp; syrup · Sold by the piece or by the tray</div>
+
+    <div class="grid-3" style="margin-top:0.05in;">
+      <div class="item">
+        <div class="item-head"><span class="item-name">Layers of Taste (Assortment)</span></div>
+        <div class="item-price">$18</div>
+        <div class="item-desc">Walnut, chocolate milky, Turkuaz roll, mussel &amp; pistachio</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Classic Pistachio</span></div>
+        <div class="item-price">$4.50</div>
+        <div class="item-desc">Traditional baklava with layers of filo, pistachios, and syrup</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Carrot Shaped Pistachio</span></div>
+        <div class="item-price">$9</div>
+        <div class="item-desc">Larger, fluffier baklava with generous pistachio filling</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Classic Walnut</span></div>
+        <div class="item-price">$4.50</div>
+        <div class="item-desc">Rich walnut-filled baklava with crispy filo and syrup</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Roll Pistachio</span></div>
+        <div class="item-price">$4</div>
+        <div class="item-desc">Delicate, rolled baklava packed with finely crushed pistachios</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Palace Pistachio</span></div>
+        <div class="item-price">$3</div>
+        <div class="item-desc">Luxurious baklava with higher pistachio ratio &amp; buttery finish</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Cold Milky Pistachio</span></div>
+        <div class="item-price">$4</div>
+        <div class="item-desc">Soft milk-syrup baklava covered with chocolate powder</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Kataifi with Pistachio</span></div>
+        <div class="item-price">$5</div>
+        <div class="item-desc">Shredded filo baked golden, filled with pistachios &amp; fragrant syrup</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Shobyet Pistachio</span></div>
+        <div class="item-price">$5</div>
+        <div class="item-desc">Rich flaky pastry filled with creamy semolina &amp; premium pistachios</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head"><span class="item-name">Mussel Pistachio</span></div>
+        <div class="item-price">$5</div>
+        <div class="item-desc">Folded baklava shaped like a mussel, with pistachios &amp; clotted cream</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM KEY -->
+  <div class="key-block">
+    <div class="key-row">
+      <div class="key-item"><span class="badge gf">GF</span> Gluten-Free</div>
+      <div class="key-item"><span class="badge vg">Vegan</span> Vegan</div>
+      <div class="key-item"><span class="badge v">Veg</span> Vegetarian</div>
+      <div class="key-item">Whole trays available for desserts &amp; baklavas — please inquire</div>
+      <div class="key-item" style="margin-left:auto;color:var(--navy);">
+        Pre-built packages → <a href="cater2me-catering.html" class="pkg-link">Catering Packages</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">turquaz</div>
+    <div class="footer-meta">
+      <a href="https://turquazsf.com">turquazsf.com</a> &nbsp;·&nbsp; <a href="mailto:sf@turquazsf.com">sf@turquazsf.com</a><br>
+      1198 Mission St, San Francisco · +1 415-791-0770 &nbsp;·&nbsp; Page 3 of 3
     </div>
   </div>
 
