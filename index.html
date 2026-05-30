@@ -11,6 +11,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    .about-grid {
+      align-items: start;
+    }
+
+    .about-image-wrap,
+    .about-content {
+      align-self: start;
+    }
+
+    @media (min-width: 768px) {
+      .about-grid {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      }
+
+      .about-image-wrap {
+        min-height: 50vh;
+        max-height: none;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .about-grid {
+        grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.08fr);
+      }
+
+      .about-image-wrap {
+        min-height: min(58vh, 620px);
+      }
+    }
+  </style>
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTGPBFN65C"></script>
@@ -70,16 +101,19 @@
           <img src="assets/images/about-interior.jpeg" alt="Elegant interior of Turquaz" loading="eager" fetchpriority="high" decoding="async" />
         </div>
         <div class="about-content reveal">
-          <p class="section-kicker">Mediterranean Elegance</p>
-          <h2>Crafted with Aegean Soul</h2>
+          <p class="section-kicker">Inspired by Istanbul</p>
+          <h2>Modern Turkish Dining in the Heart of San Francisco</h2>
           <span class="signature-line" aria-hidden="true"></span>
           <p>
-            Turquaz is an intimate dining atelier where coastal memory, modern precision, and warm hospitality converge.
-            Every course is built as a sensory narrative — restrained, expressive, and deeply rooted in Aegean character.
+            At Turquaz SF
+            , every table begins with a story — the aroma of fresh bread from the oven, the rhythm of long Mediterranean dinners,
+            and recipes carried across generations from Turkey to San Francisco. Inspired by the vibrant food culture of Istanbul,
+            Turquaz brings together traditional Turkish flavors, warm hospitality, and a modern atmosphere designed for everyday
+            moments that feel special.
           </p>
           <p>
-            From daylight brunch to candlelit tasting evenings, each detail is curated with calm confidence, tactile beauty,
-            and contemporary Mediterranean finesse.
+            Whether you’re catching up with friends over coffee, gathering for a relaxed business lunch, or sharing a long dinner
+            with family, Turquaz is a place to slow down, connect, and enjoy soulful Mediterranean food together.
           </p>
         </div>
       </div>
