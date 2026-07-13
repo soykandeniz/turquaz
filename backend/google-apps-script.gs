@@ -2,7 +2,7 @@ const SHEET_NAME = 'Reservations';
 const SLOT_CAPACITY = 15;
 const DEFAULT_ADMIN_USER = 'admin';
 const DEFAULT_ADMIN_PASS = 'turquaz2026';
-const DEFAULT_NOTIFICATION_EMAIL = 'sf@turquazsf.com';
+const DEFAULT_NOTIFICATION_EMAIL = 'sf@oklavacafe.com';
 const DEFAULT_ADMIN_EMAIL = '';
 const DEFAULT_SENDER_EMAIL = 'sf@turquazsf.com';
 const TOKEN_VALID_HOURS = 72;
@@ -604,12 +604,11 @@ function sendEmail_(to, subject, htmlBody, properties, attachments) {
     mailOptions.attachments = attachments;
   }
 
-  MailApp.sendEmail(to, subject, 'Please view this email in an HTML-capable mail client.', mailOptions);
+  GmailApp.sendEmail(to, subject, 'Please view this email in an HTML-capable mail client.', mailOptions);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   EMAIL DIAGNOSTIC — run this manually in the Apps Script editor
-   to verify MailApp is authorized and working.
+   EMAIL DIAGNOSTICS — run these manually in the Apps Script editor
    ═══════════════════════════════════════════════════════════ */
 
 function testEmailSetup() {
@@ -617,7 +616,7 @@ function testEmailSetup() {
   var target = String(properties.getProperty('NOTIFICATION_EMAIL') || DEFAULT_NOTIFICATION_EMAIL).trim();
   Logger.log('testEmailSetup: sending to ' + target);
   try {
-    MailApp.sendEmail(
+    GmailApp.sendEmail(
       target,
       'Turquaz · Email test',
       'Email sending is working correctly from the Turquaz Apps Script.',
@@ -629,6 +628,42 @@ function testEmailSetup() {
     throw e;
   }
 }
+
+function testEmailDiagnostic() {
+  var properties = PropertiesService.getScriptProperties();
+
+  // 1. Log available aliases
+  var aliases = GmailApp.getAliases();
+  Logger.log('Available aliases: ' + JSON.stringify(aliases));
+
+  var senderEmail = String(properties.getProperty('SENDER_EMAIL') || DEFAULT_SENDER_EMAIL).trim();
+  Logger.log('Configured SENDER_EMAIL: "' + senderEmail + '"');
+
+  var notificationEmail = String(properties.getProperty('NOTIFICATION_EMAIL') || DEFAULT_NOTIFICATION_EMAIL).trim();
+  Logger.log('Configured NOTIFICATION_EMAIL: "' + notificationEmail + '"');
+
+  // 2. Test sending with the from address (simulates customer email path)
+  try {
+    var opts = { htmlBody: '<p>Sender test from Turquaz script.</p>', name: 'Turquaz Reservations' };
+    if (senderEmail) opts.from = senderEmail;
+    GmailApp.sendEmail(notificationEmail, 'Turquaz · Sender test (from=' + (senderEmail || 'default') + ')', 'Sender test.', opts);
+    Logger.log('Sender test: SUCCESS — check inbox at ' + notificationEmail + ' for sender address');
+  } catch (e) {
+    Logger.log('Sender test: FAILED — ' + e.toString());
+  }
+
+  // 3. Test team notification path (no from override)
+  try {
+    GmailApp.sendEmail(notificationEmail, 'Turquaz · Team notification test', 'Team notification test.', {
+      htmlBody: '<p>Team notification test from Turquaz script.</p>',
+      name: 'Turquaz Reservations'
+    });
+    Logger.log('Team notification test: SUCCESS — sent to ' + notificationEmail);
+  } catch (e) {
+    Logger.log('Team notification test: FAILED — ' + e.toString());
+  }
+}
+
 
 /* ═══════════════════════════════════════════════════════════
    EMAIL HTML TEMPLATE
