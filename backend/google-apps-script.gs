@@ -2,8 +2,9 @@ const SHEET_NAME = 'Reservations';
 const SLOT_CAPACITY = 15;
 const DEFAULT_ADMIN_USER = 'admin';
 const DEFAULT_ADMIN_PASS = 'turquaz2026';
-const DEFAULT_NOTIFICATION_EMAIL = 'sf@oklavacafe.com';
+const DEFAULT_NOTIFICATION_EMAIL = 'sf@turquazsf.com';
 const DEFAULT_ADMIN_EMAIL = '';
+const DEFAULT_SENDER_EMAIL = ''; // Set to 'sf@turquazsf.com' only after verifying it as a Gmail alias
 const TOKEN_VALID_HOURS = 72;
 const DEFAULT_RESERVATION_DURATION_MINUTES = 90;
 const DEFAULT_RESERVATION_PAGE_URL = 'https://www.turquazsf.com/#reservation';
@@ -180,7 +181,14 @@ function reserve_(payload) {
 
   var emailStatus = sendReservationEmails_(payload, token, tokenExpiresAt);
 
-  return json({ ok: true, emailSent: emailStatus.ok });
+  return json({
+    ok: true,
+    emailSent: emailStatus.ok,
+    emailCustomerOk: emailStatus.customerOk,
+    emailTeamOk: emailStatus.teamOk,
+    emailCustomerError: emailStatus.customerError || undefined,
+    emailTeamError: emailStatus.teamError || undefined
+  });
 }
 
 function validatePayload(payload) {
@@ -517,19 +525,24 @@ function mapReservationRow_(row) {
    ═══════════════════════════════════════════════════════════ */
 
 function sendReservationEmails_(payload, token, tokenExpiresAt) {
+  var properties = PropertiesService.getScriptProperties();
+  var adminEmail = String(properties.getProperty('ADMIN_EMAIL') || DEFAULT_ADMIN_EMAIL).trim();
+  var notificationEmail = String(properties.getProperty('NOTIFICATION_EMAIL') || DEFAULT_NOTIFICATION_EMAIL).trim();
+  var customerEmail = String(payload.email || '').trim();
+  var cancelUrl = buildManageUrl_('cancel', token, properties);
+  var modifyUrl = buildManageUrl_('modify', token, properties);
+  var calendarBlob = buildCalendarInviteBlob_(payload, token);
+
+  var displayDate = formatDisplayDate_(payload.date);
+  var displayTime = normalizeTimeKey_(payload.time);
+  var titleLine = payload.name + ' · ' + displayDate + ' · ' + displayTime;
+
+  var customerOk = false;
+  var teamOk = false;
+  var customerError = '';
+  var teamError = '';
+
   try {
-    var properties = PropertiesService.getScriptProperties();
-    var adminEmail = String(properties.getProperty('ADMIN_EMAIL') || DEFAULT_ADMIN_EMAIL).trim();
-    var notificationEmail = String(properties.getProperty('NOTIFICATION_EMAIL') || DEFAULT_NOTIFICATION_EMAIL).trim();
-    var customerEmail = String(payload.email || '').trim();
-    var cancelUrl = buildManageUrl_('cancel', token, properties);
-    var modifyUrl = buildManageUrl_('modify', token, properties);
-    var calendarBlob = buildCalendarInviteBlob_(payload, token);
-
-    var displayDate = formatDisplayDate_(payload.date);
-    var displayTime = normalizeTimeKey_(payload.time);
-    var titleLine = payload.name + ' · ' + displayDate + ' · ' + displayTime;
-
     sendEmail_(
       customerEmail,
       'Turquaz reservation confirmed · ' + displayDate + ' at ' + displayTime,
@@ -546,7 +559,13 @@ function sendReservationEmails_(payload, token, tokenExpiresAt) {
       properties,
       [calendarBlob]
     );
+    customerOk = true;
+  } catch (error) {
+    customerError = String(error);
+    Logger.log('Customer confirmation email failed: ' + error);
+  }
 
+  try {
     var teamRecipients = uniqueEmails_([adminEmail, notificationEmail]);
     if (teamRecipients.length) {
       sendEmail_(
@@ -560,29 +579,55 @@ function sendReservationEmails_(payload, token, tokenExpiresAt) {
         }),
         properties
       );
+      teamOk = true;
     }
-
-    return { ok: true };
   } catch (error) {
-    Logger.log('Reservation email send failed: ' + error);
-    return { ok: false, error: String(error) };
+    teamError = String(error);
+    Logger.log('Team notification email failed: ' + error);
   }
+
+  return { ok: customerOk && teamOk, customerOk: customerOk, teamOk: teamOk, customerError: customerError, teamError: teamError };
 }
 
 function sendEmail_(to, subject, htmlBody, properties, attachments) {
-  var options = {
-    to: to,
-    subject: subject,
+  var senderEmail = String(properties.getProperty('SENDER_EMAIL') || DEFAULT_SENDER_EMAIL).trim();
+  var mailOptions = {
     htmlBody: htmlBody,
-    body: 'Please view this reservation email in an HTML-capable mail client.',
     name: String(properties.getProperty('MAIL_SENDER_NAME') || 'Turquaz Reservations')
   };
 
-  if (attachments && attachments.length) {
-    options.attachments = attachments;
+  if (senderEmail) {
+    mailOptions.from = senderEmail;
   }
 
-  MailApp.sendEmail(options);
+  if (attachments && attachments.length) {
+    mailOptions.attachments = attachments;
+  }
+
+  MailApp.sendEmail(to, subject, 'Please view this email in an HTML-capable mail client.', mailOptions);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EMAIL DIAGNOSTIC — run this manually in the Apps Script editor
+   to verify MailApp is authorized and working.
+   ═══════════════════════════════════════════════════════════ */
+
+function testEmailSetup() {
+  var properties = PropertiesService.getScriptProperties();
+  var target = String(properties.getProperty('NOTIFICATION_EMAIL') || DEFAULT_NOTIFICATION_EMAIL).trim();
+  Logger.log('testEmailSetup: sending to ' + target);
+  try {
+    MailApp.sendEmail(
+      target,
+      'Turquaz · Email test',
+      'Email sending is working correctly from the Turquaz Apps Script.',
+      { htmlBody: '<p style="font-family:sans-serif;">&#x2705; <strong>Email sending is working</strong> from the Turquaz reservation script.</p>' }
+    );
+    Logger.log('testEmailSetup: SUCCESS');
+  } catch (e) {
+    Logger.log('testEmailSetup: FAILED — ' + e.toString());
+    throw e;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -650,7 +695,7 @@ function buildReservationEmailHtml_(payload, config) {
     + '</td></tr>'
     + (actionHtml ? '<tr><td style="padding:0 24px 20px 24px;"><div style="padding:0 2px;">' + actionHtml + '</div>' + expiresCopy + '</td></tr>' : '')
     + '<tr><td style="padding:0 32px 30px 32px;">'
-    + '<p style="margin:0;font-size:13px;line-height:1.7;color:#5e6a71;">1198 Mission St, San Francisco, CA 94102<br>+1 415-791-0770 · sf@oklavacafe.com</p>'
+    + '<p style="margin:0;font-size:13px;line-height:1.7;color:#5e6a71;">1198 Mission St, San Francisco, CA 94102<br>+1 415-791-0770 · sf@turquazsf.com</p>'
     + '</td></tr>'
     + '</table>'
     + '</td></tr>'

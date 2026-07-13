@@ -995,7 +995,7 @@ const closeContactModal = () => {
             icon: CANCEL_ICONS.x,
             iconClass: 'cancel-icon-error',
             title: 'Link Not Found',
-            lead: 'This cancellation link is no longer valid. Please contact us at <a href="mailto:sf@oklavacafe.com">sf@oklavacafe.com</a> for assistance.'
+            lead: 'This cancellation link is no longer valid. Please contact us at <a href="mailto:sf@turquazsf.com">sf@turquazsf.com</a> for assistance.'
           });
         }
       } catch {
@@ -1003,7 +1003,7 @@ const closeContactModal = () => {
           icon: CANCEL_ICONS.x,
           iconClass: 'cancel-icon-error',
           title: 'Something Went Wrong',
-          lead: 'We couldn\'t process your request right now. Please contact us at <a href="mailto:sf@oklavacafe.com">sf@oklavacafe.com</a>.'
+          lead: 'We couldn\'t process your request right now. Please contact us at <a href="mailto:sf@turquazsf.com">sf@turquazsf.com</a>.'
         });
       } finally {
         confirmBtn.classList.remove('is-loading');
