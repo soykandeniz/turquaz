@@ -531,7 +531,6 @@ function sendReservationEmails_(payload, token, tokenExpiresAt) {
   var customerEmail = String(payload.email || '').trim();
   var cancelUrl = buildManageUrl_('cancel', token, properties);
   var modifyUrl = buildManageUrl_('modify', token, properties);
-  var calendarBlob = buildCalendarInviteBlob_(payload, token);
 
   var displayDate = formatDisplayDate_(payload.date);
   var displayTime = normalizeTimeKey_(payload.time);
@@ -543,6 +542,7 @@ function sendReservationEmails_(payload, token, tokenExpiresAt) {
   var teamError = '';
 
   try {
+    var calendarBlob = buildCalendarInviteBlob_(payload, token);
     sendEmail_(
       customerEmail,
       'Turquaz reservation confirmed · ' + displayDate + ' at ' + displayTime,

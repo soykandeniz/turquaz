@@ -303,6 +303,20 @@ const renderMealTabs = () => {
   });
 };
 
+const renderSlotsLoading = () => {
+  if (!slotGrid) return;
+  const currentMeal = MEALS.find((m) => m.id === state.selectedMeal) ?? MEALS[2];
+  slotGrid.innerHTML = '';
+  currentMeal.slots.forEach(() => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'slot-chip is-skeleton';
+    btn.disabled = true;
+    btn.setAttribute('aria-hidden', 'true');
+    slotGrid.appendChild(btn);
+  });
+};
+
 const renderSlots = () => {
   if (!slotGrid || !state.selectedDate) {
     return;
@@ -515,6 +529,7 @@ const setReservationDate = async (dateKey) => {
   timeField.value = '';
   setMessage('');
   updateReservationDateUi();
+  renderSlotsLoading();
   await hydrateAvailability(boundedDate);
   renderSlots();
 };
@@ -583,6 +598,7 @@ const initializeReservation = async () => {
 
   updateReservationDateUi();
   renderMealTabs();
+  renderSlotsLoading();
   await hydrateAvailability(todayKey);
   renderSlots();
 
@@ -685,7 +701,8 @@ const initializeReservation = async () => {
     try {
       const result = await submitReservation(payload);
       if (!result.ok) {
-        throw new Error('Reservation failed');
+        setMessage(result.error || 'Reservation could not be saved right now. Please try again.', 'error');
+        return;
       }
 
       setMessage('', '');

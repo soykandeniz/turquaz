@@ -894,6 +894,19 @@ h2 {
   pointer-events: none;
 }
 
+@keyframes slot-shimmer {
+  0%, 100% { opacity: 0.38; }
+  50% { opacity: 0.1; }
+}
+
+.slot-chip.is-skeleton {
+  background: rgba(201, 169, 110, 0.06);
+  border-color: rgba(201, 169, 110, 0.1);
+  color: transparent;
+  animation: slot-shimmer 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
 .slot-legend {
   display: flex;
   gap: 1rem;
