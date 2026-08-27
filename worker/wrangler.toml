@@ -1,0 +1,28 @@
+name = "turquaz-content"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+workers_dev = true
+
+[vars]
+SITE_URL = "https://www.turquazsf.com"
+SITE_NAME = "Turquaz"
+ADMIN_USER = "admin"
+NOTIFICATION_EMAIL = "sf@oklavacafe.com"
+EMAIL_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwBKduBq_BzpHv4t0yZ3fRWholk1EIRx2GWUyiVQCV9SHESyBHLAXvZsHd2556HjLp0lw/exec"
+GA_MEASUREMENT_ID = "G-BTGPBFN65C"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "turquaz-content"
+database_id = "32ec2e47-f580-4deb-a1db-3bf72e44513a"
+migrations_dir = "migrations"
+
+# After staging validation, configure these routes in Cloudflare:
+# routes = [
+#   { pattern = "turquazsf.com/*", zone_name = "turquazsf.com" },
+#   { pattern = "www.turquazsf.com/blog/*", zone_name = "turquazsf.com" },
+#   { pattern = "www.turquazsf.com/san-francisco/*", zone_name = "turquazsf.com" },
+#   { pattern = "www.turquazsf.com/sitemap.xml", zone_name = "turquazsf.com" },
+#   { pattern = "www.turquazsf.com/robots.txt", zone_name = "turquazsf.com" },
+#   { pattern = "www.turquazsf.com/api/*", zone_name = "turquazsf.com" }
+# ]

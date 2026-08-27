@@ -3,14 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Turquaz, Mediterranean elegance, contemporary gastronomy." />
+  <meta name="description" content="Turquaz is a Turkish and Mediterranean restaurant in San Francisco serving breakfast, lunch, dinner, coffee and freshly baked pastries. Reserve a table or order online." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#2a4192" />
-  <title>Turquaz</title>
+  <meta property="og:type" content="restaurant.restaurant" />
+  <meta property="og:site_name" content="Turquaz" />
+  <meta property="og:title" content="Turquaz | Turkish Restaurant in San Francisco" />
+  <meta property="og:description" content="Turkish and Mediterranean breakfast, lunch, dinner, coffee and freshly baked pastries in San Francisco." />
+  <meta property="og:url" content="https://www.turquazsf.com/" />
+  <meta property="og:image" content="https://www.turquazsf.com/assets/images/hero.jpeg" />
+  <meta property="og:image:alt" content="Dining at Turquaz Turkish restaurant in San Francisco" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Turquaz | Turkish Restaurant in San Francisco" />
+  <meta name="twitter:description" content="Turkish and Mediterranean breakfast, lunch, dinner, coffee and freshly baked pastries in San Francisco." />
+  <meta name="twitter:image" content="https://www.turquazsf.com/assets/images/hero.jpeg" />
+  <link rel="canonical" href="https://www.turquazsf.com/" />
+  <title>Turquaz | Turkish Restaurant in San Francisco</title>
   <link rel="preload" as="image" href="assets/images/hero.jpeg" fetchpriority="high" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles/main.css" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "@id": "https://www.turquazsf.com/#restaurant",
+      "name": "Turquaz",
+      "url": "https://www.turquazsf.com/",
+      "image": "https://www.turquazsf.com/assets/images/hero.jpeg",
+      "description": "Turkish and Mediterranean restaurant in San Francisco serving breakfast, lunch, dinner, coffee and freshly baked pastries.",
+      "telephone": "+1-415-791-0770",
+      "email": "sf@turquazsf.com",
+      "servesCuisine": ["Turkish", "Mediterranean"],
+      "hasMenu": "https://www.turquazsf.com/menu",
+      "acceptsReservations": true,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "1198 Mission St",
+        "addressLocality": "San Francisco",
+        "addressRegion": "CA",
+        "postalCode": "94102",
+        "addressCountry": "US"
+      },
+      "sameAs": [
+        "https://www.instagram.com/turquazsf",
+        "https://www.facebook.com/profile.php?id=61586856590487",
+        "https://www.tiktok.com/@turquazsf"
+      ],
+      "potentialAction": [
+        {
+          "@type": "ReserveAction",
+          "target": "https://www.turquazsf.com/#reservation"
+        },
+        {
+          "@type": "OrderAction",
+          "target": "https://order.toasttab.com/online/turquaz"
+        }
+      ]
+    }
+  </script>
   <style>
     .about-grid {
       align-items: start;
@@ -64,12 +116,13 @@
         <li><a href="#experience">Experience</a></li>
         <li><a href="#gallery">Atmosphere</a></li>
         <li><a href="#contact" id="contactNavLink">Contact</a></li>
-        <li><a href="menu.html">Menu</a></li>
+        <li><a href="/menu">Menu</a></li>
+        <li><a href="blog/">Blog</a></li>
         <li class="nav-links-cta"><a class="btn btn-nav" href="#reservation">Reserve</a></li>
       </ul>
       <div class="nav-desktop-actions">
         <a class="btn btn-nav btn-nav-desktop" href="#reservation">Reserve</a>
-        <a class="btn btn-nav btn-nav-desktop" href="menu.html">Menu</a>
+        <a class="btn btn-nav btn-nav-desktop" href="/menu">Menu</a>
       </div>
       <button class="hamburger" id="hamburgerBtn" type="button" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>

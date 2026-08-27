@@ -72,8 +72,24 @@ const reservationMessage = document.getElementById('reservationMessage');
 
 const SLOT_CAPACITY = 15;
 const OPEN_DAYS = 90;
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfnVWOZ2uzz5JGCcnR_IyV0OFMciQzE5Kyq59JwIGIYV28X4Yepg9rWsQ1vIooJMo9Jw/exec';
+const API_BASE_URL = '/api';
 const CALENDAR_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+const trackEvent = (name, parameters = {}) => {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', name, parameters);
+  }
+};
+
+document.addEventListener('click', (event) => {
+  const target = event.target.closest('a, button');
+  if (!target) return;
+  const href = target instanceof HTMLAnchorElement ? target.getAttribute('href') || '' : '';
+  if (href.includes('order.toasttab.com')) trackEvent('order_online_click');
+  else if (target.id === 'cateringBtn' || target.id === 'cateringContactBtn') trackEvent('catering_click');
+  else if (href === '/menu' || href.endsWith('/menu')) trackEvent('menu_click');
+  else if (href.includes('#reservation')) trackEvent('reservation_cta_click');
+});
 
 const MEALS = [
   { id: 'breakfast', label: 'Breakfast', slots: ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30'] },
@@ -253,11 +269,7 @@ const showSuccessModal = (payload) => {
 };
 
 const requestAvailability = async (dateKey) => {
-  if (!APPS_SCRIPT_URL) {
-    throw new Error('Reservation API is not configured');
-  }
-
-  const url = `${APPS_SCRIPT_URL}?action=availability&date=${encodeURIComponent(dateKey)}`;
+  const url = `${API_BASE_URL}/reservations/availability?date=${encodeURIComponent(dateKey)}`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error('Availability service unreachable');
@@ -555,14 +567,10 @@ const hydrateAvailability = async (dateKey) => {
 };
 
 const submitReservation = async (payload) => {
-  if (!APPS_SCRIPT_URL) {
-    throw new Error('Reservation API is not configured');
-  }
-
-  const response = await fetch(APPS_SCRIPT_URL, {
+  const response = await fetch(`${API_BASE_URL}/reservations`, {
     method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action: 'reserve', payload })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
   });
 
   const data = await response.json();
@@ -706,6 +714,7 @@ const initializeReservation = async () => {
       }
 
       setMessage('', '');
+      trackEvent('reservation_complete', { meal: payload.meal });
       showSuccessModal(payload);
       reservationForm.reset();
       dateField.value = state.selectedDate;
@@ -896,19 +905,17 @@ const closeContactModal = () => {
     submitBtn && (submitBtn.disabled = true);
 
     try {
-      const response = await fetch(APPS_SCRIPT_URL, {
+      const response = await fetch(`${API_BASE_URL}/contact`, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'contact',
-          payload: { subject, name, email, phone, message, createdAt: new Date().toISOString() }
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, name, email, phone, message })
       });
 
       const data = await response.json();
       if (!data.ok) throw new Error(data.error || 'Failed');
 
       setContactMessage('Thank you! Your message has been sent.', 'success');
+      trackEvent('contact_complete');
       contactForm.reset();
     } catch {
       setContactMessage('Could not send your message right now. Please try again.', 'error');
@@ -982,14 +989,15 @@ const closeContactModal = () => {
       confirmBtn.disabled = true;
 
       try {
-        const response = await fetch(APPS_SCRIPT_URL, {
+        const response = await fetch(`${API_BASE_URL}/reservations/cancel`, {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'cancelByToken', token: cancelToken })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: cancelToken })
         });
         const result = await response.json();
 
         if (result.ok) {
+          trackEvent('reservation_cancel_complete');
           const dateObj = result.date ? parseDateKey(result.date) : null;
           const prettyDateStr = dateObj
             ? dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' })
@@ -1000,7 +1008,7 @@ const closeContactModal = () => {
             title: 'Reservation Canceled',
             lead: `Your reservation on <strong>${prettyDateStr}</strong> at <strong>${result.time}</strong> has been successfully canceled.`
           });
-        } else if (result.error === 'already_canceled') {
+        } else if (response.status === 409) {
           showResult({
             icon: CANCEL_ICONS.info,
             iconClass: 'cancel-icon-info',

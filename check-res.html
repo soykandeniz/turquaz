@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
   <meta name="theme-color" content="#0b3c47" />
   <title>Turquaz | Admin Reservations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -10,15 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/admin.css" />
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTGPBFN65C"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-BTGPBFN65C');
-  </script>
 </head>
 <body class="admin-body">
   <header class="site-header scrolled">
@@ -26,7 +18,7 @@
       <a href="index.html" class="brand">turquaz</a>
       <ul class="nav-links">
         <li><a href="index.html#reservation">Back to Site</a></li>
-        <li><a href="check-res.html">Logout</a></li>
+        <li><button class="admin-logout-link hidden" id="logoutBtn" type="button">Logout</button></li>
       </ul>
     </nav>
   </header>
@@ -49,39 +41,155 @@
       </form>
 
       <section id="adminDashboard" class="admin-dashboard hidden" aria-label="Reservation dashboard">
-        <div class="admin-toolbar">
-          <div class="date-nav" aria-label="Day controls">
-            <button type="button" class="btn btn-nav admin-arrow" id="prevDayBtn" aria-label="Previous day">←</button>
-            <button type="button" class="btn btn-nav date-picker-btn" id="datePickerBtn" aria-label="Open date picker">Select Day</button>
-            <input type="date" id="filterDate" class="hidden-date-input" />
-            <button type="button" class="btn btn-nav admin-arrow" id="nextDayBtn" aria-label="Next day">→</button>
+        <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+          <button class="admin-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="reservationsPanel" data-admin-tab="reservationsPanel">Reservations</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" aria-controls="contentPanel" data-admin-tab="contentPanel">Content &amp; SEO</button>
+        </div>
+
+        <section class="admin-view" id="reservationsPanel" role="tabpanel">
+          <div class="admin-toolbar">
+            <div class="date-nav" aria-label="Day controls">
+              <button type="button" class="btn btn-nav admin-arrow" id="prevDayBtn" aria-label="Previous day">←</button>
+              <button type="button" class="btn btn-nav date-picker-btn" id="datePickerBtn" aria-label="Open date picker">Select Day</button>
+              <input type="date" id="filterDate" class="hidden-date-input" />
+              <button type="button" class="btn btn-nav admin-arrow" id="nextDayBtn" aria-label="Next day">→</button>
+            </div>
           </div>
-        </div>
 
-        <div class="admin-kpis" id="kpis"></div>
+          <div class="admin-kpis" id="kpis"></div>
 
-        <div class="admin-loading hidden" id="adminLoading" aria-live="polite">
-          <span class="loading-dot"></span>
-          <span>Loading reservations...</span>
-        </div>
+          <div class="admin-loading hidden" id="adminLoading" aria-live="polite">
+            <span class="loading-dot"></span>
+            <span>Loading reservations...</span>
+          </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Meal</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Guests</th>
-                <th>Note</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="reservationRows"></tbody>
-          </table>
-        </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Meal</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>Guests</th>
+                  <th>Note</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="reservationRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-view hidden" id="contentPanel" role="tabpanel" aria-labelledby="contentTab">
+          <div class="content-head">
+            <div>
+              <p class="admin-eyebrow">Publishing</p>
+              <h2>Content &amp; SEO</h2>
+            </div>
+            <button class="btn btn-solid" id="newContentBtn" type="button">New Page</button>
+          </div>
+
+          <div class="admin-loading hidden" id="contentLoading" aria-live="polite">
+            <span class="loading-dot"></span>
+            <span>Loading content...</span>
+          </div>
+
+          <div class="content-layout">
+            <section class="content-library" aria-label="Content inventory">
+              <div class="content-filter-row">
+                <input id="contentSearch" type="search" placeholder="Search pages" aria-label="Search pages" />
+                <select id="contentStatusFilter" aria-label="Filter by status">
+                  <option value="">All statuses</option>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+              <div class="content-list" id="contentList"></div>
+            </section>
+
+            <form class="content-editor hidden" id="contentForm">
+              <input type="hidden" name="id" />
+              <div class="editor-title-row">
+                <h3 id="editorHeading">New Page</h3>
+                <span class="content-status" id="editorStatus">Draft</span>
+              </div>
+
+              <div class="editor-grid">
+                <label>
+                  <span>Page type</span>
+                  <select name="type" required>
+                    <option value="blog">Blog article</option>
+                    <option value="local_page">San Francisco page</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Slug</span>
+                  <input name="slug" type="text" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="100" required />
+                </label>
+              </div>
+
+              <label>
+                <span>Title</span>
+                <input name="title" type="text" minlength="3" maxlength="120" required />
+              </label>
+              <label>
+                <span>Excerpt</span>
+                <textarea name="excerpt" rows="3" maxlength="320"></textarea>
+              </label>
+
+              <div class="rich-editor-label">Page content</div>
+              <div class="rich-toolbar" role="toolbar" aria-label="Content formatting">
+                <button type="button" data-block="p">Paragraph</button>
+                <button type="button" data-block="h2">Heading 2</button>
+                <button type="button" data-block="h3">Heading 3</button>
+                <button type="button" data-block="blockquote">Quote</button>
+                <button type="button" data-block="ul">Bullets</button>
+                <button type="button" data-block="ol">Numbered</button>
+              </div>
+              <div class="rich-editor" id="richEditor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Write useful, original content..."></div>
+
+              <details class="seo-fields" open>
+                <summary>Search and social settings</summary>
+                <label>
+                  <span>SEO title <small id="seoTitleCount">0/70</small></span>
+                  <input name="seoTitle" type="text" maxlength="70" />
+                </label>
+                <label>
+                  <span>Meta description <small id="seoDescriptionCount">0/170</small></span>
+                  <textarea name="seoDescription" rows="3" maxlength="170"></textarea>
+                </label>
+                <label>
+                  <span>Primary search query</span>
+                  <input name="primaryQuery" type="text" maxlength="120" />
+                </label>
+                <label>
+                  <span>Social image URL</span>
+                  <input name="socialImageUrl" type="url" placeholder="https://" />
+                </label>
+                <label>
+                  <span>Social image description</span>
+                  <input name="socialImageAlt" type="text" maxlength="180" />
+                </label>
+                <label>
+                  <span>Author</span>
+                  <input name="authorName" type="text" maxlength="80" value="Turquaz" />
+                </label>
+              </details>
+
+              <p class="admin-message" id="contentMessage" aria-live="polite"></p>
+              <div class="editor-actions">
+                <button class="btn btn-solid" id="saveContentBtn" type="submit">Save Draft</button>
+                <a class="btn btn-nav hidden" id="previewContentBtn" href="#" target="_blank" rel="noopener noreferrer">View Live</a>
+                <button class="btn btn-nav hidden" id="publishContentBtn" type="button">Publish</button>
+                <button class="btn-delete hidden" id="archiveContentBtn" type="button">Archive</button>
+                <button class="btn btn-nav" id="cancelContentBtn" type="button">Close</button>
+              </div>
+            </form>
+          </div>
+        </section>
       </section>
     </section>
   </main>

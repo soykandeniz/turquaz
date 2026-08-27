@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /check-res.html
+Disallow: /backend/
+
+Sitemap: https://www.turquazsf.com/sitemap.xml
