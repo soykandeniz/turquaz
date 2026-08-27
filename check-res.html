@@ -85,10 +85,14 @@
         <section class="admin-view hidden" id="contentPanel" role="tabpanel" aria-labelledby="contentTab">
           <div class="content-head">
             <div>
-              <p class="admin-eyebrow">Publishing</p>
-              <h2>Content &amp; SEO</h2>
+              <p class="admin-eyebrow">Organic growth workspace</p>
+              <h2>Content &amp; SEO Studio</h2>
+              <p class="content-intro">Audit pages, resolve technical content gaps, and publish useful stories.</p>
             </div>
-            <button class="btn btn-solid" id="newContentBtn" type="button">New Page</button>
+            <div class="content-head-actions">
+              <button class="btn btn-nav" id="runSeoAuditBtn" type="button">Run SEO Scan</button>
+              <button class="btn btn-solid" id="newContentBtn" type="button">New Page</button>
+            </div>
           </div>
 
           <div class="admin-loading hidden" id="contentLoading" aria-live="polite">
@@ -96,8 +100,36 @@
             <span>Loading content...</span>
           </div>
 
+          <section class="seo-dashboard" aria-labelledby="seoDashboardTitle">
+            <div class="seo-dashboard-head">
+              <div>
+                <p class="admin-eyebrow">On-page health</p>
+                <h3 id="seoDashboardTitle">SEO Scan</h3>
+              </div>
+              <p id="seoAuditTimestamp" class="seo-audit-time">Not scanned yet</p>
+            </div>
+            <div class="seo-kpis" id="seoKpis">
+              <article><span>Health score</span><strong>--</strong></article>
+              <article><span>Published</span><strong>--</strong></article>
+              <article><span>Critical issues</span><strong>--</strong></article>
+              <article><span>Draft opportunities</span><strong>--</strong></article>
+            </div>
+            <div class="seo-results" id="seoResults">
+              <p class="content-empty">Run a scan to inspect metadata, content depth, headings, links, images and freshness.</p>
+            </div>
+            <div class="seo-data-note">
+              <strong>Rankings and clicks</strong>
+              <span>On-page health is measured here. Real impressions, queries, clicks and positions come from Google Search Console.</span>
+              <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">Open Search Console</a>
+            </div>
+          </section>
+
           <div class="content-layout">
             <section class="content-library" aria-label="Content inventory">
+              <div class="library-heading">
+                <strong>Pages</strong>
+                <span id="contentCount">0</span>
+              </div>
               <div class="content-filter-row">
                 <input id="contentSearch" type="search" placeholder="Search pages" aria-label="Search pages" />
                 <select id="contentStatusFilter" aria-label="Filter by status">
@@ -117,6 +149,8 @@
                 <span class="content-status" id="editorStatus">Draft</span>
               </div>
 
+              <section class="editor-section">
+                <div class="editor-section-head"><span>01</span><div><strong>Page foundation</strong><small>Define one page intent and destination.</small></div></div>
               <div class="editor-grid">
                 <label>
                   <span>Page type</span>
@@ -139,20 +173,55 @@
                 <span>Excerpt</span>
                 <textarea name="excerpt" rows="3" maxlength="320"></textarea>
               </label>
+              </section>
 
-              <div class="rich-editor-label">Page content</div>
+              <section class="editor-section">
+              <div class="editor-section-head"><span>02</span><div><strong>Story editor</strong><small>Visual editing with a safe HTML source mode.</small></div></div>
               <div class="rich-toolbar" role="toolbar" aria-label="Content formatting">
-                <button type="button" data-block="p">Paragraph</button>
-                <button type="button" data-block="h2">Heading 2</button>
-                <button type="button" data-block="h3">Heading 3</button>
+                <button type="button" data-command="bold" title="Bold"><strong>B</strong></button>
+                <button type="button" data-command="italic" title="Italic"><em>I</em></button>
+                <button type="button" data-command="underline" title="Underline"><u>U</u></button>
+                <button type="button" data-command="createLink">Link</button>
+                <button type="button" data-block="p">Text</button>
+                <button type="button" data-block="h2">H2</button>
+                <button type="button" data-block="h3">H3</button>
                 <button type="button" data-block="blockquote">Quote</button>
                 <button type="button" data-block="ul">Bullets</button>
-                <button type="button" data-block="ol">Numbered</button>
+                <button type="button" data-block="ol">Numbers</button>
+                <button type="button" data-command="insertHorizontalRule">Rule</button>
+                <button type="button" id="insertTableBtn">Table</button>
+                <button type="button" id="toggleHtmlBtn">HTML</button>
               </div>
               <div class="rich-editor" id="richEditor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Write useful, original content..."></div>
+              <textarea class="html-source hidden" id="htmlSource" aria-label="HTML source" spellcheck="false"></textarea>
+              <div class="editor-stats" id="editorStats"><span>0 words</span><span>0 headings</span><span>0 internal links</span></div>
+              </section>
 
-              <details class="seo-fields" open>
-                <summary>Search and social settings</summary>
+              <section class="editor-section media-studio">
+                <div class="editor-section-head"><span>03</span><div><strong>Photos, galleries &amp; video</strong><small>Every image needs meaningful alternative text.</small></div></div>
+                <label class="media-drop" for="mediaUpload">
+                  <input id="mediaUpload" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple />
+                  <strong>Choose images</strong>
+                  <span>One image creates a figure. Multiple images create a gallery. JPEG, PNG, WebP or GIF up to 8 MB each.</span>
+                </label>
+                <button class="btn btn-nav" id="uploadMediaBtn" type="button">Upload Selected Images</button>
+                <div class="media-blocks" id="mediaBlocks"></div>
+                <div class="video-adder">
+                  <label><span>YouTube or Vimeo URL</span><input id="videoUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." /></label>
+                  <label><span>Accessible video title</span><input id="videoTitle" type="text" maxlength="160" /></label>
+                  <button class="btn btn-nav" id="addVideoBtn" type="button">Add Video</button>
+                </div>
+              </section>
+
+              <section class="editor-section seo-fields">
+                <div class="editor-section-head"><span>04</span><div><strong>Search &amp; social</strong><small>Preview and strengthen the search result.</small></div></div>
+                <div class="search-preview" aria-label="Google search result preview">
+                  <span>www.turquazsf.com</span>
+                  <strong id="searchPreviewTitle">Page title</strong>
+                  <p id="searchPreviewDescription">Add a useful description of this page.</p>
+                </div>
+                <div class="seo-editor-layout">
+                <div>
                 <label>
                   <span>SEO title <small id="seoTitleCount">0/70</small></span>
                   <input name="seoTitle" type="text" maxlength="70" />
@@ -177,7 +246,10 @@
                   <span>Author</span>
                   <input name="authorName" type="text" maxlength="80" value="Turquaz" />
                 </label>
-              </details>
+                </div>
+                <aside class="live-seo-checks" id="liveSeoChecks" aria-live="polite"></aside>
+                </div>
+              </section>
 
               <p class="admin-message" id="contentMessage" aria-live="polite"></p>
               <div class="editor-actions">

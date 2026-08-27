@@ -17,6 +17,10 @@ database_name = "turquaz-content"
 database_id = "32ec2e47-f580-4deb-a1db-3bf72e44513a"
 migrations_dir = "migrations"
 
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "turquaz-media"
+
 # After staging validation, configure these routes in Cloudflare:
 # routes = [
 #   { pattern = "turquazsf.com/*", zone_name = "turquazsf.com" },

@@ -1,6 +1,10 @@
+import sanitizeHtml from 'sanitize-html';
+
 const STATIC_SITEMAP_PATHS = ['/', '/menu'];
 const CONTENT_TYPES = new Set(['blog', 'local_page']);
-const BLOCK_TYPES = new Set(['heading', 'paragraph', 'list', 'quote', 'image']);
+const BLOCK_TYPES = new Set(['heading', 'paragraph', 'list', 'quote', 'image', 'html', 'gallery', 'video']);
+const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_PATTERN = /^\d{2}:\d{2}$/;
@@ -44,6 +48,10 @@ async function routeRequest(request, env) {
 
   if (path.startsWith('/api/admin/')) {
     return handleAdminRequest(request, env, path);
+  }
+
+  if (path.startsWith('/api/media/') && (request.method === 'GET' || request.method === 'HEAD')) {
+    return serveMedia(request, env, path);
   }
 
   if (request.method !== 'GET' && request.method !== 'HEAD') {
@@ -110,6 +118,30 @@ async function handleAdminRequest(request, env, path) {
 
   if (path.startsWith('/api/admin/reservations')) {
     return handleReservationRequest(request, env, path);
+  }
+
+  if (path === '/api/admin/media' && request.method === 'POST') {
+    return uploadMedia(request, env);
+  }
+
+  if (path === '/api/admin/seo/audit' && request.method === 'GET') {
+    const result = await env.DB.prepare('SELECT * FROM content_entries ORDER BY updated_at DESC').all();
+    const pages = (result.results || []).map(auditContentEntry);
+    const published = pages.filter((page) => page.status === 'published');
+    return json({
+      ok: true,
+      generatedAt: new Date().toISOString(),
+      summary: {
+        pages: pages.length,
+        published: published.length,
+        drafts: pages.filter((page) => page.status === 'draft').length,
+        averageScore: published.length
+          ? Math.round(published.reduce((total, page) => total + page.score, 0) / published.length)
+          : 0,
+        criticalIssues: published.reduce((total, page) => total + page.checks.filter((check) => check.status === 'error').length, 0)
+      },
+      pages
+    }, 200, noStoreHeaders());
   }
 
   if (path === '/api/admin/content' && request.method === 'GET') {
@@ -411,6 +443,40 @@ async function handleReservationRequest(request, env, path) {
   }
 
   return json({ ok: false, error: 'Not found' }, 404);
+}
+
+async function uploadMedia(request, env) {
+  if (!env.MEDIA) throw new HttpError(503, 'Media storage is not configured');
+  const form = await request.formData();
+  const file = form.get('file');
+  if (!(file instanceof File) || !file.size) throw new HttpError(400, 'Choose an image to upload');
+  if (!IMAGE_TYPES.has(file.type)) throw new HttpError(400, 'Upload a JPEG, PNG, WebP or GIF image');
+  if (file.size > MAX_IMAGE_BYTES) throw new HttpError(413, 'Image must be 8 MB or smaller');
+
+  const extension = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' }[file.type];
+  const baseName = String(file.name || 'image').replace(/\.[^.]+$/, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'image';
+  const now = new Date();
+  const key = `${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, '0')}/${crypto.randomUUID()}-${baseName}.${extension}`;
+  await env.MEDIA.put(key, file.stream(), {
+    httpMetadata: { contentType: file.type, cacheControl: 'public, max-age=31536000, immutable' },
+    customMetadata: { originalName: String(file.name || '').slice(0, 180), uploadedBy: 'admin' }
+  });
+  return json({ ok: true, url: siteUrl(env, `/api/media/${key}`), key, size: file.size, contentType: file.type }, 201, noStoreHeaders());
+}
+
+async function serveMedia(request, env, path) {
+  if (!env.MEDIA) return json({ ok: false, error: 'Media storage is not configured' }, 503);
+  const key = decodeURIComponent(path.slice('/api/media/'.length));
+  if (!key || key.includes('..') || key.includes('\\')) return json({ ok: false, error: 'Invalid media path' }, 400);
+  const object = request.method === 'HEAD' ? await env.MEDIA.head(key) : await env.MEDIA.get(key);
+  if (!object) return json({ ok: false, error: 'Image not found' }, 404, { 'Cache-Control': 'public, max-age=60' });
+  const headers = new Headers();
+  object.writeHttpMetadata(headers);
+  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  headers.set('ETag', object.httpEtag);
+  headers.set('X-Content-Type-Options', 'nosniff');
+  return new Response(request.method === 'HEAD' ? null : object.body, { headers });
 }
 
 async function reservationAvailability(env, date) {
@@ -736,6 +802,35 @@ function validateBlocks(value) {
       return { type, url, alt, caption: String(raw.caption || '').trim().slice(0, 240) };
     }
 
+    if (type === 'gallery') {
+      if (!Array.isArray(raw.images) || raw.images.length < 2 || raw.images.length > 20) {
+        throw new HttpError(400, `Gallery at position ${index + 1} requires 2-20 images`);
+      }
+      return {
+        type,
+        images: raw.images.map((image, imageIndex) => ({
+          url: requiredHttpsUrl(image?.url, `Gallery image ${imageIndex + 1}`),
+          alt: boundedText(image?.alt, 180, `Gallery image ${imageIndex + 1} alt text`),
+          caption: String(image?.caption || '').trim().slice(0, 240)
+        }))
+      };
+    }
+
+    if (type === 'video') {
+      return {
+        type,
+        url: safeVideoUrl(raw.url, index + 1),
+        title: boundedText(raw.title, 160, `Video title at position ${index + 1}`),
+        caption: String(raw.caption || '').trim().slice(0, 240)
+      };
+    }
+
+    if (type === 'html') {
+      const html = cleanRichHtml(raw.html);
+      if (!html || html.length > 100000) throw new HttpError(400, `Rich content at position ${index + 1} is empty or too long`);
+      return { type, html };
+    }
+
     if (type === 'list') {
       if (!Array.isArray(raw.items) || raw.items.length === 0 || raw.items.length > 40) {
         throw new HttpError(400, `List at position ${index + 1} requires 1-40 items`);
@@ -875,6 +970,13 @@ function renderBlock(block) {
   if (block.type === 'image') {
     return `<figure><img src="${escapeAttr(block.url)}" alt="${escapeAttr(block.alt)}" loading="lazy" decoding="async">${block.caption ? `<figcaption>${escapeHtml(block.caption)}</figcaption>` : ''}</figure>`;
   }
+  if (block.type === 'gallery') {
+    return `<div class="article-gallery">${block.images.map((image) => `<figure><img src="${escapeAttr(image.url)}" alt="${escapeAttr(image.alt)}" loading="lazy" decoding="async">${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ''}</figure>`).join('')}</div>`;
+  }
+  if (block.type === 'video') {
+    return `<figure class="article-video"><iframe src="${escapeAttr(block.url)}" title="${escapeAttr(block.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>${block.caption ? `<figcaption>${escapeHtml(block.caption)}</figcaption>` : ''}</figure>`;
+  }
+  if (block.type === 'html') return `<div class="rich-content">${cleanRichHtml(block.html)}</div>`;
   return '';
 }
 
@@ -911,6 +1013,7 @@ function pageShell(env, options) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
   <style>${pageStyles()}</style>
+  <style>.article-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:48px 0}.article-gallery figure{margin:0}.article-gallery img{width:100%;aspect-ratio:4/3;object-fit:cover}.article-video iframe{width:100%;aspect-ratio:16/9;border:0}.rich-content{font-size:18px}.rich-content a{color:var(--blue)}.rich-content table{display:block;width:100%;overflow-x:auto;border-collapse:collapse}.rich-content th,.rich-content td{padding:10px;border:1px solid #dedbd2;text-align:left}.rich-content hr{margin:48px 0;border:0;border-top:1px solid #dedbd2}@media(max-width:620px){.article-gallery{grid-template-columns:1fr}.article-video{margin-inline:0}}</style>
   ${schema}
   ${analytics}
 </head>
@@ -1042,6 +1145,98 @@ function requiredHttpsUrl(value, label) {
   } catch {
     throw new HttpError(400, `${label} must be a valid HTTPS URL`);
   }
+}
+
+function cleanRichHtml(value) {
+  return sanitizeHtml(String(value || ''), {
+    allowedTags: [
+      'h2', 'h3', 'p', 'strong', 'em', 'u', 's', 'a', 'ul', 'ol', 'li',
+      'blockquote', 'hr', 'br', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+    ],
+    allowedAttributes: {
+      a: ['href', 'target', 'rel'],
+      th: ['scope'],
+      td: ['colspan', 'rowspan']
+    },
+    allowedSchemes: ['https', 'mailto', 'tel'],
+    allowProtocolRelative: false,
+    transformTags: {
+      a: (tagName, attributes) => ({
+        tagName,
+        attribs: {
+          ...attributes,
+          ...(attributes.target === '_blank' ? { rel: 'noopener noreferrer' } : {})
+        }
+      })
+    }
+  }).trim();
+}
+
+function safeVideoUrl(value, position) {
+  try {
+    const url = new URL(String(value || '').trim());
+    if (url.protocol !== 'https:') throw new Error('HTTPS required');
+    if (url.hostname === 'youtu.be') {
+      const id = url.pathname.slice(1).split('/')[0];
+      if (!/^[A-Za-z0-9_-]{6,20}$/.test(id)) throw new Error('Invalid YouTube ID');
+      return `https://www.youtube-nocookie.com/embed/${id}`;
+    }
+    if (['www.youtube.com', 'youtube.com', 'www.youtube-nocookie.com'].includes(url.hostname)) {
+      const id = url.pathname.startsWith('/embed/') ? url.pathname.split('/')[2] : url.searchParams.get('v');
+      if (!/^[A-Za-z0-9_-]{6,20}$/.test(id || '')) throw new Error('Invalid YouTube ID');
+      return `https://www.youtube-nocookie.com/embed/${id}`;
+    }
+    if (['vimeo.com', 'www.vimeo.com', 'player.vimeo.com'].includes(url.hostname)) {
+      const id = url.pathname.split('/').filter(Boolean).pop();
+      if (!/^\d{5,12}$/.test(id || '')) throw new Error('Invalid Vimeo ID');
+      return `https://player.vimeo.com/video/${id}`;
+    }
+  } catch {
+    throw new HttpError(400, `Video at position ${position} must be a valid YouTube or Vimeo URL`);
+  }
+  throw new HttpError(400, `Video at position ${position} must be a YouTube or Vimeo URL`);
+}
+
+function auditContentEntry(row) {
+  const blocks = parseBlocks(row.body_json);
+  const blockText = blocks.map((block) => {
+    if (block.type === 'html') return sanitizeHtml(block.html || '', { allowedTags: [], allowedAttributes: {} });
+    if (block.type === 'list') return (block.items || []).join(' ');
+    return block.text || block.caption || '';
+  }).join(' ');
+  const text = `${row.excerpt || ''} ${blockText}`.replace(/\s+/g, ' ').trim();
+  const words = text ? text.split(' ').length : 0;
+  const query = String(row.primary_query || '').trim().toLowerCase();
+  const headings = blocks.filter((block) => block.type === 'heading' || (block.type === 'html' && /<h[23]\b/i.test(block.html || ''))).length;
+  const images = blocks.flatMap((block) => block.type === 'gallery' ? block.images || [] : block.type === 'image' ? [block] : []);
+  const internalLinks = (blocks.map((block) => block.type === 'html' ? block.html || '' : '').join(' ').match(/href=["']\/(?!\/)/gi) || []).length;
+  const ageDays = Math.floor((Date.now() - new Date(row.updated_at || 0).getTime()) / 86400000);
+  const checks = [
+    seoCheck('SEO title', row.seo_title?.length >= 30 && row.seo_title?.length <= 60, row.seo_title ? 'Keep the title near 30-60 characters.' : 'Add a unique SEO title.', 15),
+    seoCheck('Meta description', row.seo_description?.length >= 120 && row.seo_description?.length <= 160, row.seo_description ? 'Keep the description near 120-160 characters.' : 'Add a persuasive meta description.', 15),
+    seoCheck('Primary query', Boolean(query), 'Assign one specific visitor query.', 10),
+    seoCheck('Query in title', Boolean(query) && `${row.title} ${row.seo_title}`.toLowerCase().includes(query), 'Use the primary query naturally in the page or SEO title.', 10),
+    seoCheck('Useful depth', words >= 450, `${words} words; aim for at least 450 useful, original words when the topic warrants it.`, 15),
+    seoCheck('Heading structure', headings >= 2, `${headings} section headings; use descriptive H2/H3 sections.`, 10),
+    seoCheck('Internal links', internalLinks >= 2, `${internalLinks} internal links; connect readers to the menu, reservations and related content.`, 10),
+    seoCheck('Image accessibility', Boolean(row.social_image_url) && Boolean(row.social_image_alt) && images.every((image) => image.alt), 'Add a social image and descriptive alt text for every image.', 10),
+    seoCheck('Freshness', Number.isFinite(ageDays) && ageDays <= 365, `${ageDays} days since update; review facts at least yearly.`, 5, true)
+  ];
+  return {
+    id: row.id,
+    type: row.type,
+    slug: row.slug,
+    title: row.title,
+    status: row.status,
+    score: checks.reduce((total, check) => total + (check.passed ? check.points : 0), 0),
+    words,
+    updatedAt: row.updated_at,
+    checks
+  };
+}
+
+function seoCheck(label, passed, guidance, points, warningOnly = false) {
+  return { label, passed: Boolean(passed), status: passed ? 'pass' : warningOnly ? 'warning' : 'error', guidance, points };
 }
 
 function siteUrl(env, path) {

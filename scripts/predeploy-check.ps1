@@ -29,7 +29,8 @@ $requiredFiles = @(
   'worker/migrations/0002_starter_content.sql',
   'worker/migrations/0003_reservations.sql',
   'worker/migrations/0004_admin_sessions.sql',
-  'worker/migrations/0005_public_rate_limits.sql'
+  'worker/migrations/0005_public_rate_limits.sql',
+  'worker/migrations/0006_editorial_expansion.sql'
 )
 foreach ($relativePath in $requiredFiles) {
   if (-not (Test-Path (Join-Path $repoRoot $relativePath))) {
@@ -45,7 +46,13 @@ if ($homeHtml -notmatch 'rel="canonical" href="https://www.turquazsf.com/"') { t
 if ($homeHtml -notmatch 'type="application/ld\+json"') { throw 'Homepage Restaurant JSON-LD is missing.' }
 if ($menuHtml -notmatch 'rel="canonical" href="https://www.turquazsf.com/menu"') { throw 'Menu canonical is missing.' }
 if ($adminHtml -notmatch 'content="noindex, nofollow, noarchive"') { throw 'Admin noindex directive is missing.' }
+if ($adminHtml -notmatch 'id="runSeoAuditBtn"' -or $adminHtml -notmatch 'id="mediaUpload"' -or $adminHtml -notmatch 'id="htmlSource"') { throw 'Admin SEO and rich media controls are missing.' }
 if ($homeHtml -notmatch 'href="blog/"' -or $menuHtml -notmatch 'href="blog/"') { throw 'Public Blog navigation is missing.' }
+
+$workerConfig = Get-Content -Raw (Join-Path $workerRoot 'wrangler.toml')
+$workerPackage = Get-Content -Raw (Join-Path $workerRoot 'package.json')
+if ($workerConfig -notmatch 'binding = "MEDIA"' -or $workerConfig -notmatch 'bucket_name = "turquaz-media"') { throw 'Worker media storage binding is missing.' }
+if ($workerPackage -notmatch '"sanitize-html"') { throw 'Worker rich HTML sanitizer dependency is missing.' }
 
 Write-Host 'Checking crawl files...'
 $sitemap = [xml](Get-Content -Raw (Join-Path $repoRoot 'sitemap.xml'))

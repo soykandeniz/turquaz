@@ -29,6 +29,24 @@ const richEditor = document.getElementById('richEditor');
 const seoTitleCount = document.getElementById('seoTitleCount');
 const seoDescriptionCount = document.getElementById('seoDescriptionCount');
 const saveContentBtn = document.getElementById('saveContentBtn');
+const runSeoAuditBtn = document.getElementById('runSeoAuditBtn');
+const seoKpis = document.getElementById('seoKpis');
+const seoResults = document.getElementById('seoResults');
+const seoAuditTimestamp = document.getElementById('seoAuditTimestamp');
+const contentCount = document.getElementById('contentCount');
+const htmlSource = document.getElementById('htmlSource');
+const toggleHtmlBtn = document.getElementById('toggleHtmlBtn');
+const insertTableBtn = document.getElementById('insertTableBtn');
+const editorStats = document.getElementById('editorStats');
+const mediaUpload = document.getElementById('mediaUpload');
+const uploadMediaBtn = document.getElementById('uploadMediaBtn');
+const mediaBlocksElement = document.getElementById('mediaBlocks');
+const videoUrl = document.getElementById('videoUrl');
+const videoTitle = document.getElementById('videoTitle');
+const addVideoBtn = document.getElementById('addVideoBtn');
+const searchPreviewTitle = document.getElementById('searchPreviewTitle');
+const searchPreviewDescription = document.getElementById('searchPreviewDescription');
+const liveSeoChecks = document.getElementById('liveSeoChecks');
 
 const localStoreKey = 'turquazReservations';
 let auth = { sessionToken: '', expiresAt: '', loggedIn: false };
@@ -36,6 +54,9 @@ let minDate = '';
 let maxDate = '';
 let contentEntries = [];
 let contentLoaded = false;
+let seoAuditPages = new Map();
+let mediaBlocksState = [];
+let sourceMode = false;
 
 const logoutBtn = document.getElementById('logoutBtn');
 const adminTabs = document.querySelectorAll('[data-admin-tab]');
@@ -103,7 +124,8 @@ const apiRequest = async (action, payload = {}, includeSession = true) => {
     contentCreate: { method: 'POST', path: '/admin/content', body: payload.payload },
     contentUpdate: { method: 'PUT', path: `/admin/content/${id}`, body: payload.payload },
     contentPublish: { method: 'POST', path: `/admin/content/${id}/publish`, body: payload.payload || {} },
-    contentArchive: { method: 'POST', path: `/admin/content/${id}/archive`, body: payload.payload || {} }
+    contentArchive: { method: 'POST', path: `/admin/content/${id}/archive`, body: payload.payload || {} },
+    seoAudit: { method: 'GET', path: '/admin/seo/audit' }
   };
   const route = routes[action];
   if (!route) throw new Error('Unsupported admin action');
@@ -395,6 +417,7 @@ const renderContentList = () => {
     const matchesQuery = !query || `${entry.title} ${entry.slug} ${entry.primary_query || ''}`.toLowerCase().includes(query);
     return matchesQuery && (!status || entry.status === status);
   });
+  if (contentCount) contentCount.textContent = String(filtered.length);
 
   if (!filtered.length) {
     contentList.innerHTML = '<p class="content-empty">No pages match this view.</p>';
@@ -405,7 +428,7 @@ const renderContentList = () => {
     <button class="content-list-item${entry.id === currentId ? ' is-active' : ''}" type="button" data-content-id="${escapeHtml(entry.id)}">
       <span class="content-list-meta"><span>${escapeHtml(entry.type === 'blog' ? 'Blog' : 'Local page')}</span><span>${escapeHtml(entry.status)}</span></span>
       <strong>${escapeHtml(entry.title)}</strong>
-      <span class="content-list-meta"><span>/${escapeHtml(entry.slug)}</span><span>${escapeHtml(formatContentDate(entry.updated_at))}</span></span>
+      <span class="content-list-meta"><span>/${escapeHtml(entry.slug)}</span><span class="list-score">${seoAuditPages.has(entry.id) ? `${seoAuditPages.get(entry.id).score}/100` : escapeHtml(formatContentDate(entry.updated_at))}</span></span>
     </button>
   `).join('');
 
@@ -428,35 +451,49 @@ const loadContentList = async () => {
   }
 };
 
-const editorBlocks = () => {
-  if (!richEditor) return [];
-  const blocks = [];
-  [...richEditor.childNodes].forEach((node) => {
-    const name = node.nodeType === Node.TEXT_NODE ? '#text' : node.nodeName.toLowerCase();
-    const text = String(node.textContent || '').trim();
-    if (!text) return;
+const runSeoAudit = async () => {
+  if (!seoResults) return;
+  runSeoAuditBtn && (runSeoAuditBtn.disabled = true);
+  seoResults.innerHTML = '<p class="content-empty">Scanning published and draft pages...</p>';
+  try {
+    const data = await apiRequest('seoAudit');
+    seoAuditPages = new Map((data.pages || []).map((page) => [page.id, page]));
+    const summary = data.summary || {};
+    if (seoKpis) seoKpis.innerHTML = `
+      <article><span>Health score</span><strong>${escapeHtml(summary.averageScore || 0)}<small>/100</small></strong></article>
+      <article><span>Published</span><strong>${escapeHtml(summary.published || 0)}</strong></article>
+      <article><span>Critical issues</span><strong>${escapeHtml(summary.criticalIssues || 0)}</strong></article>
+      <article><span>Draft opportunities</span><strong>${escapeHtml(summary.drafts || 0)}</strong></article>`;
+    if (seoAuditTimestamp) seoAuditTimestamp.textContent = `Scanned ${new Date(data.generatedAt).toLocaleString()}`;
+    const ordered = [...(data.pages || [])].sort((a, b) => a.score - b.score);
+    seoResults.innerHTML = ordered.length ? ordered.map((page) => {
+      const issues = page.checks.filter((check) => !check.passed);
+      return `<button type="button" class="seo-result" data-audit-content-id="${escapeHtml(page.id)}">
+        <span class="score-ring ${page.score >= 80 ? 'good' : page.score >= 60 ? 'fair' : 'poor'}">${escapeHtml(page.score)}</span>
+        <span class="seo-result-copy"><strong>${escapeHtml(page.title)}</strong><small>${escapeHtml(page.status)} · ${escapeHtml(page.words)} words · ${issues.length} improvements</small>${issues.slice(0, 2).map((issue) => `<em>${escapeHtml(issue.label)}: ${escapeHtml(issue.guidance)}</em>`).join('')}</span>
+      </button>`;
+    }).join('') : '<p class="content-empty">No content pages found.</p>';
+    seoResults.querySelectorAll('[data-audit-content-id]').forEach((button) => button.addEventListener('click', () => loadContentEntry(button.dataset.auditContentId)));
+    renderContentList();
+  } catch (error) {
+    seoResults.innerHTML = `<p class="content-empty error">${escapeHtml(error.message || error)}</p>`;
+  } finally {
+    runSeoAuditBtn && (runSeoAuditBtn.disabled = false);
+  }
+};
 
-    if (name === 'h2' || name === 'h3') {
-      blocks.push({ type: 'heading', level: Number(name.slice(1)), text });
-      return;
-    }
-    if (name === 'blockquote') {
-      blocks.push({ type: 'quote', text });
-      return;
-    }
-    if (name === 'ul' || name === 'ol') {
-      const items = [...node.querySelectorAll(':scope > li')].map((item) => item.textContent.trim()).filter(Boolean);
-      if (items.length) blocks.push({ type: 'list', ordered: name === 'ol', items });
-      return;
-    }
-    blocks.push({ type: 'paragraph', text });
-  });
-  return blocks;
+const editorBlocks = () => {
+  if (!richEditor) return [...mediaBlocksState];
+  syncEditorMode();
+  const html = String(richEditor.innerHTML || '').trim();
+  return [...(html ? [{ type: 'html', html }] : []), ...mediaBlocksState];
 };
 
 const renderEditorBlocks = (blocks = []) => {
   if (!richEditor) return;
-  richEditor.innerHTML = blocks.map((block) => {
+  const richBlocks = blocks.filter((block) => !['image', 'gallery', 'video'].includes(block.type));
+  richEditor.innerHTML = richBlocks.map((block) => {
+    if (block.type === 'html') return block.html || '';
     if (block.type === 'heading') return `<h${block.level}>${escapeHtml(block.text)}</h${block.level}>`;
     if (block.type === 'quote') return `<blockquote>${escapeHtml(block.text)}</blockquote>`;
     if (block.type === 'list') {
@@ -465,6 +502,99 @@ const renderEditorBlocks = (blocks = []) => {
     }
     return `<p>${escapeHtml(block.text || '')}</p>`;
   }).join('');
+  mediaBlocksState = blocks.filter((block) => ['image', 'gallery', 'video'].includes(block.type));
+  if (htmlSource) htmlSource.value = richEditor.innerHTML;
+  sourceMode = false;
+  richEditor.classList.remove('hidden');
+  htmlSource?.classList.add('hidden');
+  if (toggleHtmlBtn) toggleHtmlBtn.textContent = 'HTML';
+  renderMediaBlocks();
+  updateEditorInsights();
+};
+
+const syncEditorMode = () => {
+  if (!richEditor || !htmlSource) return;
+  if (sourceMode) richEditor.innerHTML = sanitizeEditorHtml(htmlSource.value);
+  else htmlSource.value = richEditor.innerHTML;
+};
+
+const sanitizeEditorHtml = (value) => {
+  const template = document.createElement('template');
+  template.innerHTML = String(value || '');
+  template.content.querySelectorAll('script, style, iframe, object, embed, form, input, button, img, video, audio').forEach((element) => element.remove());
+  template.content.querySelectorAll('*').forEach((element) => {
+    [...element.attributes].forEach((attribute) => {
+      const name = attribute.name.toLowerCase();
+      if (name.startsWith('on') || name === 'style') element.removeAttribute(attribute.name);
+      if ((name === 'href' || name === 'src') && !/^(https:\/\/|mailto:|tel:|\/)/i.test(attribute.value)) {
+        element.removeAttribute(attribute.name);
+      }
+    });
+  });
+  return template.innerHTML;
+};
+
+const renderMediaBlocks = () => {
+  if (!mediaBlocksElement) return;
+  if (!mediaBlocksState.length) {
+    mediaBlocksElement.innerHTML = '<p class="content-empty">No gallery or video blocks yet.</p>';
+    return;
+  }
+  mediaBlocksElement.innerHTML = mediaBlocksState.map((block, index) => {
+    if (block.type === 'video') return `
+      <article class="media-item media-video">
+        <div><span>Video</span><strong>${escapeHtml(block.title)}</strong><small>${escapeHtml(block.url)}</small></div>
+        <button type="button" data-remove-media="${index}" aria-label="Remove video">Remove</button>
+      </article>`;
+    const images = block.type === 'gallery' ? block.images : [block];
+    return `<article class="media-item"><div class="media-thumbs">${images.map((image) => `<img src="${escapeHtml(image.url)}" alt="">`).join('')}</div><div class="media-fields"><span>${block.type === 'gallery' ? `Gallery · ${images.length} images` : 'Image'}</span>${images.map((image, imageIndex) => `<label><small>Image ${imageIndex + 1} alt text</small><input type="text" maxlength="180" value="${escapeHtml(image.alt || '')}" data-media-alt="${index}:${imageIndex}"></label>`).join('')}</div><button type="button" data-remove-media="${index}" aria-label="Remove media block">Remove</button></article>`;
+  }).join('');
+  mediaBlocksElement.querySelectorAll('[data-remove-media]').forEach((button) => button.addEventListener('click', () => {
+    mediaBlocksState.splice(Number(button.dataset.removeMedia), 1);
+    renderMediaBlocks();
+    updateEditorInsights();
+  }));
+  mediaBlocksElement.querySelectorAll('[data-media-alt]').forEach((input) => input.addEventListener('input', () => {
+    const [blockIndex, imageIndex] = input.dataset.mediaAlt.split(':').map(Number);
+    const block = mediaBlocksState[blockIndex];
+    const image = block.type === 'gallery' ? block.images[imageIndex] : block;
+    image.alt = input.value.trim();
+    updateEditorInsights();
+  }));
+};
+
+const updateEditorInsights = () => {
+  if (!contentForm || !richEditor) return;
+  syncEditorMode();
+  const text = richEditor.textContent.replace(/\s+/g, ' ').trim();
+  const wordCount = text ? text.split(' ').length : 0;
+  const headingCount = richEditor.querySelectorAll('h2, h3').length;
+  const internalLinks = [...richEditor.querySelectorAll('a[href]')].filter((link) => {
+    const href = link.getAttribute('href') || '';
+    return href.startsWith('/') || href.startsWith(PUBLIC_SITE_URL);
+  }).length;
+  if (editorStats) editorStats.innerHTML = `<span>${wordCount} words</span><span>${headingCount} headings</span><span>${internalLinks} internal links</span>`;
+
+  const seoTitle = String(contentForm.elements.namedItem('seoTitle').value || '').trim();
+  const title = String(contentForm.elements.namedItem('title').value || '').trim();
+  const description = String(contentForm.elements.namedItem('seoDescription').value || '').trim();
+  const query = String(contentForm.elements.namedItem('primaryQuery').value || '').trim().toLowerCase();
+  if (searchPreviewTitle) searchPreviewTitle.textContent = seoTitle || title || 'Page title';
+  if (searchPreviewDescription) searchPreviewDescription.textContent = description || 'Add a useful description of this page.';
+  const checks = [
+    [seoTitle.length >= 30 && seoTitle.length <= 60, 'SEO title is 30-60 characters'],
+    [description.length >= 120 && description.length <= 160, 'Description is 120-160 characters'],
+    [Boolean(query), 'Primary query is assigned'],
+    [Boolean(query) && `${title} ${seoTitle}`.toLowerCase().includes(query), 'Primary query appears in a title'],
+    [wordCount >= 450, 'Page has at least 450 useful words'],
+    [headingCount >= 2, 'Page has descriptive H2/H3 headings'],
+    [internalLinks >= 2, 'Page has at least two internal links'],
+    [mediaBlocksState.every((block) => block.type === 'video'
+      ? Boolean(block.title)
+      : (block.type === 'gallery' ? block.images : [block]).every((image) => Boolean(image.alt))), 'Every media item has accessible text']
+  ];
+  if (liveSeoChecks) liveSeoChecks.innerHTML = `<strong>Live checks</strong>${checks.map(([pass, label]) => `<span class="${pass ? 'pass' : 'todo'}">${pass ? 'Pass' : 'Improve'} · ${escapeHtml(label)}</span>`).join('')}`;
+  updateSeoCounts();
 };
 
 const updateSeoCounts = () => {
@@ -500,7 +630,7 @@ const showContentEditor = (entry = null) => {
   if (previewContentBtn && entry) previewContentBtn.href = `${PUBLIC_SITE_URL}${contentPath(entry)}`;
   contentForm.classList.remove('hidden');
   setContentMessage(entry?.status === 'published' ? 'Changes to this published page go live when saved.' : '');
-  updateSeoCounts();
+  updateEditorInsights();
   renderContentList();
 };
 
@@ -538,7 +668,11 @@ adminTabs.forEach((tab) => {
       item.setAttribute('aria-selected', String(selected));
     });
     adminViews.forEach((view) => view.classList.toggle('hidden', view.id !== tab.dataset.adminTab));
-    if (tab.dataset.adminTab === 'contentPanel' && !contentLoaded) await loadContentList();
+    if (tab.dataset.adminTab === 'contentPanel' && !contentLoaded) {
+      await loadContentList();
+      await runSeoAudit();
+      if (contentEntries.length) await loadContentEntry(contentEntries[0].id);
+    }
   });
 });
 
@@ -567,8 +701,12 @@ contentForm?.elements.namedItem('slug')?.addEventListener('input', (event) => {
   event.target.dataset.edited = 'true';
   event.target.value = event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
 });
-contentForm?.elements.namedItem('seoTitle')?.addEventListener('input', updateSeoCounts);
-contentForm?.elements.namedItem('seoDescription')?.addEventListener('input', updateSeoCounts);
+['title', 'seoTitle', 'seoDescription', 'primaryQuery', 'socialImageUrl', 'socialImageAlt'].forEach((name) => {
+  contentForm?.elements.namedItem(name)?.addEventListener('input', updateEditorInsights);
+});
+richEditor?.addEventListener('input', updateEditorInsights);
+htmlSource?.addEventListener('input', updateEditorInsights);
+runSeoAuditBtn?.addEventListener('click', runSeoAudit);
 
 document.querySelectorAll('[data-block]').forEach((button) => {
   button.addEventListener('click', () => {
@@ -580,6 +718,81 @@ document.querySelectorAll('[data-block]').forEach((button) => {
     }
     document.execCommand('formatBlock', false, block);
   });
+});
+
+document.querySelectorAll('[data-command]').forEach((button) => {
+  button.addEventListener('click', () => {
+    richEditor?.focus();
+    const command = button.dataset.command;
+    if (command === 'createLink') {
+      const url = prompt('Link URL (use /menu or /#reservation for internal links):', '/');
+      if (!url) return;
+      document.execCommand(command, false, url);
+    } else {
+      document.execCommand(command, false);
+    }
+    updateEditorInsights();
+  });
+});
+
+toggleHtmlBtn?.addEventListener('click', () => {
+  syncEditorMode();
+  sourceMode = !sourceMode;
+  richEditor?.classList.toggle('hidden', sourceMode);
+  htmlSource?.classList.toggle('hidden', !sourceMode);
+  toggleHtmlBtn.textContent = sourceMode ? 'Visual' : 'HTML';
+  (sourceMode ? htmlSource : richEditor)?.focus();
+});
+
+insertTableBtn?.addEventListener('click', () => {
+  richEditor?.focus();
+  document.execCommand('insertHTML', false, '<table><thead><tr><th>Heading</th><th>Heading</th></tr></thead><tbody><tr><td>Value</td><td>Value</td></tr></tbody></table><p><br></p>');
+  updateEditorInsights();
+});
+
+uploadMediaBtn?.addEventListener('click', async () => {
+  const files = [...(mediaUpload?.files || [])];
+  if (!files.length) return setContentMessage('Choose one or more images first.', 'error');
+  uploadMediaBtn.disabled = true;
+  setContentMessage(`Uploading ${files.length} image${files.length === 1 ? '' : 's'}...`);
+  try {
+    const images = [];
+    for (const file of files) {
+      const form = new FormData();
+      form.append('file', file);
+      const response = await fetch(`${API_BASE_URL}/admin/media`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${auth.sessionToken}` },
+        body: form
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || `Unable to upload ${file.name}`);
+      images.push({ url: data.url, alt: '', caption: '' });
+    }
+    mediaBlocksState.push(images.length === 1 ? { type: 'image', ...images[0] } : { type: 'gallery', images });
+    const socialImageField = contentForm.elements.namedItem('socialImageUrl');
+    if (!socialImageField.value) socialImageField.value = images[0].url;
+    mediaUpload.value = '';
+    renderMediaBlocks();
+    updateEditorInsights();
+    setContentMessage('Images uploaded. Add descriptive alt text before saving.');
+  } catch (error) {
+    setContentMessage(String(error.message || error), 'error');
+  } finally {
+    uploadMediaBtn.disabled = false;
+  }
+});
+
+addVideoBtn?.addEventListener('click', () => {
+  const url = String(videoUrl?.value || '').trim();
+  const title = String(videoTitle?.value || '').trim();
+  if (!url || !title) return setContentMessage('Add a video URL and accessible title.', 'error');
+  mediaBlocksState.push({ type: 'video', url, title, caption: '' });
+  videoUrl.value = '';
+  videoTitle.value = '';
+  renderMediaBlocks();
+  updateEditorInsights();
+  setContentMessage('Video added. Save the page to validate the YouTube or Vimeo URL.');
 });
 
 contentForm?.addEventListener('submit', async (event) => {
