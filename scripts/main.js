@@ -1048,3 +1048,20 @@ const closeContactModal = () => {
   }
 })();
 
+/* Aggregate search/referral attribution without visitor identifiers. */
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  fetch(`${API_BASE_URL}/analytics/pageview`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    keepalive: true,
+    body: JSON.stringify({
+      path: window.location.pathname,
+      referrer: document.referrer,
+      source: params.get('utm_source') || '',
+      medium: params.get('utm_medium') || '',
+      campaign: params.get('utm_campaign') || ''
+    })
+  }).catch(() => {});
+}, { once: true });
+

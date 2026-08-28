@@ -11,6 +11,10 @@
   padding: clamp(6rem, 12vw, 8rem) 0 clamp(2.5rem, 5vw, 4rem);
 }
 
+.admin-panel.container {
+  width: min(1680px, calc(100% - clamp(2rem, 4vw, 5rem)));
+}
+
 .admin-panel {
   display: grid;
   gap: 1.2rem;
@@ -379,7 +383,6 @@ th {
   gap: 0.7rem;
   flex-wrap: wrap;
 }
-  min-width: 0;
 
 .content-head h2,
 .content-editor h3 {
@@ -406,7 +409,7 @@ th {
 
 .content-layout {
   display: grid;
-  grid-template-columns: minmax(250px, 0.6fr) minmax(0, 1.65fr);
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
   gap: 1rem;
   align-items: start;
 }
@@ -480,7 +483,7 @@ th {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.55rem;
-  max-height: 310px;
+  max-height: 560px;
   overflow-y: auto;
 }
 
@@ -598,6 +601,7 @@ th {
 }
 
 .seo-edit-page {
+  display: inline-block;
   margin: 0.7rem;
   border: 0;
   background: #2a4192;
@@ -605,6 +609,98 @@ th {
   padding: 0.55rem 0.8rem;
   font: 600 0.68rem/1 Manrope, sans-serif;
   cursor: pointer;
+  text-decoration: none;
+}
+
+.seo-operations-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+  gap: 1rem;
+}
+
+.seo-operations-panel {
+  min-width: 0;
+  border: 1px solid rgba(184, 154, 79, 0.28);
+  background: #f5f2e9;
+  color: #173039;
+  padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.seo-operations-panel h3 {
+  margin: 0;
+  font: 600 1.8rem/1.1 "Cormorant Garamond", Georgia, serif;
+}
+
+.seo-operations-panel .admin-eyebrow {
+  color: #8a6e32;
+}
+
+.seo-connections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.seo-connections a {
+  display: grid;
+  gap: 0.3rem;
+  border: 1px solid #ddd9ce;
+  background: #fff;
+  padding: 0.9rem;
+}
+
+.seo-connections a:hover {
+  border-color: #2a4192;
+}
+
+.seo-connections span,
+.seo-connections em {
+  color: #66777c;
+  font-size: 0.7rem;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.seo-connections em {
+  color: #2a4192;
+  font-weight: 600;
+}
+
+.referral-results {
+  display: grid;
+  gap: 1px;
+  margin-top: 1rem;
+  background: #ddd9ce;
+}
+
+.referral-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #fff;
+  padding: 0.7rem 0.8rem;
+}
+
+.referral-row span,
+.referral-row small {
+  display: grid;
+}
+
+.referral-row small {
+  color: #66777c;
+  font-size: 0.65rem;
+}
+
+.referral-row b {
+  color: #2a4192;
+}
+
+.seo-guidance-note {
+  border: 1px solid rgba(184, 154, 79, 0.28);
+  padding: 1rem;
+  color: rgba(248, 245, 240, 0.72);
 }
 
 .seo-data-note {
@@ -1065,6 +1161,10 @@ th {
     grid-template-columns: 1fr;
   }
 
+  .seo-operations-grid {
+    grid-template-columns: 1fr;
+  }
+
   .content-list {
     max-height: 320px;
   }
@@ -1076,8 +1176,12 @@ th {
   }
 
   .admin-tab {
-    flex: 1;
+    flex: 0 0 auto;
     padding-inline: 0.5rem;
+  }
+
+  .admin-tabs {
+    overflow-x: auto;
   }
 
   .content-head,
@@ -1092,7 +1196,8 @@ th {
   }
 
   .seo-editor-layout,
-  .video-adder {
+  .video-adder,
+  .seo-connections {
     grid-template-columns: 1fr;
   }
 

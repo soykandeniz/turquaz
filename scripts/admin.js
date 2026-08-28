@@ -33,6 +33,8 @@ const runSeoAuditBtn = document.getElementById('runSeoAuditBtn');
 const seoKpis = document.getElementById('seoKpis');
 const seoResults = document.getElementById('seoResults');
 const seoAuditTimestamp = document.getElementById('seoAuditTimestamp');
+const referralTotal = document.getElementById('referralTotal');
+const referralResults = document.getElementById('referralResults');
 const contentCount = document.getElementById('contentCount');
 const htmlSource = document.getElementById('htmlSource');
 const toggleHtmlBtn = document.getElementById('toggleHtmlBtn');
@@ -54,6 +56,7 @@ let minDate = '';
 let maxDate = '';
 let contentEntries = [];
 let contentLoaded = false;
+let seoLoaded = false;
 let seoAuditPages = new Map();
 let mediaBlocksState = [];
 let sourceMode = false;
@@ -461,9 +464,9 @@ const runSeoAudit = async () => {
     const summary = data.summary || {};
     if (seoKpis) seoKpis.innerHTML = `
       <article><span>Health score</span><strong>${escapeHtml(summary.averageScore || 0)}<small>/100</small></strong></article>
-      <article><span>Published</span><strong>${escapeHtml(summary.published || 0)}</strong></article>
+      <article><span>Pages scanned</span><strong>${escapeHtml(summary.scanned || summary.pages || 0)}</strong></article>
       <article><span>Critical issues</span><strong>${escapeHtml(summary.criticalIssues || 0)}</strong></article>
-      <article><span>Draft opportunities</span><strong>${escapeHtml(summary.drafts || 0)}</strong></article>`;
+      <article><span>External referrals</span><strong>${escapeHtml(summary.externalReferrals || 0)}</strong></article>`;
     if (seoAuditTimestamp) seoAuditTimestamp.textContent = `Scanned ${new Date(data.generatedAt).toLocaleString()}`;
     const ordered = [...(data.pages || [])].sort((a, b) => a.score - b.score);
     seoResults.innerHTML = ordered.length ? ordered.map((page) => {
@@ -474,10 +477,21 @@ const runSeoAudit = async () => {
           <span class="seo-result-copy"><strong>${escapeHtml(page.title)}</strong><small>${escapeHtml(page.status)} · ${escapeHtml(page.words)} words · ${issues.length} improvements</small>${issues.slice(0, 2).map((issue) => `<em>${escapeHtml(issue.label)}: ${escapeHtml(issue.guidance)}</em>`).join('')}</span>
         </summary>
         <div class="seo-check-list">${page.checks.map((check) => `<div class="seo-check ${check.passed ? 'is-pass' : check.status === 'warning' ? 'is-warning' : 'is-error'}"><span>${check.passed ? 'Pass' : check.status === 'warning' ? 'Review' : 'Missing'}</span><div><strong>${escapeHtml(check.label)} <small>${escapeHtml(check.points)} points</small></strong><p>${escapeHtml(check.guidance)}</p></div></div>`).join('')}</div>
-        <button type="button" class="seo-edit-page" data-audit-content-id="${escapeHtml(page.id)}">Open page editor</button>
+        ${page.editable === false
+          ? `<a class="seo-edit-page" href="${escapeHtml(page.path)}" target="_blank" rel="noopener noreferrer">Open live page</a>`
+          : `<button type="button" class="seo-edit-page" data-audit-content-id="${escapeHtml(page.id)}">Open page editor</button>`}
       </details>`;
     }).join('') : '<p class="content-empty">No content pages found.</p>';
-    seoResults.querySelectorAll('[data-audit-content-id]').forEach((button) => button.addEventListener('click', () => loadContentEntry(button.dataset.auditContentId)));
+    seoResults.querySelectorAll('[data-audit-content-id]').forEach((button) => button.addEventListener('click', async () => {
+      document.querySelector('[data-admin-tab="contentPanel"]')?.click();
+      await loadContentEntry(button.dataset.auditContentId);
+    }));
+    const traffic = data.traffic || { total: 0, referrals: [] };
+    if (referralTotal) referralTotal.textContent = `${traffic.total || 0} visits`;
+    if (referralResults) referralResults.innerHTML = traffic.referrals?.length
+      ? traffic.referrals.map((item) => `<div class="referral-row"><span><strong>${escapeHtml(item.source)}</strong><small>${escapeHtml(item.host || item.medium || 'direct')}</small></span><b>${escapeHtml(item.visits)}</b></div>`).join('')
+      : '<p class="content-empty">No external referrals recorded in the last 30 days yet.</p>';
+    seoLoaded = true;
     renderContentList();
   } catch (error) {
     seoResults.innerHTML = `<p class="content-empty error">${escapeHtml(error.message || error)}</p>`;
@@ -674,9 +688,9 @@ adminTabs.forEach((tab) => {
     adminViews.forEach((view) => view.classList.toggle('hidden', view.id !== tab.dataset.adminTab));
     if (tab.dataset.adminTab === 'contentPanel' && !contentLoaded) {
       await loadContentList();
-      await runSeoAudit();
       if (contentEntries.length) await loadContentEntry(contentEntries[0].id);
     }
+    if (tab.dataset.adminTab === 'seoHealthPanel' && !seoLoaded) await runSeoAudit();
   });
 });
 

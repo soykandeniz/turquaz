@@ -46,6 +46,28 @@ Review Search Console monthly using clicks, impressions, CTR, average position, 
 
 Track GA4 events for reservation CTA clicks, menu views, online-order clicks, catering clicks, and editorial CTA clicks. Never include names, email addresses, phone numbers, reservation notes, or other personal information in analytics events.
 
+## Admin SEO Health dashboard
+
+The admin SEO Health tab scans the rendered Home, Menu and Journal pages, all
+CMS entries, and technical discovery files. Its score covers availability,
+metadata, canonical URLs, headings, indexability, structured data, social
+metadata, internal links, content depth, image accessibility, sitemap and
+robots directives, and the experimental `llms.txt` file.
+
+The first-party referral counter stores daily aggregate rows only: page path,
+source, referring hostname, UTM medium, UTM campaign, visit count and last-seen
+time. It does not store raw IP addresses, cookies, names, email addresses,
+phone numbers or full referring URLs. Collection is rate-limited to 120
+pageviews per hour per purpose-scoped hashed network fingerprint, and the admin
+summary reports the latest 30 days.
+
+These counters are directional signals, not a replacement for platform data.
+Google Search Console remains authoritative for queries, impressions, clicks,
+CTR, indexing and average position. Google Business Profile remains
+authoritative for calls, directions, website actions, reviews and photo
+performance. `llms.txt` and valid structured data can improve machine
+readability but cannot guarantee AI citations or rankings.
+
 ## Google Business Profile
 
 Treat the Google Business Profile as the primary local-search channel. The

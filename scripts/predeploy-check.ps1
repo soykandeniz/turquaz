@@ -31,7 +31,9 @@ $requiredFiles = @(
   'worker/migrations/0004_admin_sessions.sql',
   'worker/migrations/0005_public_rate_limits.sql',
   'worker/migrations/0006_editorial_expansion.sql',
-  'worker/migrations/0007_content_quality_improvements.sql'
+  'worker/migrations/0007_content_quality_improvements.sql',
+  'worker/migrations/0008_seo_traffic.sql',
+  'worker/migrations/0009_editorial_growth.sql'
 )
 foreach ($relativePath in $requiredFiles) {
   if (-not (Test-Path (Join-Path $repoRoot $relativePath))) {
@@ -48,7 +50,7 @@ if ($homeHtml -notmatch 'type="application/ld\+json"') { throw 'Homepage Restaur
 if ($menuHtml -notmatch 'rel="canonical" href="https://www.turquazsf.com/menu"') { throw 'Menu canonical is missing.' }
 if ($adminHtml -notmatch 'content="noindex, nofollow, noarchive"') { throw 'Admin noindex directive is missing.' }
 if ($adminHtml -notmatch 'id="runSeoAuditBtn"' -or $adminHtml -notmatch 'id="mediaUpload"' -or $adminHtml -notmatch 'id="htmlSource"') { throw 'Admin SEO and rich media controls are missing.' }
-if ($homeHtml -notmatch 'href="blog/"' -or $menuHtml -notmatch 'href="blog/"') { throw 'Public Blog navigation is missing.' }
+if ($homeHtml -notmatch 'href="/?blog/"' -or $menuHtml -notmatch 'href="/blog/"') { throw 'Public Blog navigation is missing.' }
 
 $workerConfig = Get-Content -Raw (Join-Path $workerRoot 'wrangler.toml')
 $workerPackage = Get-Content -Raw (Join-Path $workerRoot 'package.json')

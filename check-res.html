@@ -43,7 +43,8 @@
       <section id="adminDashboard" class="admin-dashboard hidden" aria-label="Reservation dashboard">
         <div class="admin-tabs" role="tablist" aria-label="Admin sections">
           <button class="admin-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="reservationsPanel" data-admin-tab="reservationsPanel">Reservations</button>
-          <button class="admin-tab" type="button" role="tab" aria-selected="false" aria-controls="contentPanel" data-admin-tab="contentPanel">Content &amp; SEO</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" aria-controls="contentPanel" data-admin-tab="contentPanel">Content</button>
+          <button class="admin-tab" type="button" role="tab" aria-selected="false" aria-controls="seoHealthPanel" data-admin-tab="seoHealthPanel">SEO Health</button>
         </div>
 
         <section class="admin-view" id="reservationsPanel" role="tabpanel">
@@ -85,12 +86,11 @@
         <section class="admin-view hidden" id="contentPanel" role="tabpanel" aria-labelledby="contentTab">
           <div class="content-head">
             <div>
-              <p class="admin-eyebrow">Organic growth workspace</p>
-              <h2>Content &amp; SEO Studio</h2>
-              <p class="content-intro">Audit pages, resolve technical content gaps, and publish useful stories.</p>
+              <p class="admin-eyebrow">Publishing workspace</p>
+              <h2>Content Studio</h2>
+              <p class="content-intro">Create and maintain useful articles and local landing pages.</p>
             </div>
             <div class="content-head-actions">
-              <button class="btn btn-nav" id="runSeoAuditBtn" type="button">Run SEO Scan</button>
               <button class="btn btn-solid" id="newContentBtn" type="button">New Page</button>
             </div>
           </div>
@@ -99,30 +99,6 @@
             <span class="loading-dot"></span>
             <span>Loading content...</span>
           </div>
-
-          <section class="seo-dashboard" aria-labelledby="seoDashboardTitle">
-            <div class="seo-dashboard-head">
-              <div>
-                <p class="admin-eyebrow">On-page health</p>
-                <h3 id="seoDashboardTitle">SEO Scan</h3>
-              </div>
-              <p id="seoAuditTimestamp" class="seo-audit-time">Not scanned yet</p>
-            </div>
-            <div class="seo-kpis" id="seoKpis">
-              <article><span>Health score</span><strong>--</strong></article>
-              <article><span>Published</span><strong>--</strong></article>
-              <article><span>Critical issues</span><strong>--</strong></article>
-              <article><span>Draft opportunities</span><strong>--</strong></article>
-            </div>
-            <div class="seo-results" id="seoResults">
-              <p class="content-empty">Run a scan to inspect metadata, content depth, headings, links, images and freshness.</p>
-            </div>
-            <div class="seo-data-note">
-              <strong>Rankings and clicks</strong>
-              <span>On-page health is measured here. Real impressions, queries, clicks and positions come from Google Search Console.</span>
-              <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">Open Search Console</a>
-            </div>
-          </section>
 
           <div class="content-layout">
             <section class="content-library" aria-label="Content inventory">
@@ -261,6 +237,60 @@
               </div>
             </form>
           </div>
+        </section>
+
+        <section class="admin-view hidden" id="seoHealthPanel" role="tabpanel" aria-label="SEO health">
+          <div class="content-head">
+            <div>
+              <p class="admin-eyebrow">Search visibility</p>
+              <h2>SEO Health</h2>
+              <p class="content-intro">Inspect the whole public site, discovery signals and measured referral traffic.</p>
+            </div>
+            <button class="btn btn-solid" id="runSeoAuditBtn" type="button">Scan Entire Site</button>
+          </div>
+
+          <section class="seo-dashboard" aria-labelledby="seoDashboardTitle">
+            <div class="seo-dashboard-head">
+              <div>
+                <p class="admin-eyebrow">On-page health</p>
+                <h3 id="seoDashboardTitle">SEO Scan</h3>
+              </div>
+              <p id="seoAuditTimestamp" class="seo-audit-time">Not scanned yet</p>
+            </div>
+            <div class="seo-kpis" id="seoKpis">
+              <article><span>Health score</span><strong>--</strong></article>
+              <article><span>Pages scanned</span><strong>--</strong></article>
+              <article><span>Critical issues</span><strong>--</strong></article>
+              <article><span>External referrals</span><strong>--</strong></article>
+            </div>
+            <div class="seo-results" id="seoResults">
+              <p class="content-empty">Run a scan to inspect public pages, metadata, indexability, structured data, content and links.</p>
+            </div>
+          </section>
+
+          <div class="seo-operations-grid">
+            <section class="seo-operations-panel">
+              <div class="seo-dashboard-head"><div><p class="admin-eyebrow">Discovery</p><h3>Search platforms</h3></div></div>
+              <div class="seo-connections">
+                <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer"><strong>Google Search Console</strong><span>Queries, clicks, impressions, CTR, indexing and Core Web Vitals</span><em>Requires owner access</em></a>
+                <a href="https://business.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Business Profile</strong><span>Calls, directions, website visits, reviews, photos and local visibility</span><em>Requires manager access</em></a>
+                <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener noreferrer"><strong>PageSpeed Insights</strong><span>Free field and lab performance checks for important URLs</span><em>Public tool</em></a>
+                <a href="https://www.bing.com/webmasters/" target="_blank" rel="noopener noreferrer"><strong>Bing Webmaster Tools</strong><span>Search performance, crawl and indexing diagnostics</span><em>Requires owner access</em></a>
+                <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener noreferrer"><strong>Google Rich Results Test</strong><span>Validate supported structured data on public pages</span><em>Public tool</em></a>
+                <a href="https://validator.schema.org/" target="_blank" rel="noopener noreferrer"><strong>Schema.org Validator</strong><span>Inspect restaurant, article, breadcrumb and menu entities</span><em>Public tool</em></a>
+                <a href="/llms.txt" target="_blank" rel="noopener noreferrer"><strong>AI discovery file</strong><span>Review the experimental machine-readable guide for Turquaz</span><em>Not a ranking guarantee</em></a>
+              </div>
+            </section>
+            <section class="seo-operations-panel">
+              <div class="seo-dashboard-head"><div><p class="admin-eyebrow">Last 30 days</p><h3>Referral signals</h3></div><strong id="referralTotal">0 visits</strong></div>
+              <div class="referral-results" id="referralResults"><p class="content-empty">Referral data will appear as visitors reach tracked pages.</p></div>
+            </section>
+          </div>
+
+          <section class="seo-data-note seo-guidance-note">
+            <strong>What this dashboard can prove</strong>
+            <span>Turquaz measures rendered site health and privacy-safe referral counts here. Google rankings, Business Profile actions and AI citations belong to their account reports; no third-party tool can infer those private metrics reliably.</span>
+          </section>
         </section>
       </section>
     </section>

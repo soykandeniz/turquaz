@@ -42,7 +42,7 @@ async function routeRequest(request, env) {
     return Response.redirect('https://www.turquazsf.com/blog/', 308);
   }
 
-  if (path.startsWith('/api/reservations') || path === '/api/contact') {
+  if (path.startsWith('/api/reservations') || path === '/api/contact' || path === '/api/analytics/pageview') {
     return handlePublicApiRequest(request, env, path);
   }
 
@@ -85,7 +85,7 @@ async function routeRequest(request, env) {
         'X-Robots-Tag': 'noindex'
       });
     }
-    return responseHtml(renderContentPage(env, entry), 200, publicHeaders());
+    return responseHtml(await renderContentPage(env, entry), 200, publicHeaders());
   }
 
   return responseHtml(renderErrorPage(env, 404, 'Page not found'), 404, {
@@ -125,22 +125,55 @@ async function handleAdminRequest(request, env, path) {
   }
 
   if (path === '/api/admin/seo/audit' && request.method === 'GET') {
-    const result = await env.DB.prepare('SELECT * FROM content_entries ORDER BY updated_at DESC').all();
+    const [result, trafficResult, staticPages] = await Promise.all([
+      env.DB.prepare('SELECT * FROM content_entries ORDER BY updated_at DESC').all(),
+      env.DB.prepare(`
+        SELECT source, referrer_host AS host, medium, SUM(visits) AS visits
+        FROM seo_traffic_daily
+        WHERE day >= date('now', '-29 days')
+        GROUP BY source, referrer_host, medium
+        ORDER BY visits DESC
+        LIMIT 12
+      `).all(),
+      Promise.all([
+        auditRenderedPage(env, '/', 'Home'),
+        auditRenderedPage(env, '/menu', 'Menu'),
+        auditRenderedPage(env, '/blog/', 'Journal', renderBlogIndex(env)),
+        auditTechnicalDiscovery(env)
+      ])
+    ]);
     const pages = (result.results || []).map(auditContentEntry);
     const published = pages.filter((page) => page.status === 'published');
+    const scannedPages = [...staticPages, ...pages];
+    const scoredPages = [...staticPages, ...published];
+    const referrals = (trafficResult.results || []).map((row) => ({
+      source: row.source,
+      host: row.host,
+      medium: row.medium,
+      visits: Number(row.visits || 0)
+    }));
+    const externalReferrals = referrals
+      .filter((row) => !['direct', 'internal'].includes(row.source))
+      .reduce((total, row) => total + row.visits, 0);
     return json({
       ok: true,
       generatedAt: new Date().toISOString(),
       summary: {
         pages: pages.length,
+        scanned: scoredPages.length,
         published: published.length,
         drafts: pages.filter((page) => page.status === 'draft').length,
-        averageScore: published.length
-          ? Math.round(published.reduce((total, page) => total + page.score, 0) / published.length)
+        averageScore: scoredPages.length
+          ? Math.round(scoredPages.reduce((total, page) => total + page.score, 0) / scoredPages.length)
           : 0,
-        criticalIssues: published.reduce((total, page) => total + page.checks.filter((check) => check.status === 'error').length, 0)
+        criticalIssues: scoredPages.reduce((total, page) => total + page.checks.filter((check) => check.status === 'error').length, 0),
+        externalReferrals
       },
-      pages
+      traffic: {
+        total: referrals.reduce((total, row) => total + row.visits, 0),
+        referrals
+      },
+      pages: scannedPages
     }, 200, noStoreHeaders());
   }
 
@@ -242,6 +275,32 @@ async function handleAdminRequest(request, env, path) {
 
 async function handlePublicApiRequest(request, env, path) {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: apiCorsHeaders(request, env) });
+
+  if (path === '/api/analytics/pageview' && request.method === 'POST') {
+    await enforcePublicRateLimit(request, env, 'pageview', 120, 3600);
+    const input = await readJson(request);
+    const pagePath = String(input.path || '/').split(/[?#]/)[0].slice(0, 180);
+    if (!pagePath.startsWith('/') || pagePath.startsWith('/check-res') || pagePath.startsWith('/api/')) {
+      throw new HttpError(400, 'Invalid analytics path');
+    }
+    let referrerHost = '';
+    try {
+      referrerHost = new URL(String(input.referrer || '')).hostname.toLowerCase().replace(/^www\./, '').slice(0, 120);
+    } catch {}
+    const siteHost = new URL(String(env.SITE_URL || 'https://www.turquazsf.com')).hostname.toLowerCase().replace(/^www\./, '');
+    const sourceInput = telemetryValue(input.source, 80);
+    const source = sourceInput || (!referrerHost ? 'direct' : referrerHost === siteHost ? 'internal' : referrerHost);
+    const medium = telemetryValue(input.medium, 80);
+    const campaign = telemetryValue(input.campaign, 120);
+    const now = new Date().toISOString();
+    await env.DB.prepare(`
+      INSERT INTO seo_traffic_daily (day, path, source, referrer_host, medium, campaign, visits, last_seen_at)
+      VALUES (?, ?, ?, ?, ?, ?, 1, ?)
+      ON CONFLICT(day, path, source, referrer_host, medium, campaign)
+      DO UPDATE SET visits = visits + 1, last_seen_at = excluded.last_seen_at
+    `).bind(now.slice(0, 10), pagePath, source, referrerHost, medium, campaign, now).run();
+    return json({ ok: true }, 202, apiHeaders(request, env));
+  }
 
   if (path === '/api/reservations/availability' && request.method === 'GET') {
     const date = validateDate(new URL(request.url).searchParams.get('date'));
@@ -885,15 +944,25 @@ async function renderBlogIndex(env) {
     title: 'Turquaz Journal | Turkish Food and Culture in San Francisco',
     description: 'Stories about Turkish food, coffee, ingredients and dining in San Francisco from the team at Turquaz.',
     canonicalPath: '/blog/',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Turquaz Journal',
+      url: siteUrl(env, '/blog/'),
+      description: 'Stories about Turkish food, coffee, ingredients and dining in San Francisco from the team at Turquaz.'
+    },
     body: `<main class="journal"><header class="journal-head"><p class="eyebrow">From the kitchen</p><h1>Turquaz Journal</h1><p>Turkish food, coffee and gathering in San Francisco.</p></header><section class="content-grid" aria-label="Articles">${cards}</section></main>`
   });
 }
 
-function renderContentPage(env, entry) {
+async function renderContentPage(env, entry) {
   const typePath = entry.type === 'blog' ? 'blog' : 'san-francisco';
   const canonicalPath = `/${typePath}/${entry.slug}`;
   const blocks = parseBlocks(entry.body_json);
   const articleBody = blocks.map(renderBlock).join('');
+  const leadImage = entry.social_image_url
+    ? `<figure class="article-hero"><img src="${escapeAttr(entry.social_image_url)}" alt="${escapeAttr(entry.social_image_alt)}" decoding="async" fetchpriority="high"></figure>`
+    : '';
   const title = entry.seo_title || entry.title;
   const description = entry.seo_description || entry.excerpt;
   const pageSchema = {
@@ -946,6 +1015,20 @@ function renderContentPage(env, entry) {
   const breadcrumbs = entry.type === 'blog'
     ? '<a href="/">Home</a><span>/</span><a href="/blog/">Journal</a>'
     : '<a href="/">Home</a><span>/</span><span>San Francisco</span>';
+  const relatedResult = await env.DB.prepare(`
+    SELECT type, slug, title
+    FROM content_entries
+    WHERE status = 'published' AND id != ?
+    ORDER BY CASE WHEN type = ? THEN 0 ELSE 1 END, published_at DESC
+    LIMIT 8
+  `).bind(entry.id, entry.type).all();
+  const relatedLinks = (relatedResult.results || []).map((related) => {
+    const relatedPath = related.type === 'blog' ? 'blog' : 'san-francisco';
+    return `<li><a href="/${relatedPath}/${escapeAttr(related.slug)}">${escapeHtml(related.title)}</a></li>`;
+  }).join('');
+  const articleNav = relatedLinks
+    ? `<aside class="article-nav" aria-label="Explore more Turquaz guides"><p class="eyebrow">Explore more</p><ul>${relatedLinks}</ul><a class="article-nav-all" href="/blog/">All journal articles</a></aside>`
+    : '';
 
   return pageShell(env, {
     title,
@@ -955,7 +1038,7 @@ function renderContentPage(env, entry) {
     image: entry.social_image_url,
     imageAlt: entry.social_image_alt,
     schema,
-    body: `<main class="article-shell"><article><nav class="breadcrumbs" aria-label="Breadcrumb">${breadcrumbs}</nav><header class="article-head"><p class="eyebrow">${entry.type === 'blog' ? 'Turquaz Journal' : 'San Francisco dining'}</p><h1>${escapeHtml(entry.title)}</h1><p class="dek">${escapeHtml(entry.excerpt)}</p><p class="meta">${escapeHtml(entry.author_name)} · ${formatDate(entry.published_at)}</p></header>${articleBody}<aside class="article-cta"><h2>Join us at Turquaz</h2><p>Explore our Turkish and Mediterranean menu or reserve a table in San Francisco.</p><div><a class="button" href="/menu">View menu</a><a class="text-link" href="/#reservation">Reserve a table</a></div></aside></article></main>`
+    body: `<main class="article-shell"><div class="article-layout"><article><nav class="breadcrumbs" aria-label="Breadcrumb">${breadcrumbs}</nav><header class="article-head"><p class="eyebrow">${entry.type === 'blog' ? 'Turquaz Journal' : 'San Francisco dining'}</p><h1>${escapeHtml(entry.title)}</h1><p class="dek">${escapeHtml(entry.excerpt)}</p><p class="meta">${escapeHtml(entry.author_name)} · ${formatDate(entry.published_at)}</p></header>${leadImage}${articleBody}<aside class="article-cta"><h2>Join us at Turquaz</h2><p>Explore our Turkish and Mediterranean menu or reserve a table in San Francisco.</p><div><a class="button" href="/menu">View menu</a><a class="text-link" href="/#reservation">Reserve a table</a></div></aside></article>${articleNav}</div></main>`
   });
 }
 
@@ -988,6 +1071,7 @@ function pageShell(env, options) {
   const analyticsId = String(env.GA_MEASUREMENT_ID || '').trim();
   const analytics = /^G-[A-Z0-9]+$/.test(analyticsId) ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${analyticsId}"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${analyticsId}');</script>` : '';
+  const traffic = `<script>addEventListener('load',()=>{const q=new URLSearchParams(location.search);fetch('/api/analytics/pageview',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({path:location.pathname,referrer:document.referrer,source:q.get('utm_source')||'',medium:q.get('utm_medium')||'',campaign:q.get('utm_campaign')||''})}).catch(()=>{})},{once:true})</script>`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -1016,6 +1100,7 @@ function pageShell(env, options) {
   <style>.article-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:48px 0}.article-gallery figure{margin:0}.article-gallery img{width:100%;aspect-ratio:4/3;object-fit:cover}.article-video iframe{width:100%;aspect-ratio:16/9;border:0}.rich-content{font-size:18px}.rich-content a{color:var(--blue)}.rich-content table{display:block;width:100%;overflow-x:auto;border-collapse:collapse}.rich-content th,.rich-content td{padding:10px;border:1px solid #dedbd2;text-align:left}.rich-content hr{margin:48px 0;border:0;border-top:1px solid #dedbd2}@media(max-width:620px){.article-gallery{grid-template-columns:1fr}.article-video{margin-inline:0}}</style>
   ${schema}
   ${analytics}
+  ${traffic}
 </head>
 <body>
   <header class="site-nav"><a class="brand" href="/">turquaz</a><nav aria-label="Main navigation"><a href="/menu">Menu</a><a href="/blog/">Journal</a><a class="reserve" href="/#reservation">Reserve</a></nav></header>
@@ -1026,7 +1111,7 @@ function pageShell(env, options) {
 }
 
 function pageStyles() {
-  return `:root{--ink:#14252a;--blue:#2a4192;--gold:#b8944e;--paper:#fbfaf7}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-serif;line-height:1.75}.site-nav{min-height:72px;padding:16px clamp(20px,5vw,72px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dedbd2;background:#fff}.brand{font:600 32px/1 "Cormorant Garamond",serif;color:var(--blue);text-decoration:none}.site-nav nav{display:flex;align-items:center;gap:24px}.site-nav nav a{color:var(--ink);text-decoration:none;font-size:14px}.site-nav .reserve,.button{background:var(--blue);color:#fff;padding:10px 18px;text-decoration:none}.journal,.article-shell{width:min(1120px,calc(100% - 40px));margin:0 auto}.journal-head,.article-head{padding:clamp(64px,10vw,120px) 0 48px;max-width:780px}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--gold);font-weight:600}h1,h2,h3{font-family:"Cormorant Garamond",serif;line-height:1.08;letter-spacing:0}h1{font-size:clamp(46px,8vw,82px);margin:8px 0 20px}h2{font-size:36px;margin-top:56px}h3{font-size:28px;margin-top:40px}.content-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;padding-bottom:96px}.content-card{border-top:3px solid var(--blue);background:#fff}.content-card img{width:100%;aspect-ratio:16/9;object-fit:cover}.content-card>div{padding:24px}.content-card h2{font-size:31px;margin:8px 0}.content-card h2 a{color:var(--ink);text-decoration:none}.meta{font-size:13px;color:#66777c}.article-shell article{max-width:780px;margin:0 auto;padding-bottom:96px}.breadcrumbs{padding-top:32px;display:flex;gap:10px;font-size:13px}.breadcrumbs a,.text-link{color:var(--blue)}.dek{font-size:20px;color:#4e6269}.article-shell article>p,.article-shell article>ul,.article-shell article>ol,.article-shell article>blockquote{font-size:18px}.article-shell figure{margin:48px 0}.article-shell figure img{width:100%;height:auto}.article-shell figcaption{font-size:13px;color:#66777c}.article-shell blockquote{margin:40px 0;padding:18px 28px;border-left:3px solid var(--gold);font-family:"Cormorant Garamond",serif;font-size:27px}.article-cta{margin-top:64px;padding:32px;border-top:3px solid var(--blue);background:#fff}.article-cta h2{margin:0 0 8px}.article-cta div{display:flex;gap:20px;align-items:center;margin-top:20px}footer{padding:40px clamp(20px,5vw,72px);background:#102f38;color:#fff}footer a{color:#fff}@media(max-width:600px){.site-nav nav a:not(.reserve){display:none}.article-head{padding-top:52px}.article-cta div{align-items:flex-start;flex-direction:column}}`;
+  return `:root{--ink:#14252a;--blue:#2a4192;--gold:#b8944e;--paper:#fbfaf7}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-serif;line-height:1.75}.site-nav{min-height:72px;padding:16px clamp(20px,5vw,72px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dedbd2;background:#fff}.brand{font:600 32px/1 "Cormorant Garamond",serif;color:var(--blue);text-decoration:none}.site-nav nav{display:flex;align-items:center;gap:24px}.site-nav nav a{color:var(--ink);text-decoration:none;font-size:14px}.site-nav .reserve,.button{background:var(--blue);color:#fff;padding:10px 18px;text-decoration:none}.journal,.article-shell{width:min(1240px,calc(100% - 40px));margin:0 auto}.journal-head,.article-head{padding:clamp(64px,10vw,120px) 0 48px;max-width:780px}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--gold);font-weight:600}h1,h2,h3{font-family:"Cormorant Garamond",serif;line-height:1.08;letter-spacing:0}h1{font-size:clamp(46px,8vw,82px);margin:8px 0 20px}h2{font-size:36px;margin-top:56px}h3{font-size:28px;margin-top:40px}.content-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;padding-bottom:96px}.content-card{border-top:3px solid var(--blue);background:#fff}.content-card img{width:100%;aspect-ratio:16/9;object-fit:cover}.content-card>div{padding:24px}.content-card h2{font-size:31px;margin:8px 0}.content-card h2 a{color:var(--ink);text-decoration:none}.meta{font-size:13px;color:#66777c}.article-layout{display:grid;grid-template-columns:minmax(0,780px) minmax(220px,280px);gap:clamp(48px,7vw,96px);align-items:start;justify-content:center}.article-shell article{min-width:0;padding-bottom:96px}.breadcrumbs{padding-top:32px;display:flex;gap:10px;font-size:13px}.breadcrumbs a,.text-link{color:var(--blue)}.dek{font-size:20px;color:#4e6269}.article-shell article>p,.article-shell article>ul,.article-shell article>ol,.article-shell article>blockquote{font-size:18px}.article-shell figure{margin:48px 0}.article-shell figure img{width:100%;height:auto}.article-shell .article-hero{margin:0 0 48px}.article-shell .article-hero img{aspect-ratio:16/9;object-fit:cover}.article-shell figcaption{font-size:13px;color:#66777c}.article-shell blockquote{margin:40px 0;padding:18px 28px;border-left:3px solid var(--gold);font-family:"Cormorant Garamond",serif;font-size:27px}.article-nav{position:sticky;top:32px;margin-top:112px;border-top:3px solid var(--gold);background:#fff;padding:24px}.article-nav ul{display:grid;gap:0;margin:12px 0 18px;padding:0;list-style:none}.article-nav li{border-bottom:1px solid #e5e1d8}.article-nav li a{display:block;padding:10px 0;color:var(--ink);font-size:14px;line-height:1.4;text-decoration:none}.article-nav li a:hover,.article-nav-all{color:var(--blue)}.article-nav-all{font-size:13px;font-weight:600}.article-cta{margin-top:64px;padding:32px;border-top:3px solid var(--blue);background:#fff}.article-cta h2{margin:0 0 8px}.article-cta div{display:flex;gap:20px;align-items:center;margin-top:20px}footer{padding:40px clamp(20px,5vw,72px);background:#102f38;color:#fff}footer a{color:#fff}@media(max-width:900px){.article-layout{grid-template-columns:1fr}.article-nav{position:static;margin:0 0 72px}}@media(max-width:600px){.site-nav nav a:not(.reserve){display:none}.article-head{padding-top:52px}.article-cta div{align-items:flex-start;flex-direction:column}}`;
 }
 
 async function renderSitemap(env) {
@@ -1238,6 +1323,90 @@ function auditContentEntry(row) {
     updatedAt: row.updated_at,
     checks
   };
+}
+
+async function auditRenderedPage(env, path, label, renderedHtml = null) {
+  const canonical = siteUrl(env, path);
+  try {
+    const response = renderedHtml ? null : await fetch(canonical, { headers: { 'User-Agent': 'Turquaz-SEO-Audit/1.0' } });
+    const html = renderedHtml ? await renderedHtml : await response.text();
+    const responseOk = response ? response.ok : true;
+    const responseStatus = response ? response.status : 200;
+    const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1].trim() || '';
+    const description = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i)?.[1] || '';
+    const h1Count = (html.match(/<h1\b/gi) || []).length;
+    const internalLinks = (html.match(/href=["']\/(?!\/)/gi) || []).length;
+    const checks = [
+      seoCheck('HTTP availability', responseOk, `${responseStatus} response from ${path}.`, 15),
+      seoCheck('Document title', title.length >= 20 && title.length <= 70, `${title.length} characters; keep the rendered title descriptive and concise.`, 15),
+      seoCheck('Meta description', description.length >= 70 && description.length <= 170, `${description.length} characters in the rendered description.`, 10),
+      seoCheck('Canonical URL', html.includes(`rel="canonical" href="${canonical}"`) || html.includes(`href="${canonical}" rel="canonical"`), 'Declare the exact preferred HTTPS URL.', 10),
+      seoCheck('Single H1', h1Count === 1, `${h1Count} H1 headings found; each page should have exactly one.`, 10),
+      seoCheck('Indexable', !/<meta\s+name=["']robots["'][^>]*noindex/i.test(html), 'Keep public destinations indexable.', 10),
+      seoCheck('Structured data', /type=["']application\/ld\+json["']/i.test(html), 'Add relevant JSON-LD structured data.', 10),
+      seoCheck('Social metadata', /property=["']og:title["']/i.test(html) && /property=["']og:image["']/i.test(html), 'Provide Open Graph title and image metadata.', 10),
+      seoCheck('Internal discovery', internalLinks >= 3, `${internalLinks} internal links found; connect important site destinations.`, 10)
+    ];
+    return {
+      id: `static:${path}`,
+      type: 'static',
+      path,
+      title: label,
+      status: 'published',
+      editable: false,
+      score: checks.reduce((total, check) => total + (check.passed ? check.points : 0), 0),
+      words: stripMarkup(html).split(/\s+/).filter(Boolean).length,
+      checks
+    };
+  } catch (error) {
+    const checks = [seoCheck('HTTP availability', false, `Could not inspect ${path}: ${error.message}`, 100)];
+    return { id: `static:${path}`, type: 'static', path, title: label, status: 'unavailable', editable: false, score: 0, words: 0, checks };
+  }
+}
+
+async function auditTechnicalDiscovery(env) {
+  const base = String(env.SITE_URL || 'https://www.turquazsf.com').replace(/\/$/, '');
+  try {
+    const [sitemap, llmsResponse] = await Promise.all([
+      renderSitemap(env),
+      fetch(`${base}/llms.txt`)
+    ]);
+    const robots = renderRobots(env);
+    const llms = await llmsResponse.text();
+    const checks = [
+      seoCheck('Robots availability', /user-agent:/i.test(robots), '200 generated response; publish clear crawler directives.', 20),
+      seoCheck('Sitemap declaration', robots.includes(`${base}/sitemap.xml`), 'Declare the canonical XML sitemap in robots.txt.', 15),
+      seoCheck('XML sitemap', /<urlset\b/i.test(sitemap), '200 generated response; provide a valid URL set.', 20),
+      seoCheck('Canonical URL coverage', sitemap.includes(`<loc>${base}/`) && !sitemap.includes('<loc>http:'), 'Use the canonical HTTPS hostname throughout the sitemap.', 15),
+      seoCheck('Content discovery', sitemap.includes(`${base}/blog/`) && sitemap.includes(`${base}/san-francisco/`), 'Include editorial and local landing pages in the sitemap.', 15),
+      seoCheck('AI discovery file', llmsResponse.ok && /turquaz/i.test(llms), 'Maintain llms.txt as an experimental machine-readable guide; it does not guarantee AI citations.', 15, true)
+    ];
+    return {
+      id: 'technical:discovery',
+      type: 'technical',
+      path: '/robots.txt',
+      title: 'Technical & AI discovery',
+      status: 'live',
+      editable: false,
+      score: checks.reduce((total, check) => total + (check.passed ? check.points : 0), 0),
+      words: 0,
+      checks
+    };
+  } catch (error) {
+    const checks = [seoCheck('Crawl discovery', false, `Could not inspect crawl files: ${error.message}`, 100)];
+    return { id: 'technical:discovery', type: 'technical', path: '/robots.txt', title: 'Technical & AI discovery', status: 'unavailable', editable: false, score: 0, words: 0, checks };
+  }
+}
+
+function stripMarkup(value) {
+  return sanitizeHtml(String(value || '').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ''), {
+    allowedTags: [],
+    allowedAttributes: {}
+  }).replace(/\s+/g, ' ').trim();
+}
+
+function telemetryValue(value, maxLength) {
+  return String(value || '').trim().toLowerCase().replace(/[^a-z0-9._ -]/g, '').slice(0, maxLength);
 }
 
 function seoCheck(label, passed, guidance, points, warningOnly = false) {
