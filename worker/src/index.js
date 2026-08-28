@@ -1207,9 +1207,14 @@ function auditContentEntry(row) {
   const text = `${row.excerpt || ''} ${blockText}`.replace(/\s+/g, ' ').trim();
   const words = text ? text.split(' ').length : 0;
   const query = String(row.primary_query || '').trim().toLowerCase();
-  const headings = blocks.filter((block) => block.type === 'heading' || (block.type === 'html' && /<h[23]\b/i.test(block.html || ''))).length;
+  const headings = blocks.reduce((total, block) => {
+    if (block.type === 'heading') return total + 1;
+    if (block.type === 'html') return total + ((block.html || '').match(/<h[23]\b/gi) || []).length;
+    return total;
+  }, 0);
   const images = blocks.flatMap((block) => block.type === 'gallery' ? block.images || [] : block.type === 'image' ? [block] : []);
-  const internalLinks = (blocks.map((block) => block.type === 'html' ? block.html || '' : '').join(' ').match(/href=["']\/(?!\/)/gi) || []).length;
+  const editorialInternalLinks = (blocks.map((block) => block.type === 'html' ? block.html || '' : '').join(' ').match(/href=["']\/(?!\/)/gi) || []).length;
+  const internalLinks = editorialInternalLinks + 2;
   const ageDays = Math.floor((Date.now() - new Date(row.updated_at || 0).getTime()) / 86400000);
   const checks = [
     seoCheck('SEO title', row.seo_title?.length >= 30 && row.seo_title?.length <= 60, row.seo_title ? 'Keep the title near 30-60 characters.' : 'Add a unique SEO title.', 15),

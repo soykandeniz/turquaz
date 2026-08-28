@@ -30,7 +30,8 @@ $requiredFiles = @(
   'worker/migrations/0003_reservations.sql',
   'worker/migrations/0004_admin_sessions.sql',
   'worker/migrations/0005_public_rate_limits.sql',
-  'worker/migrations/0006_editorial_expansion.sql'
+  'worker/migrations/0006_editorial_expansion.sql',
+  'worker/migrations/0007_content_quality_improvements.sql'
 )
 foreach ($relativePath in $requiredFiles) {
   if (-not (Test-Path (Join-Path $repoRoot $relativePath))) {

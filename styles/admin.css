@@ -485,20 +485,33 @@ th {
 }
 
 .seo-result {
-  display: grid;
-  grid-template-columns: 52px 1fr;
-  gap: 0.75rem;
-  align-items: start;
   width: 100%;
   border: 1px solid #ddd9ce;
   background: #fff;
   color: #173039;
-  padding: 0.75rem;
   text-align: left;
-  cursor: pointer;
 }
 
 .seo-result:hover {
+  border-color: #2a4192;
+}
+
+.seo-result summary {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.75rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.seo-result summary::-webkit-details-marker {
+  display: none;
+}
+
+.seo-result[open] {
+  grid-column: 1 / -1;
   border-color: #2a4192;
 }
 
@@ -534,6 +547,64 @@ th {
   color: #8a4d48;
   font-size: 0.69rem;
   font-style: normal;
+}
+
+.seo-check-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border-top: 1px solid #e3dfd5;
+  background: #e3dfd5;
+}
+
+.seo-check {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 0.6rem;
+  background: #fbfaf7;
+  padding: 0.65rem 0.75rem;
+}
+
+.seo-check > span {
+  align-self: start;
+  border: 1px solid;
+  padding: 0.12rem 0.3rem;
+  text-align: center;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.seo-check.is-pass > span { border-color: #4e936b; color: #397451; }
+.seo-check.is-warning > span { border-color: #b8944e; color: #866b30; }
+.seo-check.is-error > span { border-color: #b8534e; color: #984641; }
+
+.seo-check strong {
+  display: block;
+  font-size: 0.74rem;
+}
+
+.seo-check strong small {
+  color: #7a8587;
+  font-weight: 400;
+}
+
+.seo-check p {
+  margin: 0.1rem 0 0;
+  color: #66777c;
+  font-size: 0.67rem;
+  line-height: 1.4;
+}
+
+.seo-edit-page {
+  margin: 0.7rem;
+  border: 0;
+  background: #2a4192;
+  color: #fff;
+  padding: 0.55rem 0.8rem;
+  font: 600 0.68rem/1 Manrope, sans-serif;
+  cursor: pointer;
 }
 
 .seo-data-note {
@@ -1022,6 +1093,10 @@ th {
 
   .seo-editor-layout,
   .video-adder {
+    grid-template-columns: 1fr;
+  }
+
+  .seo-check-list {
     grid-template-columns: 1fr;
   }
 

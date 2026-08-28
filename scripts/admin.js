@@ -468,10 +468,14 @@ const runSeoAudit = async () => {
     const ordered = [...(data.pages || [])].sort((a, b) => a.score - b.score);
     seoResults.innerHTML = ordered.length ? ordered.map((page) => {
       const issues = page.checks.filter((check) => !check.passed);
-      return `<button type="button" class="seo-result" data-audit-content-id="${escapeHtml(page.id)}">
-        <span class="score-ring ${page.score >= 80 ? 'good' : page.score >= 60 ? 'fair' : 'poor'}">${escapeHtml(page.score)}</span>
-        <span class="seo-result-copy"><strong>${escapeHtml(page.title)}</strong><small>${escapeHtml(page.status)} · ${escapeHtml(page.words)} words · ${issues.length} improvements</small>${issues.slice(0, 2).map((issue) => `<em>${escapeHtml(issue.label)}: ${escapeHtml(issue.guidance)}</em>`).join('')}</span>
-      </button>`;
+      return `<details class="seo-result">
+        <summary>
+          <span class="score-ring ${page.score >= 80 ? 'good' : page.score >= 60 ? 'fair' : 'poor'}">${escapeHtml(page.score)}</span>
+          <span class="seo-result-copy"><strong>${escapeHtml(page.title)}</strong><small>${escapeHtml(page.status)} · ${escapeHtml(page.words)} words · ${issues.length} improvements</small>${issues.slice(0, 2).map((issue) => `<em>${escapeHtml(issue.label)}: ${escapeHtml(issue.guidance)}</em>`).join('')}</span>
+        </summary>
+        <div class="seo-check-list">${page.checks.map((check) => `<div class="seo-check ${check.passed ? 'is-pass' : check.status === 'warning' ? 'is-warning' : 'is-error'}"><span>${check.passed ? 'Pass' : check.status === 'warning' ? 'Review' : 'Missing'}</span><div><strong>${escapeHtml(check.label)} <small>${escapeHtml(check.points)} points</small></strong><p>${escapeHtml(check.guidance)}</p></div></div>`).join('')}</div>
+        <button type="button" class="seo-edit-page" data-audit-content-id="${escapeHtml(page.id)}">Open page editor</button>
+      </details>`;
     }).join('') : '<p class="content-empty">No content pages found.</p>';
     seoResults.querySelectorAll('[data-audit-content-id]').forEach((button) => button.addEventListener('click', () => loadContentEntry(button.dataset.auditContentId)));
     renderContentList();
