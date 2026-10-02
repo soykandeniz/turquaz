@@ -32,7 +32,13 @@ function doPost(event) {
     if (replyTo) options.replyTo = replyTo;
     if (senderEmail) {
       ensureAuthorizedSender_(senderEmail);
-      options.from = senderEmail;
+      var primaryEmail = String(
+        Session.getEffectiveUser().getEmail() || ''
+      ).toLowerCase();
+
+      if (senderEmail.toLowerCase() !== primaryEmail) {
+        options.from = senderEmail;
+      }
     }
 
     GmailApp.sendEmail(to, subject, plainText_(html), options);

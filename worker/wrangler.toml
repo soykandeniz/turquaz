@@ -8,7 +8,7 @@ SITE_URL = "https://www.turquazsf.com"
 SITE_NAME = "Turquaz"
 ADMIN_USER = "admin"
 NOTIFICATION_EMAIL = "sf@oklavacafe.com"
-EMAIL_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwBKduBq_BzpHv4t0yZ3fRWholk1EIRx2GWUyiVQCV9SHESyBHLAXvZsHd2556HjLp0lw/exec"
+EMAIL_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxU-2bA8IPsLpl9QyFCP6jaKgjEcOnsjq1lm-G5G202x5sBo1pEWsUqE7gsOe-YXVE/exec"
 GA_MEASUREMENT_ID = "G-BTGPBFN65C"
 
 [[d1_databases]]

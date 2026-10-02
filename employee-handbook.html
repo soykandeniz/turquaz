@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Turquaz — Employee Handbook 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@300;400;500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:       #2a4192;
+  --navy-dark:  #1c2e6e;
+  --navy-soft:  #eef1fa;
+  --gold:       #c9a96e;
+  --gold-soft:  #f7f1e4;
+  --cream:      #faf8f4;
+  --cream-dark: #f0e8d8;
+  --text:       #1a1a2e;
+  --text-mid:   #3d3d55;
+  --text-light: #6b6b85;
+  --border:     #ddd4c2;
+  --rule:       #e6e1d5;
+  --alert:      #a8402f;
+  --alert-soft: #fbf0ee;
+  --ok:         #2f6b45;
+  --ok-soft:    #eef5f0;
+}
+
+html { font-size: 10pt; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: #e9e6e0;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+/* ══════════════ SCREEN CHROME (hidden in print) ══════════════ */
+
+.toolbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(255,255,255,0.94);
+  backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  z-index: 60;
+}
+
+.toolbar-brand {
+  font-family: 'Great Vibes', cursive;
+  font-size: 25pt;
+  color: var(--navy);
+  line-height: 1;
+}
+
+.toolbar-doc {
+  font-size: 8pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-left: 14px;
+  padding-left: 14px;
+  border-left: 1px solid var(--rule);
+}
+
+.toolbar-left { display: flex; align-items: baseline; }
+
+.btn-print {
+  font-family: inherit;
+  font-size: 8.5pt;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--navy);
+  border: none;
+  border-radius: 999px;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+.btn-print:hover { background: var(--navy-dark); transform: translateY(-1px); }
+
+.sidenav {
+  position: fixed;
+  top: 56px; bottom: 0; left: 0;
+  width: 264px;
+  overflow-y: auto;
+  background: #fff;
+  border-right: 1px solid var(--rule);
+  padding: 22px 8px 60px 20px;
+  z-index: 50;
+}
+
+.sidenav-title {
+  font-size: 7pt;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.sidenav a {
+  display: block;
+  font-size: 8.6pt;
+  color: var(--text-mid);
+  text-decoration: none;
+  padding: 5px 10px 5px 12px;
+  border-left: 2px solid transparent;
+  border-radius: 0 4px 4px 0;
+  transition: all .15s ease;
+}
+.sidenav a:hover { color: var(--navy); background: var(--navy-soft); border-left-color: var(--gold); }
+.sidenav a.lvl1 { font-weight: 700; margin-top: 10px; color: var(--navy); }
+.sidenav a.lvl2 { padding-left: 24px; font-size: 8.2pt; }
+
+.stage { padding: 56px 0 40px 264px; }
+
+/* ══════════════ PAGE ══════════════ */
+
+.sheet {
+  width: 8.5in;
+  margin: 26px auto;
+  background: #fff;
+  padding: 0.78in 0.85in 0.7in;
+  box-shadow: 0 8px 42px rgba(0,0,0,0.13);
+  border-radius: 2px;
+}
+
+@media print {
+  html, body { background: #fff; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .toolbar, .sidenav, .noprint { display: none !important; }
+  .stage { padding: 0; }
+  .sheet { width: auto; margin: 0; padding: 0; box-shadow: none; border-radius: 0; }
+  a { text-decoration: none; color: inherit; }
+  h1, h2, h3, h4, .h-rule { break-after: avoid-page; page-break-after: avoid; }
+  h2, h3, .h-rule { orphans: 3; widows: 3; }
+  .callout, table, .kv, .chapter-open, .cover, .ack-box, .grid2, .sig-row { break-inside: avoid; page-break-inside: avoid; }
+  li, tr, dt, dd { break-inside: avoid; page-break-inside: avoid; }
+  p { orphans: 2; widows: 2; }
+}
+
+@page { size: letter; margin: 0.72in 0.8in 0.68in; }
+
+.break { page-break-before: always; break-before: page; }
+
+/* ══════════════ COVER ══════════════ */
+
+.cover {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 62%, #16265c 100%);
+  color: #fff;
+  margin: -0.78in -0.85in 0;
+  padding: 1.5in 0.85in 1.1in;
+  min-height: 10.6in;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+@media print { .cover { margin: -0.72in -0.8in 0; padding: 1.45in 0.8in 0.55in; min-height: 10.28in; } }
+
+.cover::after {
+  content: '';
+  position: absolute;
+  right: -3in; bottom: -3.4in;
+  width: 7.6in; height: 7.6in;
+  border-radius: 50%;
+  border: 1px solid rgba(201,169,110,0.30);
+  box-shadow: inset 0 0 0 34px rgba(201,169,110,0.06);
+}
+
+.cover-kicker {
+  font-size: 7.5pt;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.cover-mark {
+  font-family: 'Great Vibes', cursive;
+  font-size: 74pt;
+  line-height: 0.94;
+  margin: 0.32in 0 0.06in;
+}
+
+.cover-est { font-size: 8pt; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,255,255,0.62); }
+
+.cover-rule { width: 1.5in; height: 2px; background: var(--gold); margin: 0.5in 0 0.3in; }
+
+.cover-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42pt;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.cover-sub {
+  font-size: 10.5pt;
+  color: rgba(255,255,255,0.76);
+  margin-top: 0.14in;
+  max-width: 4.6in;
+  line-height: 1.6;
+}
+
+.cover-foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 0.4in;
+  font-size: 8pt;
+  color: rgba(255,255,255,0.68);
+  line-height: 1.85;
+  border-top: 1px solid rgba(255,255,255,0.18);
+  padding-top: 0.2in;
+  position: relative;
+  z-index: 2;
+}
+
+.cover-edition {
+  text-align: right;
+  font-size: 8pt;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* ══════════════ TYPE ══════════════ */
+
+.chapter-open {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.22in;
+  border-bottom: 2px solid var(--navy);
+  padding-bottom: 0.12in;
+  margin: 0 0 0.24in;
+}
+
+.chapter-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40pt;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+}
+
+.chapter-titles { padding-top: 3px; }
+
+.chapter-eyebrow {
+  font-size: 6.8pt;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+h1.chapter-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 25pt;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.05;
+  letter-spacing: 0.005em;
+}
+
+h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15.5pt;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 0.21in 0 0.03in;
+  line-height: 1.2;
+}
+
+h2 .h-num {
+  font-family: 'Manrope', sans-serif;
+  font-size: 8pt;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  vertical-align: 0.14em;
+  margin-right: 7px;
+}
+
+h2 + .h-rule { height: 1px; background: linear-gradient(to right, var(--gold) 12%, var(--rule) 12%, var(--rule) 100%); margin-bottom: 0.09in; }
+
+h3 {
+  font-size: 9.6pt;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0.02em;
+  margin: 0.15in 0 0.03in;
+}
+
+h4 {
+  font-size: 7.4pt;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0.14in 0 0.04in;
+}
+
+p { margin-bottom: 0.075in; }
+p.lead { font-size: 11pt; color: var(--text-mid); font-family: 'Cormorant Garamond', serif; font-style: italic; line-height: 1.5; }
+
+ul, ol { margin: 0.045in 0 0.09in 0.22in; }
+li { margin-bottom: 0.038in; padding-left: 0.03in; }
+ul li::marker { color: var(--gold); }
+ol li::marker { color: var(--gold); font-weight: 700; font-size: 0.92em; }
+li > ul, li > ol { margin-top: 0.04in; margin-bottom: 0.02in; }
+
+strong { font-weight: 700; color: var(--text); }
+em { font-style: italic; }
+a { color: var(--navy); }
+
+.tight { margin-bottom: 0.03in; }
+.muted { color: var(--text-light); font-size: 8.4pt; }
+
+/* ══════════════ COMPONENTS ══════════════ */
+
+.callout {
+  border-left: 3px solid var(--gold);
+  background: var(--gold-soft);
+  padding: 0.11in 0.16in;
+  margin: 0.12in 0;
+  border-radius: 0 5px 5px 0;
+  font-size: 9pt;
+  line-height: 1.55;
+}
+
+.callout-legal { border-left-color: var(--navy); background: var(--navy-soft); }
+.callout-alert { border-left-color: var(--alert); background: var(--alert-soft); }
+.callout-ok    { border-left-color: var(--ok);    background: var(--ok-soft); }
+
+.callout-label {
+  display: block;
+  font-size: 6.6pt;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 3px;
+}
+.callout-legal .callout-label { color: var(--navy); }
+.callout-alert .callout-label { color: var(--alert); }
+.callout-ok    .callout-label { color: var(--ok); }
+.callout p:last-child, .callout ul:last-child, .callout ol:last-child { margin-bottom: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.12in 0;
+  font-size: 8.7pt;
+}
+
+thead th {
+  background: var(--navy);
+  color: #fff;
+  text-align: left;
+  font-size: 7pt;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 7px 9px;
+}
+
+tbody td { padding: 7px 9px; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.5; }
+tbody tr:nth-child(even) td { background: #fbfaf7; }
+tbody tr:last-child td { border-bottom: 1px solid var(--border); }
+td.num { white-space: nowrap; font-weight: 700; color: var(--navy); }
+
+.kv {
+  display: grid;
+  grid-template-columns: 1.35in 1fr;
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.12in 0;
+  font-size: 8.8pt;
+}
+.kv dt { background: #fbfaf7; padding: 7px 11px; font-weight: 700; color: var(--navy); border-bottom: 1px solid var(--rule); font-size: 8.2pt; }
+.kv dd { padding: 7px 11px; border-bottom: 1px solid var(--rule); }
+.kv dt:last-of-type, .kv dd:last-of-type { border-bottom: none; }
+
+.chip {
+  display: inline-block;
+  font-size: 6.4pt;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  vertical-align: 0.1em;
+  margin-left: 5px;
+  white-space: nowrap;
+}
+.chip-ca { background: var(--navy-soft); color: var(--navy); border: 1px solid #c3cdec; }
+.chip-sf { background: #eaf3f6; color: #1c5a6e; border: 1px solid #bcd8e1; }
+.chip-tq { background: var(--gold-soft); color: #8a6a28; border: 1px solid #e2cfa4; }
+.chip-req{ background: var(--alert-soft); color: var(--alert); border: 1px solid #e6c2ba; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.32in; }
+.grid2 > div { min-width: 0; }
+
+/* ══════════════ TOC ══════════════ */
+
+.toc-head {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22pt;
+  font-weight: 600;
+  color: var(--navy);
+  border-bottom: 2px solid var(--navy);
+  padding-bottom: 0.05in;
+  margin-bottom: 0.1in;
+}
+
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.4in; }
+
+.toc-ch {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0.075in 0 0.015in;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--rule);
+}
+.toc-ch-num { font-family: 'Cormorant Garamond', serif; font-size: 11.5pt; font-weight: 700; color: var(--gold); line-height: 1; }
+.toc-ch-name { font-family: 'Cormorant Garamond', serif; font-size: 11pt; font-weight: 600; color: var(--navy); line-height: 1.1; }
+.toc-sub { list-style: none; margin: 0 0 0 0.22in; }
+.toc-sub li { font-size: 7.3pt; color: var(--text-mid); margin-bottom: 0; line-height: 1.32; }
+.toc-sub li a { text-decoration: none; color: inherit; }
+.toc-sub li a:hover { color: var(--navy); }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.05in 0.2in;
+  font-size: 6.8pt;
+  color: var(--text-light);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.06in 0;
+  margin-top: 0.12in;
+  align-items: center;
+}
+
+/* ══════════════ ACKNOWLEDGEMENT ══════════════ */
+
+.ack-box {
+  border: 1.5px solid var(--navy);
+  border-radius: 8px;
+  padding: 0.22in 0.26in;
+  margin-top: 0.18in;
+  background: #fdfcfa;
+}
+
+.sig-row { display: grid; grid-template-columns: 1.5in 1fr; gap: 0.16in; align-items: end; margin-top: 0.22in; }
+.sig-label { font-size: 8pt; font-weight: 700; color: var(--navy); letter-spacing: 0.04em; }
+.sig-line { border-bottom: 1px solid var(--text); height: 0.28in; }
+
+/* signature pages are compressed so each fits a single sheet */
+#ack .ack-box { padding: 0.18in 0.22in; }
+#ack .ack-box p { font-size: 9.1pt; margin-bottom: 0.055in; line-height: 1.5; }
+#ack .ack-box li { font-size: 8.7pt; margin-bottom: 0.025in; line-height: 1.45; }
+#ack .sig-row { margin-top: 0.145in; }
+#ack .sig-line { height: 0.24in; }
+
+.doc-foot {
+  margin-top: 0.32in;
+  padding-top: 0.1in;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 7.2pt;
+  color: var(--text-light);
+}
+.doc-foot-brand { font-family: 'Great Vibes', cursive; font-size: 15pt; color: var(--navy); line-height: 1; }
+
+@media (max-width: 1100px) {
+  .sidenav { display: none; }
+  .stage { padding-left: 0; }
+  .sheet { width: auto; max-width: 8.5in; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar noprint">
+  <div class="toolbar-left">
+    <span class="toolbar-brand">turquaz</span>
+    <span class="toolbar-doc">Employee Handbook &middot; 2026</span>
+  </div>
+  <button class="btn-print" onclick="window.print()">Save as PDF</button>
+</div>
+
+<nav class="sidenav noprint" aria-label="Handbook contents">
+  <p class="sidenav-title">Contents</p>
+  <a class="lvl1" href="#ch1">1 &nbsp;Welcome</a>
+  <a class="lvl1" href="#ch2">2 &nbsp;Employment Basics</a>
+  <a class="lvl1" href="#ch3">3 &nbsp;A Respectful Workplace</a>
+  <a class="lvl1" href="#ch4">4 &nbsp;Safety, Health &amp; Security</a>
+  <a class="lvl1" href="#ch5">5 &nbsp;Food Safety &amp; Quality</a>
+  <a class="lvl1" href="#ch6">6 &nbsp;Workplace Policies</a>
+  <a class="lvl1" href="#ch7">7 &nbsp;Guest Experience &amp; Operations</a>
+  <a class="lvl1" href="#ch8">8 &nbsp;Pay &amp; Hours</a>
+  <a class="lvl1" href="#ch9">9 &nbsp;Leaves &amp; Time Off</a>
+  <a class="lvl1" href="#ch10">10 &nbsp;Benefits</a>
+  <a class="lvl1" href="#ch11">11 &nbsp;Ending Employment</a>
+  <a class="lvl1" href="#ch12">12 &nbsp;Closing</a>
+  <a class="lvl1" href="#ack">&nbsp;&nbsp;&nbsp;Acknowledgement</a>
+</nav>
+
+<div class="stage">
+<article class="sheet">
+
+<!-- ══════════════════════ COVER ══════════════════════ -->
+<section class="cover">
+  <p class="cover-kicker">Kitchen &middot; Bakery &middot; Coffee</p>
+  <div class="cover-mark">turquaz</div>
+  <p class="cover-est">Est. 2025 &middot; San Francisco</p>
+
+  <div class="cover-rule"></div>
+  <h1 class="cover-title">Employee<br>Handbook</h1>
+  <p class="cover-sub">Everything you need to know about working at Turquaz — our standards, your rights, and the promises we make to each other.</p>
+
+  <div class="cover-foot">
+    <div>
+      TURKUAZ SF INC, doing business as Turquaz<br>
+      1198 Mission St, San Francisco, CA 94102<br>
+      +1 415-791-0770 &middot; sf@turquazsf.com &middot; turquazsf.com
+    </div>
+    <div class="cover-edition">
+      Edition 2026<br>
+      <span style="color:rgba(255,255,255,0.5);">Rev. 01</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ TABLE OF CONTENTS ══════════════════════ -->
+<section class="break" id="toc">
+  <h2 class="toc-head" style="font-family:'Cormorant Garamond',serif;">Table of Contents</h2>
+
+  <div class="toc-grid">
+    <div>
+      <div class="toc-ch"><span class="toc-ch-num">1</span><span class="toc-ch-name">Welcome</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s1-1">1.1 About Turquaz</a></li>
+        <li><a href="#s1-2">1.2 What We Stand For</a></li>
+        <li><a href="#s1-3">1.3 How to Use This Handbook</a></li>
+        <li><a href="#s1-4">1.4 Open Door: Questions &amp; Concerns</a></li>
+        <li><a href="#s1-5">1.5 Language &amp; Accessibility</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">2</span><span class="toc-ch-name">Employment Basics</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s2-1">2.1 At-Will Employment</a></li>
+        <li><a href="#s2-2">2.2 Equal Employment Opportunity</a></li>
+        <li><a href="#s2-3">2.3 Fair Chance / Arrest &amp; Conviction History</a></li>
+        <li><a href="#s2-4">2.4 Reasonable Accommodation</a></li>
+        <li><a href="#s2-5">2.5 Lactation Accommodation</a></li>
+        <li><a href="#s2-6">2.6 Employment Classifications</a></li>
+        <li><a href="#s2-7">2.7 Personnel Records &amp; Your Right to Inspect</a></li>
+        <li><a href="#s2-8">2.8 Work Authorization</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">3</span><span class="toc-ch-name">A Respectful Workplace</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s3-1">3.1 Anti-Harassment Policy</a></li>
+        <li><a href="#s3-2">3.2 How to Report</a></li>
+        <li><a href="#s3-3">3.3 Investigations</a></li>
+        <li><a href="#s3-4">3.4 Anti-Retaliation &amp; Whistleblower</a></li>
+        <li><a href="#s3-5">3.5 Harassment by Guests, Vendors &amp; Couriers</a></li>
+        <li><a href="#s3-6">3.6 Fraternization</a></li>
+        <li><a href="#s3-7">3.7 Drugs &amp; Alcohol</a></li>
+        <li><a href="#s3-8">3.8 Required Harassment Prevention Training</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">4</span><span class="toc-ch-name">Safety, Health &amp; Security</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s4-1">4.1 Injury &amp; Illness Prevention Program</a></li>
+        <li><a href="#s4-2">4.2 Workplace Violence Prevention Plan</a></li>
+        <li><a href="#s4-3">4.3 Indoor Heat Illness Prevention</a></li>
+        <li><a href="#s4-4">4.4 Kitchen &amp; Bakery Equipment Safety</a></li>
+        <li><a href="#s4-5">4.5 Injury Reporting &amp; Workers' Compensation</a></li>
+        <li><a href="#s4-6">4.6 Emergency Procedures</a></li>
+        <li><a href="#s4-7">4.7 Building Security &amp; Cash Safety</a></li>
+        <li><a href="#s4-8">4.8 Crime, Domestic Violence &amp; Stalking Victims</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">5</span><span class="toc-ch-name">Food Safety &amp; Quality</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s5-1">5.1 Food Handler Card &amp; Manager Certification</a></li>
+        <li><a href="#s5-2">5.2 Employee Health Reporting</a></li>
+        <li><a href="#s5-3">5.3 Personal Hygiene &amp; Handwashing</a></li>
+        <li><a href="#s5-4">5.4 Time &amp; Temperature Control</a></li>
+        <li><a href="#s5-5">5.5 Allergen Awareness</a></li>
+        <li><a href="#s5-6">5.6 Halal Integrity</a></li>
+        <li><a href="#s5-7">5.7 Health Inspections</a></li>
+        <li><a href="#s5-8">5.8 Recipe &amp; Presentation Standards</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">6</span><span class="toc-ch-name">Workplace Policies</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s6-1">6.1 Standards of Conduct</a></li>
+        <li><a href="#s6-2">6.2 Attendance &amp; Punctuality</a></li>
+        <li><a href="#s6-3">6.3 Scheduling, Shift Trades &amp; Time Off</a></li>
+        <li><a href="#s6-4">6.4 Blackout Periods</a></li>
+        <li><a href="#s6-5">6.5 Uniform, Dress Code &amp; Grooming</a></li>
+        <li><a href="#s6-6">6.6 Personal Phone Use</a></li>
+        <li><a href="#s6-7">6.7 Company Property &amp; Technology</a></li>
+        <li><a href="#s6-8">6.8 Camera Surveillance</a></li>
+        <li><a href="#s6-9">6.9 Social Media &amp; Guest Privacy</a></li>
+        <li><a href="#s6-10">6.10 Confidential Information &amp; Recipes</a></li>
+        <li><a href="#s6-11">6.11 Conflicts of Interest</a></li>
+        <li><a href="#s6-12">6.12 Solicitation &amp; Distribution</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="toc-ch"><span class="toc-ch-num">7</span><span class="toc-ch-name">Guest Experience &amp; Operations</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s7-1">7.1 Our Service Standard</a></li>
+        <li><a href="#s7-2">7.2 Reservations &amp; Table Management</a></li>
+        <li><a href="#s7-3">7.3 POS, Cash, Voids &amp; Comps</a></li>
+        <li><a href="#s7-4">7.4 Online Orders, Delivery &amp; Catering</a></li>
+        <li><a href="#s7-5">7.5 BYOB &amp; Corkage</a></li>
+        <li><a href="#s7-6">7.6 Bakery Production, Lead Times &amp; Waste</a></li>
+        <li><a href="#s7-7">7.7 Guest Complaints &amp; Allergen Questions</a></li>
+        <li><a href="#s7-8">7.8 Opening &amp; Closing Duties</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">8</span><span class="toc-ch-name">Pay &amp; Hours</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s8-1">8.1 Timekeeping</a></li>
+        <li><a href="#s8-2">8.2 Workweek &amp; Paydays</a></li>
+        <li><a href="#s8-3">8.3 Minimum Wage</a></li>
+        <li><a href="#s8-4">8.4 Overtime</a></li>
+        <li><a href="#s8-5">8.5 Meal Periods &amp; Waivers</a></li>
+        <li><a href="#s8-6">8.6 Rest &amp; Recovery Breaks</a></li>
+        <li><a href="#s8-7">8.7 Reporting Time Pay &amp; Split Shifts</a></li>
+        <li><a href="#s8-8">8.8 Tips &amp; Tip Pooling</a></li>
+        <li><a href="#s8-9">8.9 Expense &amp; Mileage Reimbursement</a></li>
+        <li><a href="#s8-10">8.10 Wage Statements &amp; Payroll Errors</a></li>
+        <li><a href="#s8-11">8.11 Referral Bonus</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">9</span><span class="toc-ch-name">Leaves &amp; Time Off</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s9-1">9.1 Paid Sick Leave</a></li>
+        <li><a href="#s9-2">9.2 Family &amp; Medical Leave (CFRA)</a></li>
+        <li><a href="#s9-3">9.3 Pregnancy Disability Leave</a></li>
+        <li><a href="#s9-4">9.4 Reproductive Loss Leave</a></li>
+        <li><a href="#s9-5">9.5 Bereavement Leave</a></li>
+        <li><a href="#s9-6">9.6 State Disability &amp; Paid Family Leave</a></li>
+        <li><a href="#s9-7">9.7 Jury Duty &amp; Witness Leave</a></li>
+        <li><a href="#s9-8">9.8 Voting Leave</a></li>
+        <li><a href="#s9-9">9.9 School Activities &amp; Appearances</a></li>
+        <li><a href="#s9-10">9.10 Military &amp; Military Spouse Leave</a></li>
+        <li><a href="#s9-11">9.11 Emergency Condition Leave</a></li>
+        <li><a href="#s9-12">9.12 Personal Leave of Absence</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">10</span><span class="toc-ch-name">Benefits</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s10-1">10.1 Eligibility Timeline</a></li>
+        <li><a href="#s10-2">10.2 Employee Meal &amp; Discount</a></li>
+        <li><a href="#s10-3">10.3 Retirement Savings</a></li>
+        <li><a href="#s10-4">10.4 Health Care &amp; Commuter Programs</a></li>
+        <li><a href="#s10-5">10.5 Training &amp; Growth</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">11</span><span class="toc-ch-name">Ending Employment</span></div>
+      <ul class="toc-sub">
+        <li><a href="#s11-1">11.1 Resignation</a></li>
+        <li><a href="#s11-2">11.2 Final Pay</a></li>
+        <li><a href="#s11-3">11.3 Return of Property</a></li>
+        <li><a href="#s11-4">11.4 Continuation of Coverage</a></li>
+        <li><a href="#s11-5">11.5 Rehire</a></li>
+      </ul>
+
+      <div class="toc-ch"><span class="toc-ch-num">12</span><span class="toc-ch-name">Closing</span></div>
+      <ul class="toc-sub">
+        <li><a href="#ack">Handbook Acknowledgement</a></li>
+        <li><a href="#ack2">Meal Period Waiver (optional)</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><strong style="color:var(--text-mid);">Tags:</strong></span>
+    <span><span class="chip chip-ca" style="margin-left:0;">CA Law</span> California</span>
+    <span><span class="chip chip-sf" style="margin-left:0;">SF Law</span> San Francisco</span>
+    <span><span class="chip chip-tq" style="margin-left:0;">Turquaz</span> House rule</span>
+    <span><span class="chip chip-req" style="margin-left:0;">Action Required</span> You must act</span>
+  </div>
+</section>
+
+<!-- ══════════════════════ CH 1 ══════════════════════ -->
+<section class="break" id="ch1">
+  <div class="chapter-open">
+    <div class="chapter-num">01</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter One</p>
+      <h1 class="chapter-title">Welcome</h1>
+    </div>
+  </div>
+
+  <p class="lead">Hoş geldiniz. Welcome to Turquaz — we're glad you're here.</p>
+
+  <h2 id="s1-1"><span class="h-num">1.1</span>About Turquaz</h2><div class="h-rule"></div>
+  <p>Turquaz is a Turkish kitchen, bakery and coffee bar in the heart of San Francisco, operated by <strong>TURKUAZ SF INC</strong> (the "Company," "Turquaz," "we"). We opened in 2025 at 1198 Mission Street with a simple idea: bring the warmth of an Istanbul table — long meals, fresh bread from the oven, strong tea, and genuine hospitality — to a city that appreciates food made with intention.</p>
+  <p>We are three businesses under one roof, and most of us work across more than one of them:</p>
+  <table>
+    <thead><tr><th style="width:1.2in;">Side of the House</th><th>What We Do</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Kitchen</strong></td><td>Mezes, kebaps, pides, wraps, chef's specials and full-service dining, plus catering production.</td></tr>
+      <tr><td><strong>Bakery</strong></td><td>Simit, açma, poğaça, börek, breakfast service, desserts and handcrafted baklava — baked fresh, starting before dawn.</td></tr>
+      <tr><td><strong>Coffee Bar</strong></td><td>Espresso, Turkish coffee, teas and house specialty drinks served all day.</td></tr>
+    </tbody>
+  </table>
+  <p>We serve dine-in guests with reservations and walk-ins, online pickup and delivery orders, and catering for offices and events. Every one of those channels is somebody's real meal, so every one of them gets the same standard.</p>
+
+  <h2 id="s1-2"><span class="h-num">1.2</span>What We Stand For</h2><div class="h-rule"></div>
+  <ul>
+    <li><strong>Misafirperverlik — hospitality first.</strong> In Turkish culture a guest is a gift. We greet warmly, we anticipate, and we never make someone feel like a transaction.</li>
+    <li><strong>Clean hands, clean station, clean conscience.</strong> Food safety is not a checklist we perform for inspectors. It is how we protect people.</li>
+    <li><strong>Say it early.</strong> A mistake told in the first minute is a small problem. A mistake hidden for an hour is a big one. Nobody is disciplined for raising a problem honestly and quickly.</li>
+    <li><strong>Everyone buses, everyone helps.</strong> Titles describe responsibility, not status. The dining room is never "someone else's section."</li>
+    <li><strong>Respect is not optional.</strong> Not toward guests, not toward each other, not toward the couriers and vendors who come through our door.</li>
+  </ul>
+
+  <h2 id="s1-3"><span class="h-num">1.3</span>How to Use This Handbook</h2><div class="h-rule"></div>
+  <p>This handbook is a reference. It summarizes our policies, your rights, and what we expect from each other. Read it before your first shift and keep it somewhere you can find it. It replaces all earlier handbooks and any inconsistent policy statements, written or spoken.</p>
+  <p>This handbook does <em>not</em> cover every situation, and it is not an employment contract or a promise of continued employment. The Company may interpret, change, or discontinue any policy or benefit at any time, with or without notice — except the at-will employment relationship described in Section 2.1, which can only be changed by a written agreement signed by an officer of the Company. When policies change, we will give you the updated pages.</p>
+  <p>Where a policy tag appears — <span class="chip chip-ca" style="margin-left:0;">CA Law</span> <span class="chip chip-sf" style="margin-left:0;">SF Law</span> — that policy reflects a legal requirement, and the law controls if this handbook ever falls out of step with it.</p>
+
+  <h2 id="s1-4"><span class="h-num">1.4</span>Open Door: Questions &amp; Concerns</h2><div class="h-rule"></div>
+  <p>Bring questions, ideas and problems forward — early and directly. Start with your immediate supervisor. If that isn't appropriate for the situation, if you aren't satisfied with the answer, or if your concern is <em>about</em> your supervisor, go straight to the General Manager or to <strong>Abdulaziz Aslan</strong>. You never need permission to skip a level.</p>
+  <dl class="kv">
+    <dt>Day-to-day</dt><dd>Your shift supervisor or the manager on duty (MOD)</dd>
+    <dt>Escalation</dt><dd>General Manager</dd>
+    <dt>Final escalation</dt><dd>Abdulaziz Aslan &mdash; ownership / HR</dd>
+    <dt>Written channel</dt><dd>sf@turquazsf.com (marked "Confidential &mdash; HR")</dd>
+    <dt>Anonymous</dt><dd>Written notes may be left in the manager's office drop box without a name</dd>
+  </dl>
+  <div class="callout">
+    <span class="callout-label">No Retaliation</span>
+    You will never be disciplined, scheduled down, or treated differently for raising a concern in good faith. See Section 3.4.
+  </div>
+
+  <h2 id="s1-5"><span class="h-num">1.5</span>Language &amp; Accessibility</h2><div class="h-rule"></div>
+  <p>Our team speaks many languages. If you would find it easier to review this handbook, ask a question, or make a report in Turkish, Spanish, or another language, tell your manager — we will arrange translation or an interpreter at no cost to you. If you need this handbook in large print or another accessible format, ask and we will provide it.</p>
+</section>
+
+<!-- ══════════════════════ CH 2 ══════════════════════ -->
+<section class="break" id="ch2">
+  <div class="chapter-open">
+    <div class="chapter-num">02</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Two</p>
+      <h1 class="chapter-title">Employment Basics</h1>
+    </div>
+  </div>
+
+  <h2 id="s2-1"><span class="h-num">2.1</span>At-Will Employment</h2><div class="h-rule"></div>
+  <p>Employment with Turquaz is <strong>at-will</strong>. Both you and the Company are free to end the employment relationship at any time, for any reason or no reason, with or without cause, and with or without advance notice.</p>
+  <p>Other policies, procedures and benefits may change at the Company's discretion. The at-will relationship, however, can only be changed by an express written agreement signed by an officer of TURKUAZ SF INC. No manager, supervisor, or other representative has authority to promise employment for a fixed term or to alter your at-will status verbally.</p>
+
+  <h2 id="s2-2"><span class="h-num">2.2</span>Equal Employment Opportunity <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Turquaz is an equal opportunity employer. We make all employment decisions — hiring, scheduling, promotion, pay, discipline, termination — on merit and business need.</p>
+  <p>Consistent with applicable law, we prohibit discrimination and harassment on the basis of: race (including hair texture and protective hairstyles such as braids, locks and twists), color, religion or religious creed (including religious dress and grooming), sex, pregnancy, childbirth, breastfeeding and related medical conditions, gender, gender identity and expression, transgender status, sexual orientation, national origin, ancestry, immigration status, primary language, age (40+), physical or mental disability, medical condition, genetic information, marital or domestic partner status, military and veteran status, arrest or conviction record, credit history, caregiver or family status, reproductive health decision-making, cannabis use off-duty and away from work, salary history, height or weight, political affiliation, or any other basis protected by federal, state or local law (together, <strong>"Protected Characteristics"</strong>).</p>
+  <p>This commitment applies to everyone involved in our operations and prohibits unlawful conduct by employees at every level — as well as by guests, vendors, delivery couriers and other third parties.</p>
+
+  <h2 id="s2-3"><span class="h-num">2.3</span>Fair Chance &mdash; Arrest &amp; Conviction History <span class="chip chip-sf">SF Law</span></h2><div class="h-rule"></div>
+  <p>Consistent with the California Fair Chance Act and the San Francisco Fair Chance Ordinance, we do not ask about conviction history on job applications and do not consider it until after a conditional offer of employment. If a conviction record ever raises a concern, we conduct an individualized assessment, notify the applicant in writing, and give them a real opportunity to respond with evidence of rehabilitation or inaccuracy before any final decision.</p>
+
+  <h2 id="s2-4"><span class="h-num">2.4</span>Reasonable Accommodation <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>We provide reasonable accommodation for the known physical or mental limitations of qualified applicants and employees with disabilities, for pregnancy and related conditions, and for sincerely held religious beliefs and practices — unless doing so would create an undue hardship.</p>
+  <p>You do not need to use any special words or submit a form to request an accommodation. Just tell your manager or Abdulaziz Aslan what you need and why. We will engage in a timely, good-faith <strong>interactive process</strong> with you to identify workable options. Examples in our environment include modified lifting duties, a stool at the coffee bar, additional breaks, schedule adjustments, or an adjusted grooming standard for religious dress.</p>
+  <div class="callout callout-legal">
+    <span class="callout-label">Confidentiality</span>
+    Medical information you provide is kept in a separate confidential file, apart from your personnel file, and is shared only with people who need to know in order to implement the accommodation.
+  </div>
+
+  <h2 id="s2-5"><span class="h-num">2.5</span>Lactation Accommodation <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Employees who need to express breast milk may do so during any paid rest break, and we will provide additional break time as needed. Additional lactation break time beyond paid rest breaks is unpaid for non-exempt employees.</p>
+  <p>We provide a private lactation space that is not a bathroom, is shielded from view and free from intrusion, and includes a surface to place a pump and personal items, a place to sit, and access to electricity. Refrigeration for storing milk and a sink with running water are available in close proximity. To request use of the space, tell the manager on duty — no advance written request is required. Retaliation for requesting or using lactation accommodation is prohibited, and you may file a complaint with the California Labor Commissioner.</p>
+
+  <h2 id="s2-6"><span class="h-num">2.6</span>Employment Classifications</h2><div class="h-rule"></div>
+  <table>
+    <thead><tr><th style="width:1.5in;">Classification</th><th>What It Means</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Non-Exempt</strong></td><td>Covered by minimum wage, overtime, and meal/rest period rules. Paid hourly. Must clock in and out for every shift and meal period. Most Turquaz roles are non-exempt.</td></tr>
+      <tr><td><strong>Exempt</strong></td><td>Salaried employees who meet the legal duties and salary tests and are exempt from overtime. Exempt employees are still required to clock in and out so we can track coverage, attendance and labor planning — this does not change exempt status or pay.</td></tr>
+      <tr><td><strong>Full-Time</strong></td><td>Regularly scheduled 30 or more hours per week.</td></tr>
+      <tr><td><strong>Part-Time</strong></td><td>Regularly scheduled fewer than 30 hours per week.</td></tr>
+      <tr><td><strong>Temporary / Seasonal</strong></td><td>Hired for a defined period or project (for example, holiday catering season). Not eligible for most benefits.</td></tr>
+    </tbody>
+  </table>
+  <p>Your classification is stated in your offer letter. If you believe your classification is wrong, tell the General Manager — we will review it.</p>
+
+  <h2 id="s2-7"><span class="h-num">2.7</span>Personnel Records &amp; Your Right to Inspect <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Keeping your file current matters — it drives your paycheck, your tax withholding, and how we reach you in an emergency. Notify your manager <strong>in writing</strong> within 5 days of any change to your legal name, address, phone number, email, emergency contact, direct deposit details, or work authorization documents.</p>
+  <p>Under California law you have the right to inspect and receive a copy of your personnel file and of your payroll records. Submit a written request to the General Manager; we will respond within the statutory deadlines (generally 30 calendar days for personnel files and 21 days for payroll records). You may also request a copy of any document you signed relating to obtaining or holding employment.</p>
+
+  <h2 id="s2-8"><span class="h-num">2.8</span>Work Authorization</h2><div class="h-rule"></div>
+  <p>Federal law requires every employee to complete Form I-9 and present acceptable documentation establishing identity and authorization to work in the United States, within three business days of your start date. We accept any valid documents from the government's list and we do not specify which documents you must produce. We do not discriminate on the basis of citizenship status or national origin in the verification process.</p>
+</section>
+
+<!-- ══════════════════════ CH 3 ══════════════════════ -->
+<section class="break" id="ch3">
+  <div class="chapter-open">
+    <div class="chapter-num">03</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Three</p>
+      <h1 class="chapter-title">A Respectful Workplace</h1>
+    </div>
+  </div>
+
+  <h2 id="s3-1"><span class="h-num">3.1</span>Anti-Harassment Policy <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Turquaz prohibits harassment based on any Protected Characteristic — including harassment based on the <em>perception</em> that someone has a Protected Characteristic, or that they are associated with someone who does.</p>
+
+  <h3>What harassment looks like</h3>
+  <p>Harassment includes verbal, physical, visual and electronic conduct that creates an intimidating, hostile or offensive working environment, or that interferes with work performance. Conduct is harassment where (1) submitting to it is an explicit or implicit condition of employment; (2) an employee's reaction to it is used as a basis for employment decisions; or (3) it has the purpose or effect of unreasonably interfering with work or creating a hostile environment.</p>
+  <p>Examples include slurs and epithets; "jokes" about a Protected Characteristic; derogatory or degrading comments or gestures; mocking an accent or language; unwelcome touching; and displaying offensive images, cartoons or objects.</p>
+
+  <h3>Sexual harassment</h3>
+  <p>Sexual harassment includes demands for sexual favors, conditioning any employment benefit on sexual favors, and treating someone adversely for refusing sexual conduct. Conduct that can create a hostile environment includes:</p>
+  <ul>
+    <li><strong>Visual</strong> — leering; sexual gestures; pointedly looking at someone's body; displaying or sending sexually suggestive images.</li>
+    <li><strong>Verbal</strong> — sexual "joking," teasing or comments; sexual epithets; whistling or catcalls; comments about someone's body or appearance.</li>
+    <li><strong>Physical</strong> — unwanted touching, brushing past deliberately in tight kitchen or bar spaces, blocking or impeding movement.</li>
+    <li><strong>Advances</strong> — offensive flirtation, propositions, repeated unwanted requests for dates.</li>
+    <li><strong>Discussion</strong> of one's own or another person's sexual experiences in the workplace.</li>
+    <li><strong>Messaging</strong> — obscene or sexually oriented messages by text, DM, staff chat or any electronic device.</li>
+    <li><strong>Retaliatory action</strong> against someone who refuses or reports.</li>
+  </ul>
+  <p>This policy applies at the restaurant, at off-site catering events, at Company-sponsored gatherings, in group chats, and on social media. Sexual harassment does not refer to occasional compliments of a socially acceptable nature or to genuinely consensual social relationships (subject to Section 3.6).</p>
+  <div class="callout callout-alert">
+    <span class="callout-label">Consequence</span>
+    Harassing conduct will not be tolerated and may result in discipline up to and including immediate termination — for any employee at any level, including managers and owners.
+  </div>
+
+  <h2 id="s3-2"><span class="h-num">3.2</span>How to Report</h2><div class="h-rule"></div>
+  <p>If you experience or witness harassment or discrimination, report it immediately — you do not have to be the victim to report, and you do not have to be certain. Report to any of: the manager on duty, the General Manager, or <strong>Abdulaziz Aslan</strong>. You may report verbally or in writing; written is helpful but not required.</p>
+  <p>A useful report includes what happened, when and where, who was involved, who else saw it, direct quotes if you remember them, and any texts, photos or video.</p>
+  <div class="callout">
+    <span class="callout-label">Supervisors &mdash; Mandatory</span>
+    Every supervisor and manager who learns of possible harassment or discrimination <strong>must</strong> report it to the General Manager or ownership immediately, whether or not the person involved reports to them, and whether or not the employee asks them to keep it quiet. Failing to escalate is itself a policy violation.
+  </div>
+  <h3>Outside agencies</h3>
+  <p>You may also file with an outside agency at any time, and using our internal process is not a prerequisite:</p>
+  <dl class="kv">
+    <dt>CA Civil Rights Dept.</dt><dd>calcivilrights.ca.gov &middot; 1-800-884-1684 &middot; TTY 1-800-700-2320</dd>
+    <dt>Federal EEOC</dt><dd>eeoc.gov &middot; 1-800-669-4000 &middot; TTY 1-800-669-6820</dd>
+    <dt>SF Human Rights Comm.</dt><dd>sf.gov/departments/human-rights-commission</dd>
+    <dt>CA Labor Commissioner</dt><dd>For wage, break and retaliation claims &middot; dir.ca.gov/dlse</dd>
+  </dl>
+
+  <h2 id="s3-3"><span class="h-num">3.3</span>Investigations</h2><div class="h-rule"></div>
+  <p>Once harassment or discrimination is reported, the Company will conduct or direct a fair, timely, thorough and impartial investigation. We investigate every report we receive, even if the person affected asks us not to. Investigations give all parties appropriate due process and reach a reasonable conclusion based on the evidence.</p>
+  <p>Complaints and investigations are documented, tracked to completion, and kept as confidential as reasonably possible — information is shared only with people who need it, or as required by law. Interview notes, recordings, correspondence and other investigation records are treated as confidential.</p>
+  <p>While an investigation is open, we may put reasonable interim measures in place, such as a schedule or station change, a transfer of duties, or a paid suspension. These are not discipline. Refusing to cooperate with an investigation may itself result in discipline.</p>
+  <p>If we conclude that prohibited conduct occurred, we will take prompt and effective corrective action proportionate to the circumstances — which may include counseling, a written warning, retraining, reassignment, suspension, demotion, or termination. We will notify the person who reported that the investigation is closed and that appropriate action was taken.</p>
+
+  <h2 id="s3-4"><span class="h-num">3.4</span>Anti-Retaliation &amp; Whistleblower Protection <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Retaliation is strictly prohibited. Nobody at Turquaz will be punished, reassigned unfavorably, scheduled down, or treated differently for:</p>
+  <ul>
+    <li>Reporting harassment, discrimination or retaliation in good faith, or participating as a witness in an investigation;</li>
+    <li>Reporting a suspected violation of law — including wage and hour, food safety, or health and safety violations — internally or to a government agency;</li>
+    <li>Reporting an unsafe condition, refusing to perform work that would create a real and apparent hazard, or cooperating with Cal/OSHA or the Department of Public Health;</li>
+    <li>Requesting or taking a leave or accommodation described in this handbook;</li>
+    <li>Discussing your own wages or working conditions with coworkers, or declining to disclose your wages;</li>
+    <li>Filing, testifying in, or assisting any agency proceeding.</li>
+  </ul>
+  <p>Reports of retaliation are investigated with the same seriousness as the underlying complaint. Anyone found to have retaliated is subject to discipline up to and including termination.</p>
+
+  <h2 id="s3-5"><span class="h-num">3.5</span>Harassment by Guests, Vendors &amp; Couriers <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>Our commitment to a harassment-free workplace does not stop at the guest side of the counter. You are <strong>never</strong> required to tolerate harassment from a guest, a delivery courier, a vendor, or anyone else in order to be hospitable.</p>
+  <ul>
+    <li>If a guest makes you uncomfortable, you may step away immediately and ask the manager on duty to take over the table or transaction. No permission needed, no explanation owed to the guest.</li>
+    <li>Tell the MOD what happened. Managers are expected to intervene, and to ask a guest to leave when necessary. Our hospitality standard does not include enduring abuse.</li>
+    <li>Managers will document the incident and, where warranted, refuse future service or escalate to ownership.</li>
+    <li>Tips, sales performance, or a large party's bill are never a reason to leave a coworker in an uncomfortable situation.</li>
+  </ul>
+
+  <h2 id="s3-6"><span class="h-num">3.6</span>Fraternization</h2><div class="h-rule"></div>
+  <p>We are a small team and we work closely together. Friendships are welcome; relationships that create favoritism or a conflict of authority are not.</p>
+  <ol>
+    <li><strong>Professional conduct on duty.</strong> Regardless of relationships outside work, everyone maintains professional interactions on the floor and in the kitchen.</li>
+    <li><strong>Romantic relationships.</strong> Romantic or dating relationships between a supervisor and anyone under their direct or indirect supervision are prohibited. If such a relationship develops, it must be disclosed promptly to the General Manager or ownership so that reporting lines or scheduling can be adjusted. Disclosure is not a disciplinary event; concealment may be.</li>
+    <li><strong>Friendships.</strong> Personal friendships are not restricted, but conduct that disrupts productivity, creates tension, or damages team morale is not acceptable.</li>
+    <li><strong>No favoritism.</strong> Employees in personal relationships must avoid granting or appearing to grant special privileges — preferred sections, schedule preferences, favorable side work, comps or discounts.</li>
+    <li><strong>Report concerns.</strong> Raise concerns about favoritism or conflicts of interest with management. The Company may reassign, adjust schedules, or take disciplinary action to protect the integrity of the workplace.</li>
+  </ol>
+
+  <h2 id="s3-7"><span class="h-num">3.7</span>Drugs &amp; Alcohol</h2><div class="h-rule"></div>
+  <p>You may not consume, possess, distribute or sell illegal drugs or controlled substances while on duty, and you may not be impaired by any substance — including alcohol and cannabis — while at work, on Company premises, or engaged in Company business. This is a safety rule: we work with open flame, 500°F ovens, hot syrup, vertical broilers and knives.</p>
+  <p>Prescription and over-the-counter medication taken as directed is permitted. If a medication may affect your alertness, coordination or ability to perform safety-sensitive work, tell your manager privately so we can adjust duties — you do not have to disclose the medication or your condition.</p>
+  <p>Consistent with California law, we do not discriminate against employees based on off-duty, off-premises cannabis use away from work, or on non-psychoactive cannabis metabolites in a drug test. Impairment on the job is a different matter and is prohibited.</p>
+  <p>We encourage anyone struggling with substance dependency to seek treatment. Ask about time off for a treatment or rehabilitation program — we will accommodate reasonable requests where it does not create an undue hardship, and we will keep the request confidential. Seeking help voluntarily is not a disciplinary event; a policy violation that has already occurred is handled on its own terms.</p>
+
+  <h2 id="s3-8"><span class="h-num">3.8</span>Required Harassment Prevention Training <span class="chip chip-ca">CA Law</span> <span class="chip chip-req">Action Required</span></h2><div class="h-rule"></div>
+  <p>California law requires harassment prevention training for every employee at employers with five or more employees:</p>
+  <table>
+    <thead><tr><th style="width:1.7in;">Who</th><th style="width:1.1in;">Length</th><th>Deadline</th></tr></thead>
+    <tbody>
+      <tr><td>Supervisors &amp; managers</td><td class="num">2 hours</td><td>Within 6 months of hire or promotion, then every 2 years</td></tr>
+      <tr><td>All other employees</td><td class="num">1 hour</td><td>Within 6 months of hire, then every 2 years</td></tr>
+    </tbody>
+  </table>
+  <p>Turquaz provides the training and pays you for the time. Free courses are also available from the California Civil Rights Department at <strong>calcivilrights.ca.gov/shpt</strong>. Completing your training on time is a condition of employment.</p>
+</section>
+
+<!-- ══════════════════════ CH 4 ══════════════════════ -->
+<section class="break" id="ch4">
+  <div class="chapter-open">
+    <div class="chapter-num">04</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Four</p>
+      <h1 class="chapter-title">Safety, Health &amp; Security</h1>
+    </div>
+  </div>
+
+  <p class="lead">Nothing we serve is worth someone getting hurt. Safety instructions always outrank speed.</p>
+
+  <h2 id="s4-1"><span class="h-num">4.1</span>Injury &amp; Illness Prevention Program <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Cal/OSHA requires every California employer to maintain a written Injury and Illness Prevention Program (IIPP). Ours is kept in the manager's office and is available to you on request at any time. The General Manager is our designated IIPP administrator.</p>
+  <p>Your part in it:</p>
+  <ul>
+    <li>Follow safe work practices and use the guards, mats, gloves and tools provided.</li>
+    <li><strong>Report every hazard immediately</strong> — a wet floor, a frayed cord, a jammed slicer guard, a blocked exit, a broken cooler. You can report to any manager, verbally or in writing, and you may do so anonymously.</li>
+    <li>Attend safety training and shift-huddle safety topics. Training time is paid.</li>
+    <li>Never operate equipment you have not been trained on.</li>
+  </ul>
+  <div class="callout callout-legal">
+    <span class="callout-label">Your Right to Refuse</span>
+    You have the legal right to refuse work that would create a real and apparent hazard to you or others, and to report safety concerns to Cal/OSHA. We will not retaliate against you for doing either.
+  </div>
+
+  <h2 id="s4-2"><span class="h-num">4.2</span>Workplace Violence Prevention Plan <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Turquaz has zero tolerance for violence and threats of violence. Acts and threats — including those made "as a joke" — are taken seriously and lead to discipline up to and including termination. Possession of a non-work-related weapon on Company premises or at a Company event is itself treated as a threat of violence. Threats may be direct or indirect, verbal or nonverbal.</p>
+  <p>As required by California Labor Code §6401.9, we maintain a written <strong>Workplace Violence Prevention Plan</strong>. It is part of our IIPP, available in the manager's office, and covers the four types of workplace violence, our hazard-assessment process, emergency response, and post-incident debriefing. Training is provided at hire and annually, and whenever a new hazard is identified.</p>
+  <h3>Reporting a workplace violence incident <span class="chip chip-req">Action Required</span></h3>
+  <ol>
+    <li>If there is immediate danger, get yourself and guests to safety and <strong>call 911</strong> first. Do not confront.</li>
+    <li>Notify the manager on duty as soon as it is safe.</li>
+    <li>The MOD records the incident in the <strong>Violent Incident Log</strong> within the shift. The log excludes personal identifying information about the person who reported.</li>
+    <li>Ownership reviews every entry and reassesses controls.</li>
+  </ol>
+  <p>Report all concerning behavior — an escalating guest, a person loitering at the back door, an ex-partner appearing at the restaurant, a threatening message. Early reports are how we prevent incidents. Nobody is penalized for reporting a threat that turns out to be nothing.</p>
+
+  <h2 id="s4-3"><span class="h-num">4.3</span>Indoor Heat Illness Prevention <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Our kitchen line, bakery ovens and dish area can exceed 82°F. California's indoor heat standard (8 CCR §3396) applies to us, and we maintain written procedures as part of our IIPP.</p>
+  <ul>
+    <li><strong>Water.</strong> Fresh, pure, suitably cool drinking water is provided free of charge, as close as practicable to your station. Drink often — aim for a cup every 15&ndash;20 minutes when working hot stations.</li>
+    <li><strong>Cool-down areas.</strong> A designated cool-down area is available at all times. You may take a <strong>preventative cool-down rest of at least five minutes</strong> whenever you feel the need to protect yourself from overheating. This rest is <strong>paid</strong>, is not deducted from your rest breaks, and you never need to justify it.</li>
+    <li><strong>Watch each other.</strong> Heat illness starts with headache, dizziness, nausea, cramps, unusual irritability or confusion. If a coworker seems off, get a manager. Never leave someone showing symptoms alone.</li>
+    <li><strong>Control measures.</strong> When temperatures rise, we increase ventilation, rotate hot-station assignments, adjust prep to cooler hours where possible, and add cooling breaks.</li>
+  </ul>
+  <div class="callout callout-alert">
+    <span class="callout-label">Emergency</span>
+    Confusion, slurred speech, fainting, seizures or hot dry skin are signs of <strong>heat stroke</strong> — a medical emergency. Call 911 immediately, move the person to a cool area, and begin cooling with water and ice while waiting.
+  </div>
+
+  <h2 id="s4-4"><span class="h-num">4.4</span>Kitchen &amp; Bakery Equipment Safety <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>You will be trained on each piece of equipment before you use it. Training is documented. If you have not been signed off, do not operate it — ask.</p>
+  <table>
+    <thead><tr><th style="width:1.6in;">Equipment</th><th>Non-Negotiable Rules</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Vertical döner broiler</strong></td><td>Cut-resistant glove on the guide hand. Blade guard in place. Never clean or reload while the element is on. Announce "hot behind" when passing.</td></tr>
+      <tr><td><strong>Charcoal / gas grill</strong></td><td>Check gas connections at open. Long-sleeve protection and dry towels only — a wet towel conducts heat. Never leave the grill unattended when lit.</td></tr>
+      <tr><td><strong>Deck &amp; convection ovens</strong></td><td>Dry oven mitts, two hands on the peel, open the door and step back before reaching in. Call out "oven open."</td></tr>
+      <tr><td><strong>Fryer</strong></td><td>No water near hot oil. Never move or filter oil above 150°F. Two people for oil transport. Lower baskets slowly.</td></tr>
+      <tr><td><strong>Baklava syrup &amp; sugar work</strong></td><td>Hot syrup causes deep burns. Long sleeves, no reaching across, carry pots with both hands, and announce your path.</td></tr>
+      <tr><td><strong>Slicer &amp; mandoline</strong></td><td>Guard on, cut glove on, and the unit unplugged before cleaning. Never use the last piece by hand — use the holder.</td></tr>
+      <tr><td><strong>Mixers &amp; dough sheeter</strong></td><td>Machine off and stopped before scraping. Never reach into a running bowl. Tie back hair, no dangling sleeves or jewelry.</td></tr>
+      <tr><td><strong>Espresso &amp; Turkish coffee</strong></td><td>Steam wand purged away from people. Cezve handles turned inward. Never carry a full portafilter or hot milk pitcher while walking backwards.</td></tr>
+      <tr><td><strong>Knives</strong></td><td>Sharp is safer than dull. Carry blade-down at your side. Never try to catch a falling knife. Never leave a knife in a sink of water.</td></tr>
+      <tr><td><strong>Chemicals</strong></td><td>Labeled containers only, never in food containers. Never mix chemicals. Safety Data Sheets are in the binder by the dish station — you have a right to review them.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Slips, trips and lifting.</strong> Non-slip shoes are mandatory (Section 6.5). Clean spills immediately and use a wet-floor sign. Keep aisles and exits clear. Lift with your legs, ask for help above 40 lbs, and use a cart for stock runs and catering loads.</p>
+
+  <h2 id="s4-5"><span class="h-num">4.5</span>Injury Reporting &amp; Workers' Compensation <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Turquaz carries workers' compensation insurance at no cost to you. It covers medical treatment and partial wage replacement for injuries and illnesses arising out of work — including cuts, burns, strains, slips and repetitive-motion injuries.</p>
+  <ol>
+    <li><strong>Report every injury to the manager on duty immediately</strong>, no matter how minor. A small burn reported today is covered; the same burn reported next week is a problem for everyone.</li>
+    <li>The MOD provides first aid, arranges medical care if needed, and gives you a <strong>DWC-1 claim form within one working day</strong>.</li>
+    <li>Complete and return the employee portion of the DWC-1 as soon as you are able.</li>
+    <li>Serious injuries are reported to Cal/OSHA as required by law.</li>
+  </ol>
+  <p>You may pre-designate your personal physician for work-injury treatment by giving the General Manager written notice <em>before</em> an injury occurs. It is illegal for us to retaliate against you for filing or intending to file a workers' compensation claim, and we will not.</p>
+
+  <h2 id="s4-6"><span class="h-num">4.6</span>Emergency Procedures <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>Evacuation maps, the fire extinguisher and Ansul pull locations, first aid kits and the AED (if installed) are posted by the kitchen exit and near the host stand. Know them before you need them.</p>
+  <dl class="kv">
+    <dt>Fire</dt><dd>Pull the hood suppression handle for a hood fire, shut off gas, evacuate guests through the nearest clear exit, call 911. Only fight a small, contained fire if you are trained and have a clear exit behind you. Class K extinguisher for grease — never water.</dd>
+    <dt>Earthquake</dt><dd>Drop, cover, hold on. Move away from the hot line, glassware and the bakery racks. Do not run outside during shaking. After shaking stops, shut off gas, check for injuries and gas smell, then evacuate on the MOD's direction to our assembly point.</dd>
+    <dt>Medical</dt><dd>Call 911 first. Do not move a seriously injured person. Send someone to the street to flag the ambulance. Report to the MOD and complete an incident report.</dd>
+    <dt>Choking guest</dt><dd>Ask "are you choking?" If they cannot speak, act and call for a manager. Call 911.</dd>
+    <dt>Power outage</dt><dd>MOD accounts for guests and staff, secures the POS drawer, and logs cooler and freezer temperatures. Do not open refrigeration doors. Follow the food-hold decision tree in Section 5.4.</dd>
+    <dt>Robbery</dt><dd>Comply. Do not resist, chase, or record. Money is replaceable. Once safe, lock the door, call 911, preserve the scene and notify the GM.</dd>
+    <dt>Active threat</dt><dd>Run &middot; Hide &middot; Fight, in that order. Get guests out through the back if the path is clear. Silence your phone once hidden. Call 911 when it is safe.</dd>
+  </dl>
+
+  <h2 id="s4-7"><span class="h-num">4.7</span>Building Security &amp; Cash Safety <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <ul>
+    <li>Never prop the back door open. Deliveries are received with a person present at the door.</li>
+    <li>Do not admit anyone after hours who is not a scheduled employee or an expected vendor with the MOD's approval.</li>
+    <li><strong>Nobody closes alone.</strong> At least two people leave together, and staff walk out together to the street.</li>
+    <li>Drops go into the safe throughout the shift so the drawer never carries excess cash. Never count cash where it is visible from the street.</li>
+    <li>Never take the deposit to the bank alone at night, on a fixed schedule, or in a marked bag. Route and timing vary and are set by the GM.</li>
+    <li>Report lost keys, a lost fob or a compromised code to the GM the same day.</li>
+    <li>Report any breach of security, suspicious activity, or loss of property to your supervisor promptly.</li>
+  </ul>
+
+  <h2 id="s4-8"><span class="h-num">4.8</span>Crime, Domestic Violence &amp; Stalking Victims <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>We do not discriminate or retaliate against any employee who is a victim of domestic violence, sexual assault, stalking, or other crime. We will provide time off to seek relief — including a restraining order or other injunctive relief — or to ensure the health, safety or welfare of the victim or their child. Covered purposes include attending court proceedings, seeking medical attention, obtaining services from a shelter, program or rape crisis center, receiving psychological counseling, and safety planning including relocation.</p>
+  <p>Give as much advance notice as you can; where advance notice is not feasible, provide certification afterward (a police report, court record, or documentation from a medical professional, counselor or advocate). This time off is unpaid, but you may elect to use accrued paid sick leave. We will also provide reasonable safety accommodations at work — a schedule change, a station change, a transfer, a new phone extension, or an implemented safety procedure — on request.</p>
+</section>
+
+<!-- ══════════════════════ CH 5 ══════════════════════ -->
+<section class="break" id="ch5">
+  <div class="chapter-open">
+    <div class="chapter-num">05</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Five</p>
+      <h1 class="chapter-title">Food Safety &amp; Quality</h1>
+    </div>
+  </div>
+
+  <p class="lead">This chapter is the one that can hurt a guest. Read it twice.</p>
+
+  <h2 id="s5-1"><span class="h-num">5.1</span>Food Handler Card &amp; Manager Certification <span class="chip chip-ca">CA Law</span> <span class="chip chip-req">Action Required</span></h2><div class="h-rule"></div>
+  <p>Every food handler must obtain a <strong>California Food Handler Card</strong> from an ANSI-accredited provider <strong>within 30 days of your hire date</strong>, and renew it every three years. A "food handler" is anyone who works with unpackaged food, food equipment or utensils, or food-contact surfaces — which is nearly everyone here, including baristas and bussers.</p>
+  <div class="callout callout-legal">
+    <span class="callout-label">We Pay For It</span>
+    Under California law, Turquaz pays the cost of the food handler course and card, and pays you for the time you spend completing the training. You will not be asked to do it off the clock or at your own expense. Give a copy of your card to the General Manager; we keep it on file for three years and make it available to inspectors.
+  </div>
+  <p>At least one person on our management team holds a <strong>Certified Food Protection Manager</strong> credential (ServSafe Manager or equivalent) as required by the California Retail Food Code, and a certificate holder is available during operating hours.</p>
+
+  <h2 id="s5-2"><span class="h-num">5.2</span>Employee Health Reporting <span class="chip chip-ca">CA Law</span> <span class="chip chip-req">Action Required</span></h2><div class="h-rule"></div>
+  <p>You are required by law and by this policy to <strong>tell the manager on duty before your shift</strong> if you have any of the following. Do not come in and "see how it goes."</p>
+  <h3>Report these symptoms</h3>
+  <table>
+    <thead><tr><th style="width:1.5in;">Symptom</th><th>What Happens</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Vomiting</strong></td><td>Excluded from work until symptom-free for at least 24 hours (or cleared by a physician / the Health Department).</td></tr>
+      <tr><td><strong>Diarrhea</strong></td><td>Excluded from work until symptom-free for at least 24 hours (or medically cleared).</td></tr>
+      <tr><td><strong>Jaundice</strong></td><td>Excluded. Reportable to the Health Department. Medical clearance required.</td></tr>
+      <tr><td><strong>Sore throat with fever</strong></td><td>Excluded from food handling; may be restricted to non-food duties depending on the setting.</td></tr>
+      <tr><td><strong>Infected cut, burn, boil or lesion on hand, wrist or exposed skin</strong></td><td>Must be covered with an impermeable bandage <em>and</em> a single-use glove; open or draining lesions mean no food handling.</td></tr>
+    </tbody>
+  </table>
+  <h3>Report these diagnoses <span class="chip chip-req">Immediately</span></h3>
+  <p>Tell management right away if you are diagnosed with, or have been exposed to, any of the "Big 6": <strong>Norovirus, Hepatitis A, Shigella, Salmonella Typhi (typhoid fever), non-typhoidal Salmonella, or Shiga toxin-producing E. coli</strong>. Also report if a household member has one of these illnesses. The Company will notify the San Francisco Department of Public Health as required and follow their exclusion and clearance instructions.</p>
+  <div class="callout callout-ok">
+    <span class="callout-label">You Will Not Be Punished</span>
+    Staying home when you are sick is <strong>following</strong> policy, not breaking it. Reporting a symptom or a diagnosis will never count against your attendance record, and you may use accrued paid sick leave (Section 9.1). If you feel pressure from anyone to work sick, report it to Abdulaziz Aslan — that pressure is itself a policy violation.
+  </div>
+
+  <h2 id="s5-3"><span class="h-num">5.3</span>Personal Hygiene &amp; Handwashing</h2><div class="h-rule"></div>
+  <h3>Handwashing — 20 seconds, soap, warm water, dedicated handsink</h3>
+  <p>Wash your hands when you arrive, and always:</p>
+  <div class="grid2">
+    <div><ul class="tight">
+      <li>Before starting food prep and before putting on gloves</li>
+      <li>After using the restroom</li>
+      <li>After touching raw meat, poultry, fish or eggs</li>
+      <li>After handling money, phones or the POS</li>
+      <li>After bussing or touching dirty dishes</li>
+    </ul></div>
+    <div><ul class="tight">
+      <li>After eating, drinking, smoking or vaping</li>
+      <li>After touching your face, hair or a bandage</li>
+      <li>After coughing, sneezing or using a tissue</li>
+      <li>After taking out trash or handling chemicals</li>
+      <li>Any time you switch tasks or stations</li>
+    </ul></div>
+  </div>
+  <p>Handsinks are for hands only — never rinse utensils, dump drinks, or store anything in them. Hand sanitizer is a supplement, never a substitute.</p>
+  <h3>Bare hand contact &amp; gloves</h3>
+  <p>No bare-hand contact with ready-to-eat food. Use gloves, tongs, deli tissue or utensils. Gloves are single-task: change them when they tear, when you change tasks, and at least every four hours. Gloves are not a replacement for handwashing — wash before you glove and after you remove them.</p>
+  <h3>Personal standards</h3>
+  <ul>
+    <li>Clean uniform, apron and hair restraint (cap, net or tied-back hair) before you clock in.</li>
+    <li>Fingernails short, clean, unpolished; no artificial nails in food prep areas.</li>
+    <li>Only a plain band ring may be worn while handling food. No watches, bracelets or dangling jewelry.</li>
+    <li>Eating, drinking, gum and tobacco only in designated break areas — never on the line, at the bar, or in prep. A covered drink with a straw or lid, stored below and away from food and food-contact surfaces, is permitted.</li>
+    <li>Store personal belongings, medication and street clothing in the designated area, never on prep surfaces or above food.</li>
+  </ul>
+
+  <h2 id="s5-4"><span class="h-num">5.4</span>Time &amp; Temperature Control</h2><div class="h-rule"></div>
+  <p>Temperature logs are completed at open, mid-shift and close by the assigned person. A log is a record — never fill one in for a check you didn't do. Falsifying a temperature log is grounds for termination.</p>
+  <table>
+    <thead><tr><th style="width:2in;">Control Point</th><th>Standard</th></tr></thead>
+    <tbody>
+      <tr><td>Cold holding</td><td class="num">41°F or below</td></tr>
+      <tr><td>Hot holding</td><td class="num">135°F or above</td></tr>
+      <tr><td>Freezer</td><td class="num">0°F or below</td></tr>
+      <tr><td>The Danger Zone</td><td class="num">41°F &ndash; 135°F &mdash; minimize time here</td></tr>
+      <tr><td>Poultry (chicken şiş, döner, chicken quarter)</td><td class="num">165°F for 15 seconds</td></tr>
+      <tr><td>Ground &amp; mechanically tenderized meat (köfte, Adana, meat döner)</td><td class="num">155°F for 17 seconds</td></tr>
+      <tr><td>Whole-muscle beef &amp; lamb (lamb chops, şiş)</td><td class="num">145°F for 15 seconds</td></tr>
+      <tr><td>Fish (salmon)</td><td class="num">145°F for 15 seconds</td></tr>
+      <tr><td>Eggs cooked to order</td><td class="num">145°F &mdash; held eggs 155°F</td></tr>
+      <tr><td>Reheating for hot holding</td><td class="num">165°F within 2 hours</td></tr>
+      <tr><td>Cooling (stews, kuru fasulye, güveç, rice, soup)</td><td class="num">135°F&rarr;70°F in 2 hrs, then 70°F&rarr;41°F in 4 more (6 hrs total)</td></tr>
+      <tr><td>Thawing</td><td>In the cooler, under cold running water, in the microwave for immediate cooking, or as part of cooking. Never on the counter.</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li><strong>Label and date everything.</strong> Every prepped item gets a label with the item, prep date and use-by date. Ready-to-eat items held cold are discarded after 7 days maximum, counting the prep day as day one. No label, no use — discard it.</li>
+    <li><strong>FIFO.</strong> First in, first out, on every shelf and in every walk-in.</li>
+    <li><strong>Storage order top to bottom:</strong> ready-to-eat → whole fish → whole cuts of beef and lamb → ground meat → poultry. Never store raw above ready-to-eat. Never store food on the floor.</li>
+    <li><strong>Cross-contamination.</strong> Separate boards, knives and surfaces for raw protein and ready-to-eat. Clean <em>and</em> sanitize between tasks; sanitizer strength is verified with test strips.</li>
+    <li><strong>Cool properly.</strong> Shallow pans, ice baths, ice paddles, portioned and uncovered until cold — not a stockpot in the walk-in.</li>
+    <li><strong>Power outage.</strong> Keep doors shut, log temperatures, and do not serve anything from a unit above 41°F for more than 4 cumulative hours. When in doubt, throw it out. Waste is cheaper than an outbreak — you will never be blamed for discarding questionable product.</li>
+  </ul>
+
+  <h2 id="s5-5"><span class="h-num">5.5</span>Allergen Awareness <span class="chip chip-tq">Turquaz</span> <span class="chip chip-req">Action Required</span></h2><div class="h-rule"></div>
+  <p>Our menu is unusually high-risk for allergens. Pistachios and walnuts run through the entire baklava and dessert program; sesame is on every simit; dairy and yogurt are in most mezes and sauces; gluten is in lavash, pide, börek and filo. A single careless answer can put a guest in an ambulance.</p>
+  <h3>The nine major allergens</h3>
+  <p>Milk &middot; Eggs &middot; Fish &middot; Shellfish &middot; Tree nuts &middot; Peanuts &middot; Wheat &middot; Soybeans &middot; <strong>Sesame</strong></p>
+  <h3>The rules</h3>
+  <ol>
+    <li><strong>Never guess.</strong> If a guest asks whether a dish contains an allergen and you are not 100% certain, say "Let me check with the kitchen" and get the manager or chef. "I think so" is not an acceptable answer.</li>
+    <li><strong>Flag it loudly.</strong> Allergy orders are entered in the POS as an allergy note <em>and</em> called out verbally to the kitchen. The expediter confirms it back.</li>
+    <li><strong>Allergy plates get fresh everything.</strong> New gloves, clean board, clean pan, clean utensils, sanitized station. Never wipe and reuse. Never pick an ingredient off a finished plate.</li>
+    <li><strong>Fryer and grill are shared.</strong> Our fryer and grill are shared surfaces, so we cannot guarantee an item is free from cross-contact. Tell the guest honestly.</li>
+    <li><strong>The bakery is a nut-heavy environment.</strong> We cannot guarantee any bakery or dessert item is free from tree nuts or sesame. Say this plainly to guests with a nut or sesame allergy.</li>
+    <li><strong>Menu marks are dietary, not medical.</strong> The V, VG and GF marks on our menu describe recipes as written. They do <em>not</em> certify the absence of cross-contact and must never be presented to a guest as an allergy guarantee.</li>
+    <li><strong>Hand-deliver.</strong> Allergy plates are run by the server who took the order, identified at the table, and never passed through a runner without a verbal handoff.</li>
+    <li><strong>If a guest has a reaction:</strong> call 911 immediately, notify the MOD, do not move the guest, ask whether they carry an epinephrine auto-injector, and preserve the food and the ticket. Do not discuss fault or admit liability.</li>
+  </ol>
+  <p>Current allergen matrices for every menu item are kept at the expo station and in the manager's office, and are updated whenever a recipe or supplier changes. Read them; they are the source of truth, not memory.</p>
+
+  <h2 id="s5-6"><span class="h-num">5.6</span>Halal Integrity <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>Turquaz sources halal meat. Many of our guests choose us specifically for that reason, and they are trusting us. Protecting that trust is a serious job responsibility.</p>
+  <ul>
+    <li><strong>Approved suppliers only.</strong> Meat is received only from approved halal-certified suppliers. Certification documentation is retained by the kitchen manager. Never accept a substitution at the door — call the chef or GM.</li>
+    <li><strong>Verify at receiving.</strong> Check labels and certification marks on every delivery. Anything unmarked or mismatched is refused and escalated the same day.</li>
+    <li><strong>No non-halal meat enters our production areas</strong> — including staff meals brought from outside. Personal food goes in the designated employee area, never in the walk-in with production stock.</li>
+    <li><strong>Storage separation.</strong> Halal product is stored in designated, labeled areas, never below or in contact with non-conforming product.</li>
+    <li><strong>Answer honestly.</strong> If a guest asks about halal, tell them exactly what is true: our meat is sourced halal-certified, and describe our handling practice. Never overstate. If you don't know the answer for a specific item, get the manager.</li>
+    <li><strong>Alcohol in food.</strong> We do not cook with alcohol. If a recipe or a vendor product ever changes in that respect, it must be disclosed to guests and approved by ownership first.</li>
+    <li><strong>Report doubts.</strong> If you have any reason to believe a product's halal status is uncertain, stop using it and tell a manager. You will never be penalized for raising this.</li>
+  </ul>
+
+  <h2 id="s5-7"><span class="h-num">5.7</span>Health Inspections</h2><div class="h-rule"></div>
+  <p>San Francisco Department of Public Health inspectors may arrive unannounced at any time. If an inspector arrives:</p>
+  <ol>
+    <li>Greet them politely and <strong>notify the manager on duty immediately</strong>. The MOD accompanies the inspector throughout.</li>
+    <li>Be honest and cooperative. Never argue, never obstruct, never move product to hide it — and never offer food, a discount or anything else to an inspector.</li>
+    <li>Answer questions within your own knowledge. If you don't know, say so and refer to the manager.</li>
+    <li>Continue working safely and normally.</li>
+  </ol>
+  <p>Our health inspection score is posted as required. Corrective actions from any inspection are addressed immediately and reviewed with the whole team at the next shift huddle.</p>
+
+  <h2 id="s5-8"><span class="h-num">5.8</span>Recipe &amp; Presentation Standards</h2><div class="h-rule"></div>
+  <p>Guests order a dish expecting the same thing every time. Follow recipe cards, portion specs and plating guides exactly — scale portions rather than eyeballing them, and use the specified vessel and garnish. If you believe a spec should change, raise it with the chef; do not change it on your own. Any dish that does not meet the standard does not leave the pass — remake it. A slightly late plate is always better than a wrong one.</p>
+</section>
+
+<!-- ══════════════════════ CH 6 ══════════════════════ -->
+<section class="break" id="ch6">
+  <div class="chapter-open">
+    <div class="chapter-num">06</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Six</p>
+      <h1 class="chapter-title">Workplace Policies</h1>
+    </div>
+  </div>
+
+  <h2 id="s6-1"><span class="h-num">6.1</span>Standards of Conduct</h2><div class="h-rule"></div>
+  <p>Employment is at-will and may end at any time with or without cause. The following conduct is nonetheless clearly unacceptable and may result in discipline up to and including immediate termination. This list is illustrative, not exhaustive.</p>
+  <ol>
+    <li><strong>Discrimination or harassment</strong> toward a colleague, guest, vendor or courier.</li>
+    <li><strong>Dishonesty or discourtesy</strong> toward anyone, including falsifying any Company record.</li>
+    <li><strong>Insubordination</strong> — refusing to follow reasonable directions or to cooperate with a coworker or manager.</li>
+    <li><strong>Horseplay</strong> or unnecessary physical contact during work hours.</li>
+    <li><strong>Verbal or physical confrontations</strong> with employees or guests.</li>
+    <li><strong>Violating the drug and alcohol policy</strong> or reporting to work impaired.</li>
+    <li><strong>Weapons</strong> on Company property, except as expressly permitted by law.</li>
+    <li><strong>Theft</strong> — taking money, food, supplies or property belonging to Turquaz, a coworker or a guest.</li>
+    <li><strong>Unauthorized food or drink</strong> — consuming product that has not been rung up, or giving away free food or beverages to anyone.</li>
+    <li><strong>Failure to ring a sale.</strong> Every item that leaves the kitchen, bar or bakery case must be entered in the POS in full.</li>
+    <li><strong>Unauthorized comps, voids or discounts</strong>, or ringing a discount for yourself.</li>
+    <li><strong>Time theft</strong> — clocking in or out for someone else, working off the clock, or falsifying time or temperature records.</li>
+    <li><strong>Unauthorized visitors</strong> in work or dining areas after hours without prior manager approval.</li>
+    <li><strong>Foul, abusive or offensive language</strong>, including within earshot of guests.</li>
+    <li><strong>Breach of confidentiality</strong> — sharing recipes, specs, procedures, financials, guest data or other proprietary information.</li>
+    <li><strong>Break policy abuse</strong> — exceeding the ten-minute rest break or failing to clock out for a meal period.</li>
+    <li><strong>Food safety violations</strong> — bypassing handwashing, ignoring temperature or allergen procedures, or working while excludable under Section 5.2.</li>
+    <li><strong>Sleeping on duty</strong>, leaving a station unattended, or leaving a shift without manager approval.</li>
+    <li><strong>Unsafe operation of equipment</strong> or removing a safety guard.</li>
+    <li><strong>Recording or photographing guests, coworkers or Company documents</strong> without authorization.</li>
+  </ol>
+  <p>Discipline may be progressive — verbal coaching, written warning, final written warning, termination — but the Company may begin at any step, or move directly to termination, depending on the seriousness of the conduct.</p>
+
+  <h2 id="s6-2"><span class="h-num">6.2</span>Attendance &amp; Punctuality</h2><div class="h-rule"></div>
+  <p>In a restaurant, one person missing changes everyone else's night. Be ready to work — in uniform, hands washed, at your station — at your scheduled start time, and return on time from every break.</p>
+  <h3>Calling out</h3>
+  <ul>
+    <li>Notify your supervisor or the manager on duty <strong>at least two hours before your scheduled start time</strong> when you cannot work. For bakery and opening shifts starting before 7:00 a.m., notify as early as possible the night before where you can.</li>
+    <li>Call or message the manager on duty directly. Do not tell only a coworker, and do not post it in the group chat and assume it was seen.</li>
+    <li>If you are out sick under Section 5.2 or using paid sick leave, say so — it is protected and will not be counted against you.</li>
+  </ul>
+  <h3>Consequences</h3>
+  <ul>
+    <li>Repeated or excessive tardiness or unexcused absence may result in corrective action up to and including termination.</li>
+    <li>Employees who fail to call in and do not report for <strong>three consecutive scheduled shifts</strong> are treated as having voluntarily resigned.</li>
+  </ul>
+  <div class="callout callout-legal">
+    <span class="callout-label">Protected Absences</span>
+    Absences covered by paid sick leave, a protected leave in Chapter 9, an accommodation, or a food-safety exclusion under Section 5.2 are <strong>never</strong> counted as attendance occurrences.
+  </div>
+
+  <h2 id="s6-3"><span class="h-num">6.3</span>Scheduling, Shift Trades &amp; Time Off</h2><div class="h-rule"></div>
+  <ul>
+    <li>Schedules are posted in advance and distributed through our scheduling system. Check it — the posted schedule is the schedule.</li>
+    <li><strong>Availability changes</strong> must be submitted in writing before the next schedule is built. Ongoing availability is reviewed with your manager.</li>
+    <li><strong>Time off requests</strong> must be submitted as early as possible and always <em>before</em> the schedule is posted. A request is a request, not an approval. Requests are evaluated on when they were submitted, how many others have requested the same dates, coverage, and business need.</li>
+    <li><strong>Shift trades</strong> must be arranged between two qualified employees for the same station and <strong>approved by a manager in advance</strong>. An unapproved trade leaves the original employee responsible for the shift. Trades that would push someone into overtime may be declined.</li>
+    <li>Plan ahead. Consistent availability during our busiest periods is part of every role here.</li>
+  </ul>
+
+  <h2 id="s6-4"><span class="h-num">6.4</span>Blackout Periods <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>Certain dates are designated as <strong>blackout dates</strong> when business demand requires full staffing. Time off during these periods will generally not be approved, and all employees are expected to be available unless prior arrangements have been approved by management. Blackout dates are communicated well in advance so you can plan.</p>
+  <table>
+    <thead><tr><th style="width:1.7in;">Period</th><th>Typical Dates</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Holiday season</strong></td><td>Thanksgiving week, Christmas Eve, Christmas Day, New Year's Eve, New Year's Day, and the general November&ndash;December stretch</td></tr>
+      <tr><td><strong>Religious &amp; cultural</strong></td><td>Ramadan iftar service, Eid al-Fitr and Eid al-Adha, and other high-demand cultural dates</td></tr>
+      <tr><td><strong>Peak dining dates</strong></td><td>Valentine's Day, Mother's Day, Father's Day, and major weekend brunch holidays</td></tr>
+      <tr><td><strong>Moscone convention weeks</strong></td><td>Major conferences at Moscone Center &mdash; we are three blocks away and volume roughly doubles</td></tr>
+      <tr><td><strong>City events</strong></td><td>Large downtown and SoMa events, parades, festivals and street closures affecting Mission Street</td></tr>
+      <tr><td><strong>Catering peaks</strong></td><td>Confirmed large catering bookings and corporate holiday season</td></tr>
+    </tbody>
+  </table>
+  <p>If an emergency prevents you from working a blackout date, notify management as soon as possible — these are reviewed case by case. Protected leaves under Chapter 9 and legally protected absences are <strong>not</strong> restricted by blackout dates.</p>
+
+  <h2 id="s6-5"><span class="h-num">6.5</span>Uniform, Dress Code &amp; Grooming</h2><div class="h-rule"></div>
+  <p>Our appearance is part of the guest experience and part of food safety. Arrive in a clean, complete uniform <em>before</em> you clock in.</p>
+  <table>
+    <thead><tr><th style="width:1.3in;">Everyone</th><th>Standard</th></tr></thead>
+    <tbody>
+      <tr><td>Top</td><td>Turquaz black shirt, clean and unwrinkled</td></tr>
+      <tr><td>Footwear</td><td>Closed-toe, slip-resistant, non-marking safety shoes &mdash; <strong>mandatory</strong>, no exceptions</td></tr>
+      <tr><td>Hygiene</td><td>Hair and nails clean and well-groomed; hair tied back; hands washed before the shift and throughout</td></tr>
+      <tr><td>Back of house</td><td>Additionally: apron and a cap or hairnet at all times; beard restraint where applicable</td></tr>
+      <tr><td>Front of house</td><td>Clean apron, name tag, minimal fragrance</td></tr>
+      <tr><td>Jewelry</td><td>Plain band ring only when handling food; no watches, bracelets or long dangling pieces</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-legal">
+    <span class="callout-label">CA Law &mdash; Uniforms</span>
+    California requires an employer to provide and maintain any uniform it requires. Turquaz <strong>provides your Turquaz-branded shirts and aprons at no cost</strong> and handles replacement for normal wear. You are responsible for keeping your uniform clean and presentable, and for supplying your own slip-resistant shoes and plain black trousers. Damaged or worn uniform pieces are replaced by the Company &mdash; ask a manager. We do not deduct the cost of uniforms from your pay.
+  </div>
+  <p><strong>Religious and disability accommodation:</strong> We will accommodate religious dress and grooming practices — including hijab, beards and religious head coverings — and disability-related needs, consistent with food safety requirements. Ask your manager; we will find a solution together.</p>
+
+  <h2 id="s6-6"><span class="h-num">6.6</span>Personal Phone Use</h2><div class="h-rule"></div>
+  <ol>
+    <li><strong>Not during work hours.</strong> No texting, browsing or calling on the floor, in the kitchen, or behind the bar. Phones stay silent or on vibrate and out of sight while on duty.</li>
+    <li><strong>Breaks only</strong>, and in non-public areas.</li>
+    <li><strong>Emergencies.</strong> If you are expecting an urgent call — a family or medical situation — tell your manager at the start of the shift and we will work it out. Nobody has to be unreachable in an emergency.</li>
+    <li><strong>Food safety.</strong> A phone is one of the dirtiest things you touch. If you handle it, wash your hands before returning to food.</li>
+    <li>Repeated violations may result in discipline up to and including termination.</li>
+  </ol>
+  <p>If the Company requires you to use your personal phone for work — a scheduling app, the POS app, or work messaging — we will reimburse a reasonable portion of your bill as required by California law (Section 8.9).</p>
+
+  <h2 id="s6-7"><span class="h-num">6.7</span>Company Property &amp; Technology</h2><div class="h-rule"></div>
+  <p>Company property — equipment, tools, supplies, tablets, POS terminals, phones, software and vehicles — is for business use only and may not leave the premises without authorization. Use it as intended, and return everything you hold on separation or on request.</p>
+  <p>Company computers, tablets, internet access and email accounts are a privileged resource for job-related work. Do not download or install unapproved software, pirated files, or programs; do not copy Company files for personal use. All files created or stored on Company systems are Company property.</p>
+  <h3>Searches &amp; privacy</h3>
+  <p>The Company reserves the right, with or without prior notice, to search its premises — including work areas, lockers, storage areas, desks and Company-provided devices, email and voicemail — and to access Company data in connection with investigations or business needs. Personal equipment used for business purposes may be inspected to the extent it is connected to Company business. <strong>You should have no expectation of privacy in Company property or systems.</strong></p>
+
+  <h2 id="s6-8"><span class="h-num">6.8</span>Camera Surveillance</h2><div class="h-rule"></div>
+  <p>We use video surveillance to protect the safety and security of employees, guests and property; to monitor operations for quality and efficiency; and to investigate incidents, theft or misconduct.</p>
+  <ul>
+    <li>Cameras are located in public and operational areas — dining rooms, kitchen, bakery, bar, storage and entrances/exits.</li>
+    <li>Cameras are <strong>never</strong> placed in restrooms, changing areas, or the lactation space.</li>
+    <li>Audio recording is used only where permitted by law, and you will be told which areas, if any, record audio.</li>
+    <li>Recordings are accessible only to authorized personnel and used only for legitimate business purposes.</li>
+    <li>Tampering with, obstructing or disabling surveillance equipment is prohibited and is grounds for termination.</li>
+  </ul>
+  <p>Surveillance is not used to monitor protected concerted activity or union organizing.</p>
+
+  <h2 id="s6-9"><span class="h-num">6.9</span>Social Media &amp; Guest Privacy</h2><div class="h-rule"></div>
+  <ul>
+    <li><strong>Not on the clock.</strong> No personal social media use during work hours.</li>
+    <li><strong>Only authorized employees post on behalf of Turquaz</strong> or respond to reviews, DMs or comments on our accounts.</li>
+    <li><strong>Guest privacy.</strong> Do not photograph, film or post images of guests, and never share a guest's name, contact details, reservation, celebration or anything else about their visit. This applies to well-known guests especially.</li>
+    <li><strong>Coworker privacy.</strong> Get consent before posting a photo or video of a coworker.</li>
+    <li><strong>No confidential content.</strong> Never post recipes, specs, prep methods, financials, incident details, internal documents or photos of back-of-house systems.</li>
+    <li><strong>Respectful conduct.</strong> Do not post content that is offensive, discriminatory, threatening or harmful toward coworkers, guests or the community.</li>
+    <li><strong>Influencers and press.</strong> Refer all media inquiries, influencer requests and filming requests to the General Manager. Do not authorize filming inside the restaurant.</li>
+  </ul>
+  <div class="callout callout-legal">
+    <span class="callout-label">What This Policy Does Not Restrict</span>
+    Nothing here limits your legal right to discuss wages, hours or working conditions with coworkers or others, to engage in protected concerted activity, or to report suspected unlawful conduct to a government agency.
+  </div>
+
+  <h2 id="s6-10"><span class="h-num">6.10</span>Confidential Information &amp; Recipes</h2><div class="h-rule"></div>
+  <p>Turquaz's property includes tangible items — equipment, furniture, supplies — and intangible assets that are just as valuable. You may not disclose or use proprietary or confidential information outside of your job responsibilities, during or after your employment. This includes:</p>
+  <div class="grid2">
+    <div><ul class="tight">
+      <li>Recipes, formulations, prep methods and specs</li>
+      <li>Baklava, börek and pastry techniques</li>
+      <li>Supplier, vendor and pricing information</li>
+      <li>Financial, sales and marketing data</li>
+    </ul></div>
+    <div><ul class="tight">
+      <li>Guest lists, reservation data and contact details</li>
+      <li>Catering client information and quotes</li>
+      <li>Operational strategies and expansion plans</li>
+      <li>Employee personal information</li>
+    </ul></div>
+  </div>
+  <p>Take reasonable steps to protect this information, use it only for authorized business purposes, and never share it with third parties or use it for personal gain. Guest and employee personal data must be handled consistent with applicable privacy law. Violations may result in termination and legal action.</p>
+
+  <h2 id="s6-11"><span class="h-num">6.11</span>Conflicts of Interest</h2><div class="h-rule"></div>
+  <p>A conflict of interest arises when your personal interests could interfere with your ability to act in the best interest of Turquaz. Avoid, among other things:</p>
+  <ul>
+    <li>Using confidential Turquaz information for personal gain or to the Company's detriment;</li>
+    <li>Using Company assets, supplies, staff labor or kitchen time for personal purposes without authorization — including baking or cooking for outside sale;</li>
+    <li>Accepting gifts, cash or favors from a vendor, supplier or contractor beyond nominal courtesy;</li>
+    <li>Working for or consulting with a competitor, supplier or major customer of Turquaz;</li>
+    <li>Holding a financial interest in a competitor, other than under 1% of publicly traded stock;</li>
+    <li>Being involved in the hiring, supervision or compensation decisions of a relative or partner.</li>
+  </ul>
+  <p>Outside employment is permitted as long as it does not conflict with this policy, does not interfere with your availability or performance, and does not involve a competitor. <strong>Disclose it.</strong> If you are unsure whether something is a conflict, ask the General Manager or Abdulaziz Aslan before acting — asking is always safe.</p>
+
+  <h2 id="s6-12"><span class="h-num">6.12</span>Solicitation &amp; Distribution</h2><div class="h-rule"></div>
+  <p>To avoid disrupting operations and the guest experience, employees may not solicit others or distribute literature during working time (yours or theirs), and may not distribute literature in guest-facing areas at any time. Solicitation during non-working time in non-work areas is permitted. Non-employees may not solicit or distribute on Company premises at any time. This policy is applied uniformly and does not restrict legally protected activity.</p>
+</section>
+
+<!-- ══════════════════════ CH 7 ══════════════════════ -->
+<section class="break" id="ch7">
+  <div class="chapter-open">
+    <div class="chapter-num">07</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Seven</p>
+      <h1 class="chapter-title">Guest Experience &amp; Operations</h1>
+    </div>
+  </div>
+
+  <h2 id="s7-1"><span class="h-num">7.1</span>Our Service Standard <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <ul>
+    <li><strong>Acknowledge every guest within 30 seconds</strong> of arrival — eye contact and a greeting, even if you're mid-task.</li>
+    <li>Know the menu. You should be able to describe any dish, its main ingredients, whether it is vegetarian, vegan or gluten-free as written, and what pairs with it.</li>
+    <li>Know the specials, the sold-out list and the lead times before service starts.</li>
+    <li>Never point — walk a guest to where they're going.</li>
+    <li>Water, bread and tea are the rhythm of a Turkish table. Keep them moving without being asked.</li>
+    <li>Clear plates only when everyone at the table has finished, unless asked.</li>
+    <li>Thank every guest on the way out — including takeaway and delivery couriers.</li>
+    <li>Anyone can and should help any table. There are no "not my section" moments at Turquaz.</li>
+  </ul>
+
+  <h2 id="s7-2"><span class="h-num">7.2</span>Reservations &amp; Table Management <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>Reservations come through turquazsf.com and are confirmed by email with cancel and modify links. Guests can book up to 90 days ahead. Our published policies are commitments we made to the guest — apply them consistently and kindly.</p>
+  <dl class="kv">
+    <dt>Table hold</dt><dd>Tables are held a maximum of <strong>15 minutes</strong> past the reservation time</dd>
+    <dt>Seating duration</dt><dd>Standard seating is <strong>2 hours</strong></dd>
+    <dt>Booking window</dt><dd>Up to 90 days in advance</dd>
+    <dt>Party size</dt><dd>Online booking up to 15 guests; larger parties call +1 415-791-0770</dd>
+    <dt>Large parties</dt><dd>Confirmed by phone with the GM; may require a deposit or set menu</dd>
+    <dt>Cancellations</dt><dd>Via the guest's confirmation email link, or by phone &mdash; log it in the system either way</dd>
+  </dl>
+  <ul>
+    <li>Check the book before every service and again before seating walk-ins. Do not seat a walk-in into a table that is due in under 45 minutes.</li>
+    <li>Read the special-request field on every reservation. Birthdays, allergies, accessibility needs and seating preferences are logged there for a reason.</li>
+    <li>If we are running behind, tell the guest honestly and early, and offer them a seat at the coffee bar. A truthful 20 minutes beats an optimistic 10.</li>
+    <li>Never overpromise a table time you cannot deliver, and never adjust reservation records to hide a mistake.</li>
+    <li>Reservation data is confidential guest information — see Section 6.10.</li>
+  </ul>
+
+  <h2 id="s7-3"><span class="h-num">7.3</span>POS, Cash, Voids &amp; Comps <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <ul>
+    <li><strong>Use your own POS login.</strong> Never share your code or let anyone ring under your login, and never ring under someone else's. Every transaction is attributable to a person.</li>
+    <li><strong>Ring everything, immediately.</strong> Every item that leaves the kitchen, bar or bakery case is entered in full, before it goes out — including staff meals, catering pulls and samples.</li>
+    <li><strong>Voids, comps, discounts and refunds require manager approval</strong> and a stated reason entered in the system. You may never comp or discount your own order, a friend's order, or a family member's order.</li>
+    <li><strong>Cash drawers</strong> are counted at the start and end of every shift with a manager present. Only one person works a drawer per shift. Report a shortage or overage immediately — reporting an honest discrepancy is never a disciplinary event; hiding one is.</li>
+    <li><strong>Bank drops</strong> into the safe throughout the shift so the drawer never holds excess cash.</li>
+    <li><strong>Never make change from your own pocket</strong> or from the tip jar, and never borrow from the drawer for any reason.</li>
+    <li><strong>Card handling.</strong> Never write down, photograph or store a guest's card number. Cards are run at the terminal in the guest's presence wherever possible.</li>
+  </ul>
+
+  <h2 id="s7-4"><span class="h-num">7.4</span>Online Orders, Delivery &amp; Catering <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>Our off-premise channels are as visible as the dining room — and the guest cannot see us fix a mistake.</p>
+  <ul>
+    <li><strong>Toast online ordering</strong> — check the tablet every few minutes during service, confirm prep times honestly, and mark items 86'd the moment they run out so guests aren't sold something we cannot make.</li>
+    <li><strong>ezCater and catering orders</strong> — read the full order and delivery window at the start of the day, not at pickup time. Confirm headcount, utensils, serving equipment and delivery address.</li>
+    <li><strong>Bag check before handoff.</strong> Every bag is checked against the ticket by a second person and sealed. Sauces, bread, utensils and napkins are part of the order.</li>
+    <li><strong>Allergy and dietary notes</strong> on delivery orders get the same handling as an in-house allergy order (Section 5.5), plus a label on the container.</li>
+    <li><strong>Hot and cold stay separate.</strong> Never bag hot mains with cold mezes or desserts. Baklava and cold desserts travel separately.</li>
+    <li><strong>Couriers are guests.</strong> Greet them, be efficient, and never take out delays on them.</li>
+    <li><strong>Never cancel, modify or refund a third-party order on your own.</strong> Bring it to the manager on duty.</li>
+    <li><strong>Never manipulate platform ratings</strong>, post fake reviews, or ask a guest to change a review in exchange for anything.</li>
+  </ul>
+
+  <h2 id="s7-5"><span class="h-num">7.5</span>BYOB &amp; Corkage <span class="chip chip-tq">Turquaz</span> <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p><strong>Turquaz does not hold an alcoholic beverage license and does not sell alcohol.</strong> Guests may bring their own wine, subject to a $35 corkage fee per bottle.</p>
+  <ol>
+    <li><strong>We never sell, supply, offer or recommend alcohol.</strong> Not a glass, not a taste, not "on the house." Doing so would violate state law and jeopardize the business.</li>
+    <li><strong>Corkage is a service charge</strong> for opening and serving what the guest brought — it is rung in the POS like any other item, every time.</li>
+    <li><strong>Never serve a guest who appears to be under 21.</strong> If there is any doubt about age at a table with alcohol, get the manager on duty. Do not pour for anyone you have not confirmed is of age.</li>
+    <li><strong>Never serve or continue pouring for a guest who appears intoxicated.</strong> Notify the MOD, who will handle the conversation and, if needed, arrange a ride.</li>
+    <li><strong>Employees may not consume alcohol on premises</strong> at any time, on or off shift, and may not accept a drink from a guest.</li>
+    <li><strong>Open containers may not leave the premises</strong> except a resealed and recorked bottle handed to the guest as permitted by law.</li>
+    <li>Report any alcohol-related incident — an intoxicated guest, a minor with alcohol, a confrontation — to the MOD immediately and document it.</li>
+  </ol>
+
+  <h2 id="s7-6"><span class="h-num">7.6</span>Bakery Production, Lead Times &amp; Waste <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <ul>
+    <li>Follow the daily production sheet. Bakes are timed so the case is full at open and replenished through the day — not baked all at once.</li>
+    <li><strong>Honor the posted lead times</strong> on trays and special orders (from 1 hour to 24 hours depending on the item). Never promise a shorter lead time to please a guest — check with the baker first.</li>
+    <li>Rotate the case constantly. Fronted, faced, gapless, and never a stale item beside a fresh one.</li>
+    <li><strong>Log all waste</strong> at close on the waste sheet — item, quantity and reason. This drives tomorrow's production and is not used to blame anyone.</li>
+    <li>Product that does not meet standard does not go in the case. Ask the baker or MOD what to do with it; do not decide on your own, and do not eat unsold product without ringing it (Section 10.2).</li>
+    <li>Every prepped and baked item is labeled and dated (Section 5.4).</li>
+  </ul>
+
+  <h2 id="s7-7"><span class="h-num">7.7</span>Guest Complaints &amp; Allergen Questions <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>Use <strong>L.A.S.T.</strong> — Listen without interrupting, Apologize sincerely, Solve, Thank them for telling us.</p>
+  <ul>
+    <li>Never argue with a guest, never blame the kitchen or a coworker in front of them, and never say "that's not my table."</li>
+    <li>Bring the manager on duty into anything involving illness, an allergic reaction, a foreign object in food, an injury, or a request to remove a charge.</li>
+    <li><strong>Allergen questions always go to a manager or chef</strong> if you are not certain (Section 5.5). Guessing is a terminable safety violation.</li>
+    <li><strong>Reported illness or reaction:</strong> notify the MOD immediately, do not admit fault or offer to pay medical costs, retain the food and the ticket, and let the MOD document it and contact the guest. Complaints of foodborne illness are reported to the Health Department when required.</li>
+    <li>Log every significant complaint so we can find patterns. A complaint is free information about a problem we can fix.</li>
+  </ul>
+
+  <h2 id="s7-8"><span class="h-num">7.8</span>Opening &amp; Closing Duties <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>Opening and closing checklists are posted at each station. They are signed by the person who performed them, not by whoever is nearest at the end of the night.</p>
+  <div class="grid2">
+    <div>
+      <h4>Opening</h4>
+      <ul class="tight">
+        <li>Clock in, wash hands, check uniform</li>
+        <li>Check and log all refrigeration temperatures</li>
+        <li>Check gas, hood, ovens and equipment for faults</li>
+        <li>Verify sanitizer concentration with test strips</li>
+        <li>Stock handsinks: soap, towels, hot water</li>
+        <li>Review 86 list, specials, reservations and catering</li>
+        <li>Confirm exits and aisles are clear</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Closing</h4>
+      <ul class="tight">
+        <li>Cool, label, date and store all product correctly</li>
+        <li>Final temperature log and waste log</li>
+        <li>Break down, clean and sanitize all equipment</li>
+        <li>Filter fryer only when oil is safely cooled</li>
+        <li>Floors, drains, trash and grease properly handled</li>
+        <li>Drawer counted with a manager; deposit secured</li>
+        <li>Gas off, equipment off, lights, alarm, lock &mdash; and leave together</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout callout-alert">
+    <span class="callout-label">Never Off the Clock</span>
+    Closing duties are <strong>working time</strong>. Clock out only when your work is genuinely finished. Nobody may ask you to clock out and keep working — if anyone ever does, report it to Abdulaziz Aslan immediately.
+  </div>
+</section>
+
+<!-- ══════════════════════ CH 8 ══════════════════════ -->
+<section class="break" id="ch8">
+  <div class="chapter-open">
+    <div class="chapter-num">08</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Eight</p>
+      <h1 class="chapter-title">Pay &amp; Hours</h1>
+    </div>
+  </div>
+
+  <h2 id="s8-1"><span class="h-num">8.1</span>Timekeeping <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Accurate time records are how we make sure you are paid for every minute you work. Record all working time in the Company's timekeeping system:</p>
+  <ul>
+    <li>Immediately before starting your shift</li>
+    <li>Immediately before your meal period begins</li>
+    <li>Immediately when you resume work after your meal period</li>
+    <li>Immediately when you finish work</li>
+    <li>Immediately before and after any other time away from work</li>
+  </ul>
+  <p>Clock in no more than two minutes before your start time and clock out no later than two minutes after you finish. Rest breaks and paid cool-down rests are <strong>not</strong> clocked out.</p>
+  <p>Tell your manager right away about any unrecorded or misrecorded time, or any meal or rest period you were unable to take. We will correct it and pay any premium owed.</p>
+  <div class="callout callout-alert">
+    <span class="callout-label">Zero Tolerance</span>
+    Falsifying time entries, clocking in or out for another person, or working "off the clock" is strictly prohibited and will result in discipline up to and including termination &mdash; for the employee doing it <em>and</em> for any manager who requests or permits it.
+  </div>
+
+  <h2 id="s8-2"><span class="h-num">8.2</span>Workweek &amp; Paydays</h2><div class="h-rule"></div>
+  <dl class="kv">
+    <dt>Workweek</dt><dd>Monday 12:00 a.m. through Sunday 11:59 p.m.</dd>
+    <dt>Workday</dt><dd>A 24-hour period beginning at 12:00 a.m.</dd>
+    <dt>Pay period</dt><dd>Two weeks</dd>
+    <dt>Payday</dt><dd>Every other Tuesday, for the two-week period that ended previously</dd>
+    <dt>Holiday payday</dt><dd>If a payday falls on a holiday, you are paid the preceding business day</dd>
+    <dt>Method</dt><dd>Direct deposit or pay card (your choice) &mdash; paper check available on request</dd>
+  </dl>
+
+  <h2 id="s8-3"><span class="h-num">8.3</span>Minimum Wage <span class="chip chip-sf">SF Law</span></h2><div class="h-rule"></div>
+  <p>All employees are paid at least the <strong>San Francisco Minimum Wage</strong>, which is higher than both the California and federal minimums and increases every July 1. The current rate is posted on the employee notice board. Turquaz does not take a tip credit — tips are never counted toward the minimum wage, and your tips are on top of your hourly rate.</p>
+
+  <h2 id="s8-4"><span class="h-num">8.4</span>Overtime for Non-Exempt Employees <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <table>
+    <thead><tr><th style="width:1in;">Rate</th><th>When It Applies</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1.5&times;</td><td>Hours over 8 and up to 12 in a workday; hours over 40 in a workweek; the first 8 hours on the seventh consecutive day of work in a workweek</td></tr>
+      <tr><td class="num">2&times;</td><td>Hours over 12 in a workday; hours over 8 on the seventh consecutive day of work in a workweek</td></tr>
+    </tbody>
+  </table>
+  <p>Only actual hours worked count toward overtime — paid time off does not. Overtime must be authorized by your manager in advance. However, <strong>if you work overtime without prior approval, you will still be paid for it</strong>; working unapproved overtime is a policy issue handled through coaching, never through withholding pay.</p>
+
+  <h2 id="s8-5"><span class="h-num">8.5</span>Meal Periods &amp; Waivers <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <ul>
+    <li>Non-exempt employees who work <strong>more than 5 hours</strong> get an unpaid, uninterrupted, duty-free <strong>30-minute meal period</strong>, which must <strong>begin before the end of the fifth hour</strong> of work.</li>
+    <li>Employees who work <strong>more than 10 hours</strong> get a second unpaid 30-minute meal period, which must begin before the end of the tenth hour.</li>
+    <li>You are relieved of all duty during a meal period. Clock out at the start and clock back in only after a full 30 minutes.</li>
+    <li>You are free to leave the premises during your meal period (subject to the meal-benefit rule in Section 10.2 if you take a discounted meal).</li>
+  </ul>
+  <h3>Waivers</h3>
+  <ul>
+    <li>If your workday will be <strong>6 hours or less</strong>, you may waive the first meal period in writing by mutual consent.</li>
+    <li>If you work more than 10 hours but <strong>not more than 12</strong>, you may waive the second meal period in writing — but only if you actually took the first one.</li>
+    <li>A waiver is voluntary and <strong>revocable at any time</strong>. Just tell your supervisor you want to take your meal period.</li>
+  </ul>
+  <div class="callout callout-legal">
+    <span class="callout-label">Premium Pay</span>
+    If a meal period is missed, late, short, or interrupted, you are owed <strong>one additional hour of pay at your regular rate of compensation</strong> for that day. Report it to your manager and it will be added to your check. Never adjust your time records to conceal a missed or short meal period, and never work off the clock during one.
+  </div>
+
+  <h2 id="s8-6"><span class="h-num">8.6</span>Rest &amp; Recovery Breaks <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <ul>
+    <li>Non-exempt employees receive a <strong>paid, duty-free 10-minute rest break for every 4 hours worked, or major fraction thereof</strong>. Practically: 1 break for 3.5&ndash;6 hours, 2 breaks for over 6 up to 10 hours, 3 breaks for over 10 up to 14 hours.</li>
+    <li>Rest breaks should be taken as close to the middle of each work period as practicable.</li>
+    <li>No rest break is required if your total daily work is under 3.5 hours.</li>
+    <li>Rest breaks are <strong>paid</strong> — do not clock out. You may not be required to stay on premises, answer questions, or remain on call during a rest break.</li>
+    <li><strong>Cool-down recovery periods</strong> under Section 4.3 are separate and additional. Take them whenever you need to.</li>
+    <li>A missed rest break also entitles you to <strong>one additional hour of premium pay</strong>. Report it.</li>
+  </ul>
+
+  <h2 id="s8-7"><span class="h-num">8.7</span>Reporting Time Pay &amp; Split Shifts <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <h3>Reporting time pay</h3>
+  <p>If you report to work as scheduled but are sent home early or given less than half your scheduled shift, you are paid for <strong>half the scheduled shift — at least 2 hours and no more than 4 hours</strong> at your regular rate. If you are required to report a second time in a workday and work fewer than 2 hours, you are paid for <strong>2 hours</strong>. Certain exceptions apply, such as a utility failure or a threat to safety.</p>
+  <h3>Split shift premium</h3>
+  <p>If your workday is split by an unpaid, non-meal-period interval — for example a break between a lunch shift and a dinner shift — you are paid <strong>one additional hour at the applicable minimum wage</strong> as a split shift premium, offset by any amount your hourly rate exceeds the minimum wage.</p>
+  <p>You do not need to ask for these; payroll applies them automatically. If you believe one was missed, tell the General Manager.</p>
+
+  <h2 id="s8-8"><span class="h-num">8.8</span>Tips &amp; Tip Pooling <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Tips belong to employees. California law prohibits Turquaz, and any manager or supervisor with authority over hiring, firing or direction of work, from taking any portion of a tip. We do not deduct credit card processing fees from tips, and we do not use tips to offset wages.</p>
+  <dl class="kv">
+    <dt>How tips are pooled</dt><dd>All tips &mdash; cash, card, online, delivery and catering &mdash; go into a single house pool</dd>
+    <dt>Who participates</dt><dd>All non-exempt front-of-house and back-of-house employees who worked the applicable period</dd>
+    <dt>How it's split</dt><dd>Proportionally by <strong>hours worked</strong> during the period</dd>
+    <dt>When it's paid</dt><dd>Distributed bi-weekly through payroll, with the pool total and your share shown on your wage statement</dd>
+    <dt>Who is excluded</dt><dd>Owners, managers and supervisors do not participate in the tip pool</dd>
+    <dt>Taxes</dt><dd>All tips are taxable income and are reported through payroll. If you receive any tip directly, you must report it &mdash; see below</dd>
+  </dl>
+  <ul>
+    <li>Cash tips received directly must be turned in to the pool and recorded at the end of your shift. Keeping a direct cash tip out of the pool is theft from your coworkers.</li>
+    <li>Tip records are available to you on request.</li>
+    <li>If you believe the pool has been calculated incorrectly, raise it with the General Manager. We will show you the math.</li>
+  </ul>
+
+  <h2 id="s8-9"><span class="h-num">8.9</span>Expense &amp; Mileage Reimbursement <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>California Labor Code §2802 requires us to reimburse you for all necessary expenditures you incur in performing your job. Never pay for something the Company needs out of your own pocket without approval — and if you do, we will reimburse you.</p>
+  <ul>
+    <li><strong>Mileage.</strong> Approved work-related driving in your personal vehicle — catering deliveries, supply runs, bank trips — is reimbursed at the current IRS standard mileage rate. Ordinary commuting between home and work is not reimbursable.</li>
+    <li><strong>Documentation.</strong> Submit the mileage form with the date, purpose, start and end locations, and total miles, <strong>within 14 days</strong> of travel.</li>
+    <li><strong>Pre-approval.</strong> All work-related travel must be approved by a manager in advance to qualify.</li>
+    <li><strong>Personal phone.</strong> If you are required to use your personal phone for scheduling, POS or work communication, you are entitled to reasonable reimbursement — ask the GM to set this up.</li>
+    <li><strong>Tools and supplies.</strong> The Company provides required tools, uniform pieces and equipment. You are responsible only for your slip-resistant shoes and basic personal items.</li>
+    <li><strong>Parking and tolls</strong> incurred on approved Company business are reimbursed with a receipt.</li>
+  </ul>
+
+  <h2 id="s8-10"><span class="h-num">8.10</span>Wage Statements &amp; Payroll Errors <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Every payday you receive an itemized wage statement showing gross wages, total hours, all applicable rates, tips, deductions, net pay, the pay period, and your accrued paid sick leave balance. <strong>Read it.</strong></p>
+  <p>If anything looks wrong — missing hours, a wrong rate, a missing break premium, a tip share that doesn't match — tell the General Manager immediately. We will investigate promptly and correct any error, including any premiums or overtime owed. You will never be penalized for reporting a pay discrepancy. You may also contact the California Labor Commissioner at any time.</p>
+  <p>We make no deductions from wages other than those required by law or authorized by you in writing and permitted by law. We do not deduct for cash shortages, breakage, walked checks, uniform costs, or mistakes.</p>
+
+  <h2 id="s8-11"><span class="h-num">8.11</span>Referral Bonus</h2><div class="h-rule"></div>
+  <p>Good people know good people. Turquaz may award a bonus to an eligible employee who refers a new hire. The person you refer must not report directly to you, must remain employed for at least <strong>90 days</strong>, and must be active at the time the bonus is processed. The amount varies by position. Ask the General Manager for the current program.</p>
+</section>
+
+<!-- ══════════════════════ CH 9 ══════════════════════ -->
+<section class="break" id="ch9">
+  <div class="chapter-open">
+    <div class="chapter-num">09</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Nine</p>
+      <h1 class="chapter-title">Leaves &amp; Time Off</h1>
+    </div>
+  </div>
+
+  <p class="lead">Life happens outside the restaurant. These are the protections you have — use them.</p>
+
+  <div class="callout callout-legal">
+    <span class="callout-label">How to Request Any Leave</span>
+    Notify the General Manager as early as you can &mdash; 30 days in advance when the need is foreseeable, or as soon as practicable when it is not. Leaves may run concurrently where the law allows. Requesting a protected leave is never held against you, and taking one does not affect your standing, your station, or your schedule when you return.
+  </div>
+
+  <h2 id="s9-1"><span class="h-num">9.1</span>Paid Sick Leave <span class="chip chip-sf">SF Law</span></h2><div class="h-rule"></div>
+  <p>Turquaz follows the San Francisco Paid Sick Leave Ordinance, which is more generous than California's statewide law.</p>
+  <dl class="kv">
+    <dt>Accrual</dt><dd>1 hour of paid sick leave for every 30 hours worked, from your first day</dd>
+    <dt>Waiting period</dt><dd>You may begin using accrued leave on your 90th day of employment</dd>
+    <dt>Maximum balance</dt><dd><strong>72 hours</strong> (our headcount is 10 or more). Accrual pauses at the cap and resumes when you use leave and drop below it</dd>
+    <dt>Carryover</dt><dd>Unused leave carries over year to year, up to the cap</dd>
+    <dt>Increments</dt><dd>May be used in increments of one hour or more</dd>
+    <dt>Rate</dt><dd>Paid at your regular rate of pay</dd>
+    <dt>On separation</dt><dd>Not paid out. If you are rehired within one year, your balance is reinstated</dd>
+    <dt>Balance</dt><dd>Shown on every wage statement</dd>
+  </dl>
+  <h3>What you can use it for</h3>
+  <ul>
+    <li>Your own illness, injury, health condition, medical diagnosis, care or treatment, or preventive care (physicals, dental, vision, vaccinations).</li>
+    <li>The same for a <strong>family member</strong> — parent, child (biological, adopted, foster, stepchild, legal ward, or a child of a person standing in loco parentis), spouse, registered domestic partner, grandparent, grandchild, sibling, parent-in-law, or a <strong>designated person</strong> you identify. These apply to relationships by blood, adoption, step, foster or legal guardianship.</li>
+    <li>If you have no spouse or registered domestic partner, you may designate one other person for whom you may use sick leave.</li>
+    <li>Purposes related to being a victim of domestic violence, sexual assault or stalking.</li>
+    <li>Being excluded from work under our food safety health policy (Section 5.2).</li>
+    <li>A public health emergency or closure of your workplace or your child's school or care provider by a public official.</li>
+  </ul>
+  <h3>How to use it</h3>
+  <p>Give reasonable advance notice when foreseeable (up to 30 days for scheduled appointments); otherwise notify us as soon as practicable, following the call-out procedure in Section 6.2. We will not require you to find your own replacement, and we will not require a doctor's note as a condition of taking sick leave except where clearly permitted by law. Using paid sick leave is <strong>never</strong> counted as an attendance occurrence and never affects your schedule or standing.</p>
+
+  <h2 id="s9-2"><span class="h-num">9.2</span>Family &amp; Medical Leave (CFRA) <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Turquaz grants family and medical leave under the <strong>California Family Rights Act (CFRA)</strong>, which applies to employers with 5 or more employees. The federal FMLA applies only to employers with 50 or more employees and therefore does not currently apply to Turquaz; if we grow past that threshold, this policy will be updated.</p>
+  <h3>Eligibility</h3>
+  <p>You are eligible if you have (1) worked for the Company for a total of at least <strong>12 months</strong>, and (2) worked at least <strong>1,250 hours</strong> in the previous 12 months.</p>
+  <h3>Leave available</h3>
+  <p>Up to <strong>12 workweeks</strong> of job-protected leave in a 12-month period for:</p>
+  <table>
+    <thead><tr><th>Qualifying Reason</th></tr></thead>
+    <tbody>
+      <tr><td>Bonding with your newborn child, or a child newly placed with you through adoption or foster care (including a domestic partner's child)</td></tr>
+      <tr><td>Caring for a family member with a serious health condition &mdash; spouse, domestic partner, child of any age, child of a registered domestic partner, parent, parent-in-law, sibling, grandparent, grandchild, or a <strong>designated person</strong></td></tr>
+      <tr><td>Your own serious health condition that makes you unable to perform your job (excluding disability related to pregnancy and childbirth, which is covered by PDL in Section 9.3)</td></tr>
+      <tr><td>A qualifying military exigency related to the covered active duty of your spouse, domestic partner, child or parent in the U.S. Armed Forces</td></tr>
+    </tbody>
+  </table>
+  <p>Leave may be taken all at once, intermittently, or as a reduced schedule.</p>
+  <h3>Notice &amp; certification</h3>
+  <p>Provide 30 days' advance notice when the need is foreseeable, or as soon as practicable when it is not. For medical reasons, submit a completed Certification of Health Care Provider within 15 calendar days of the request; we may request recertification and periodic status updates. Approval may be delayed until certification is received, and leave may be denied if certification is never provided. Schedule planned treatment so as not to unduly disrupt operations where possible.</p>
+  <h3>Pay, benefits &amp; reinstatement</h3>
+  <p>CFRA leave is unpaid, but you may be eligible for State Disability Insurance or Paid Family Leave benefits from the EDD (Section 9.6), and you may elect — or we may require — that you use accrued paid sick leave concurrently to the extent permitted by law. We will maintain any group health coverage you had for up to 12 workweeks on the same terms as if you had continued working; in limited circumstances, such as failing to return from leave, we may recover premiums paid. If you are not entitled to continued paid coverage, you may continue it through COBRA/Cal-COBRA. On return, you will be reinstated to the same or an equivalent position with equivalent pay, benefits and conditions — though you have no greater right to reinstatement than if you had been continuously employed.</p>
+
+  <h2 id="s9-3"><span class="h-num">9.3</span>Pregnancy Disability Leave <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Every employee disabled by pregnancy, childbirth or a related medical condition is entitled to up to <strong>four months (17⅓ weeks)</strong> of job-protected leave — regardless of length of employment or hours worked.</p>
+  <ul>
+    <li>PDL is not automatic for a fixed period; it covers the time your health care provider determines you are actually disabled, up to four months.</li>
+    <li>Covered conditions include severe morning sickness, prenatal and postnatal appointments, doctor-ordered bed rest, gestational diabetes, pregnancy-induced hypertension, preeclampsia, recovery from childbirth, loss or end of pregnancy, and postpartum depression.</li>
+    <li>PDL may be taken continuously, intermittently, or as a reduced schedule; all of it counts against the four-month entitlement.</li>
+    <li>We may require written medical certification substantiating the need, and a release to return to work.</li>
+    <li>PDL is unpaid, but you may be eligible for State Disability Insurance through the EDD, and you may use accrued paid sick leave.</li>
+    <li>Group health coverage continues during PDL at the same level and conditions as if you had continued working, for up to four months in a 12-month period.</li>
+    <li>PDL runs separately from CFRA bonding leave — you may be entitled to PDL <em>and then</em> up to 12 weeks of CFRA bonding leave.</li>
+    <li>We also provide reasonable accommodation and, where medically advisable, transfer to a less strenuous or hazardous position for the duration of the pregnancy.</li>
+  </ul>
+
+  <h2 id="s9-4"><span class="h-num">9.4</span>Reproductive Loss Leave <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Employees who have been employed at least 30 days may take up to <strong>5 days of leave</strong> following a reproductive loss event — a failed adoption, failed surrogacy, miscarriage, stillbirth or unsuccessful assisted reproduction. Leave need not be taken consecutively but must be completed within three months of the event. Up to 20 days may be taken within a 12-month period for multiple events. This leave is unpaid, but you may elect to use accrued paid sick leave or other paid time off. We keep any information about your request confidential.</p>
+
+  <h2 id="s9-5"><span class="h-num">9.5</span>Bereavement Leave <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Employees who have been employed at least <strong>30 days</strong> may take up to <strong>5 days of leave</strong> on the death of a spouse, domestic partner, child, child of a spouse or domestic partner, parent, parent-in-law, sibling, grandparent, grandchild, step-parent, brother- or sister-in-law, or any other person living in the same household. Leave need not be consecutive but must be completed within three months of the date of death. Turquaz provides this leave <strong>paid</strong>; you may also use accrued paid sick leave or other paid time off for any additional time needed. We may request documentation — a death certificate, obituary, or written verification from a funeral home, mortuary, hospital or place of worship — which may be provided within 30 days. All documentation and information is kept confidential.</p>
+
+  <h2 id="s9-6"><span class="h-num">9.6</span>State Disability Insurance &amp; Paid Family Leave <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>These are <strong>wage replacement programs administered by the California Employment Development Department</strong> — not by Turquaz, and not a separate entitlement to time off. You pay into them through payroll deductions.</p>
+  <dl class="kv">
+    <dt>State Disability (SDI)</dt><dd>Partial wage replacement when you cannot work due to your own non-work-related illness, injury, pregnancy or childbirth</dd>
+    <dt>Paid Family Leave (PFL)</dt><dd>Up to <strong>8 weeks</strong> of benefits in a 12-month period to care for a seriously ill family member, to bond with a new child, or for a qualifying military exigency</dd>
+    <dt>Apply</dt><dd>edd.ca.gov &mdash; apply directly with the EDD; we will provide any employer information they request promptly</dd>
+  </dl>
+  <p>PFL provides pay, not job protection — your job protection comes from CFRA or PDL where those apply. Talk to the General Manager so we can coordinate the two.</p>
+
+  <h2 id="s9-7"><span class="h-num">9.7</span>Jury Duty &amp; Witness Leave <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>Give your manager a copy of your summons as soon as you receive it. Time off for jury service, or to appear in court as a witness under subpoena or court order, is unpaid for non-exempt employees, though you may use accrued paid time off. Exempt employees are paid as required by law. We will not retaliate against you for serving, and we will adjust your schedule for the duration of your service.</p>
+
+  <h2 id="s9-8"><span class="h-num">9.8</span>Voting Leave <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>If you do not have enough time outside of working hours to vote in a statewide election, you may take up to <strong>2 hours of paid time off</strong> at the beginning or end of your shift. Give at least two working days' notice so we can arrange coverage. Notice of your voting rights is posted at least 10 days before every statewide election.</p>
+
+  <h2 id="s9-9"><span class="h-num">9.9</span>School Activities &amp; School Appearances <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <ul>
+    <li><strong>School activities:</strong> Parents, guardians, stepparents, foster parents and grandparents with custody of a child in kindergarten through grade 12 or a licensed child care provider may take up to <strong>40 hours per year</strong> (no more than 8 hours in any month) for school or child care activities, including addressing a child care provider or school emergency. Provide reasonable advance notice; this leave is unpaid but you may use accrued paid time off.</li>
+    <li><strong>School appearances:</strong> If you are required by a school to appear regarding your child's suspension or discipline, you may take time off for that purpose with reasonable notice.</li>
+  </ul>
+
+  <h2 id="s9-10"><span class="h-num">9.10</span>Military &amp; Military Spouse Leave <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>We comply with USERRA and California military leave law. Employees who serve in the uniformed services are granted unpaid leave for service and training, with reinstatement and benefit rights as provided by law. Spouses and registered domestic partners of a deployed service member on leave from deployment may take up to <strong>10 days</strong> of unpaid leave. Notify the General Manager as soon as you receive orders.</p>
+
+  <h2 id="s9-11"><span class="h-num">9.11</span>Emergency Condition Leave <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>In the event of an emergency condition — a natural disaster, a criminal act, or an evacuation order affecting the workplace or your child's school or care provider — you may leave or refuse to report to work if you have a reasonable belief that the workplace or worksite is unsafe. Notify us as soon as you can, before or after, using any available method. We will not take or threaten adverse action against you for exercising this right. This does not apply to first responders or where the emergency condition is a health pandemic.</p>
+
+  <h2 id="s9-12"><span class="h-num">9.12</span>Personal Leave of Absence</h2><div class="h-rule"></div>
+  <p>If you need time off that is not covered by any policy above, you may request an unpaid personal leave of absence in writing from the General Manager. These are granted at the Company's discretion based on your reason, length of service, performance and business needs, and are not job-protected. Available accrued paid time off is generally used first.</p>
+
+  <h2><span class="h-num">9.13</span>Ordinances That Apply as We Grow <span class="chip chip-sf">SF Law</span></h2><div class="h-rule"></div>
+  <p>Several San Francisco ordinances take effect at higher headcount thresholds. Turquaz currently employs fewer than 20 people, so the following do not yet apply — but we will adopt them automatically and update this handbook when we cross the threshold:</p>
+  <table>
+    <thead><tr><th style="width:2.4in;">Ordinance</th><th style="width:0.9in;">Threshold</th><th>What It Provides</th></tr></thead>
+    <tbody>
+      <tr><td>Health Care Security Ordinance (HCSO)</td><td class="num">20+</td><td>Required health care expenditures for employees working 8+ hours/week after 90 days</td></tr>
+      <tr><td>Paid Parental Leave Ordinance (PPLO)</td><td class="num">20+</td><td>Employer tops up California PFL bonding benefits toward 100% of normal gross wages for up to 8 weeks</td></tr>
+      <tr><td>Family Friendly Workplace Ordinance</td><td class="num">20+</td><td>Right to request a flexible or predictable working arrangement for caregiving</td></tr>
+      <tr><td>Commuter Benefits Ordinance</td><td class="num">20+</td><td>Pre-tax transit benefit, transit subsidy, or employer-provided transportation</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════ CH 10 ══════════════════════ -->
+<section class="break" id="ch10">
+  <div class="chapter-open">
+    <div class="chapter-num">10</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Ten</p>
+      <h1 class="chapter-title">Benefits</h1>
+    </div>
+  </div>
+
+  <h2 id="s10-1"><span class="h-num">10.1</span>Eligibility Timeline</h2><div class="h-rule"></div>
+  <p>Turquaz values the health and wellbeing of the team and offers benefits to eligible employees. Benefit programs, carriers and terms may change; plan documents control in the event of any conflict with this handbook.</p>
+  <table>
+    <thead><tr><th style="width:2.1in;">Group</th><th>When Eligible</th></tr></thead>
+    <tbody>
+      <tr><td>Hourly operations employees averaging 30+ hours per week</td><td>After six full months of service, effective the first day of the following month</td></tr>
+      <tr><td>Managers and above (full-time, non-temporary)</td><td>First of the month following 30 days of service</td></tr>
+      <tr><td>Paid sick leave</td><td>Accrues from day one for everyone; usable from day 90</td></tr>
+      <tr><td>Employee meal &amp; discount</td><td>From your first shift</td></tr>
+      <tr><td>Retirement savings</td><td>See Section 10.3</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="s10-2"><span class="h-num">10.2</span>Employee Meal &amp; Discount</h2><div class="h-rule"></div>
+  <p>You are entitled to <strong>either one free employee meal per shift, or 50% off a menu item (up to $10 off) — not both.</strong> Beyond the free meal option, the 50% discount applies to food and drinks, capped at $10 off.</p>
+  <ul>
+    <li><strong>Every employee meal must be rung up by someone other than the employee taking it</strong> and ticketed like a regular order, so food costs are recorded accurately. Never ring your own meal or discount.</li>
+    <li><strong>Meals are eaten on-site</strong> during your break, unless you paid the full menu price — in which case you may take it to go.</li>
+    <li>Eat in the designated break area, not on the line, at the bar, or in prep (Section 5.3).</li>
+    <li>The discount is for you personally. It does not extend to friends, family or guests, and it may not be combined with other offers.</li>
+    <li>Employee meals do not include catering trays, whole baklava trays, or feast platters unless approved by the General Manager.</li>
+    <li>Taking food that has not been rung up is theft (Section 6.1).</li>
+  </ul>
+  <div class="callout callout-legal">
+    <span class="callout-label">Your Meal Period Rights Are Separate</span>
+    Whether or not you take an employee meal, your legal right to a duty-free, uninterrupted 30-minute meal period is unchanged (Section 8.5). Eating on-site does not mean you are on duty &mdash; you are clocked out and free from all work responsibilities during your meal period. You may also waive a meal period in writing if your shift is 6 hours or less, or waive the second if you work 10&ndash;12 hours and took the first. Any waiver is revocable at any time.
+  </div>
+
+  <h2 id="s10-3"><span class="h-num">10.3</span>Retirement Savings <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <p>California requires every employer to offer a retirement savings option. Turquaz provides a retirement savings program to all eligible team members.</p>
+  <ul>
+    <li><strong>Automatic enrollment.</strong> Eligible employees are automatically enrolled during onboarding.</li>
+    <li><strong>Opting out.</strong> Participation is entirely voluntary. To decline, complete and sign the opt-out waiver — you may opt out or rejoin at any time.</li>
+    <li><strong>Contributions.</strong> You may contribute a portion of your wages by payroll deduction up to the annual IRS limit, and change your contribution rate at any time.</li>
+    <li><strong>Portability.</strong> Your account is yours and goes with you if you leave.</li>
+  </ul>
+  <p>For plan details, contribution changes or account access, contact the General Manager.</p>
+
+  <h2 id="s10-4"><span class="h-num">10.4</span>Health Care &amp; Commuter Programs <span class="chip chip-sf">SF Law</span></h2><div class="h-rule"></div>
+  <p>San Francisco's Health Care Security Ordinance and Commuter Benefits Ordinance apply to employers with 20 or more employees. Turquaz is currently below that threshold. We monitor our headcount and will implement both programs — and notify the whole team — as soon as we become covered. See Section 9.13.</p>
+  <p>Regardless of headcount, employees enrolled in any Company-sponsored health plan receive plan documents and Summary Plan Descriptions separately; those documents govern coverage.</p>
+
+  <h2 id="s10-5"><span class="h-num">10.5</span>Training &amp; Growth <span class="chip chip-tq">Turquaz</span></h2><div class="h-rule"></div>
+  <p>We would rather promote from within. Turquaz pays for and provides time for:</p>
+  <ul>
+    <li>California Food Handler Card and renewals (Section 5.1)</li>
+    <li>Certified Food Protection Manager certification for supervisory roles</li>
+    <li>Harassment prevention training (Section 3.8)</li>
+    <li>Safety, workplace violence prevention and heat illness training (Chapter 4)</li>
+    <li>Station cross-training across kitchen, bakery and coffee bar</li>
+  </ul>
+  <p>All required training is paid working time. Tell your manager which station or skill you want to learn next — cross-trained people get more hours and are first in line for promotion.</p>
+</section>
+
+<!-- ══════════════════════ CH 11 ══════════════════════ -->
+<section class="break" id="ch11">
+  <div class="chapter-open">
+    <div class="chapter-num">11</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Eleven</p>
+      <h1 class="chapter-title">Ending Employment</h1>
+    </div>
+  </div>
+
+  <h2 id="s11-1"><span class="h-num">11.1</span>Resignation</h2><div class="h-rule"></div>
+  <p>Employment is at-will and either party may end it at any time. That said, we ask for <strong>two weeks' written notice</strong> as a professional courtesy so we can adjust the schedule — and giving proper notice matters for rehire eligibility and references. Give your notice to the General Manager. We may offer an exit conversation; participation is voluntary and your feedback is genuinely welcome.</p>
+
+  <h2 id="s11-2"><span class="h-num">11.2</span>Final Pay <span class="chip chip-ca">CA Law</span></h2><div class="h-rule"></div>
+  <table>
+    <thead><tr><th style="width:2in;">Situation</th><th>When You Are Paid</th></tr></thead>
+    <tbody>
+      <tr><td>Discharged or laid off</td><td>All wages due <strong>immediately</strong>, at the time of separation</td></tr>
+      <tr><td>You resign with at least 72 hours' notice</td><td>All wages due on your <strong>last day of work</strong></td></tr>
+      <tr><td>You resign with less than 72 hours' notice</td><td>All wages due <strong>within 72 hours</strong> of giving notice</td></tr>
+    </tbody>
+  </table>
+  <p>Final pay includes all wages earned, overtime, any premiums owed, and your share of any tip pool through your last shift. Accrued paid sick leave is not paid out. We do not withhold final pay for any reason, including unreturned property.</p>
+
+  <h2 id="s11-3"><span class="h-num">11.3</span>Return of Property</h2><div class="h-rule"></div>
+  <p>On or before your last day, return all Company property: keys and fobs, uniform pieces and aprons, name tag, POS credentials, tablets or devices, catering equipment, manuals and documents, and anything else belonging to Turquaz. Your access to Company systems, schedules and accounts is deactivated on separation. Confidentiality obligations under Section 6.10 continue after employment ends.</p>
+
+  <h2 id="s11-4"><span class="h-num">11.4</span>Continuation of Coverage</h2><div class="h-rule"></div>
+  <p>If you are enrolled in a Company-sponsored health plan, you will receive information about continuing coverage through COBRA or Cal-COBRA, including deadlines and premium amounts. Covered California may also be an option. Contact the General Manager with questions.</p>
+
+  <h2 id="s11-5"><span class="h-num">11.5</span>Rehire</h2><div class="h-rule"></div>
+  <p>Former employees who left in good standing and gave proper notice are welcome to reapply. If you are rehired within one year of separation, your paid sick leave balance is reinstated as required by law. Rehire is not automatic and is subject to open positions and business need.</p>
+</section>
+
+<!-- ══════════════════════ CH 12 ══════════════════════ -->
+<section class="break" id="ch12">
+  <div class="chapter-open">
+    <div class="chapter-num">12</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Chapter Twelve</p>
+      <h1 class="chapter-title">Closing</h1>
+    </div>
+  </div>
+
+  <p class="lead">Teşekkürler — thank you for reading all the way through.</p>
+
+  <p>This handbook gives you a broad summary of what it means to work at Turquaz, but it is general by nature and cannot answer every question. When something isn't covered here, or isn't clear, ask your manager. That is always the right move.</p>
+
+  <p>While we intend to continue the policies, rules and benefits described here, the Company may modify or depart from them at its discretion — with the single exception of the right of either party to end the employment relationship at will, which can only be changed by an express written agreement signed by both parties.</p>
+
+  <p>We built Turquaz around a table, and a table only works when everyone at it is looked after. That includes you. Speak up when something is wrong, take the breaks you're entitled to, stay home when you're sick, and hold the standard when nobody is watching. Do that, and the rest of this handbook mostly takes care of itself.</p>
+
+  <p style="margin-top:0.3in;">Hoş geldiniz — welcome to Turquaz.</p>
+
+  <div class="callout callout-legal" style="margin-top:0.4in;">
+    <span class="callout-label">Where to Find Things</span>
+    <table style="margin:0.06in 0 0;">
+      <tbody>
+        <tr><td style="width:2.4in;"><strong>IIPP &amp; Workplace Violence Prevention Plan</strong></td><td>Manager's office &mdash; available on request</td></tr>
+        <tr><td><strong>Safety Data Sheets (SDS)</strong></td><td>Binder at the dish station</td></tr>
+        <tr><td><strong>Allergen matrices</strong></td><td>Expo station and manager's office</td></tr>
+        <tr><td><strong>Violent Incident Log</strong></td><td>Manager's office</td></tr>
+        <tr><td><strong>Required labor law postings</strong></td><td>Employee notice board</td></tr>
+        <tr><td><strong>Health inspection score</strong></td><td>Posted at the entrance as required</td></tr>
+        <tr><td><strong>Opening &amp; closing checklists</strong></td><td>Posted at each station</td></tr>
+        <tr><td><strong>Emergency &amp; evacuation map</strong></td><td>Kitchen exit and host stand</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="doc-foot">
+    <div class="doc-foot-brand">turquaz</div>
+    <div style="text-align:right;">
+      TURKUAZ SF INC dba Turquaz &middot; 1198 Mission St, San Francisco, CA 94102<br>
+      +1 415-791-0770 &middot; sf@turquazsf.com &middot; turquazsf.com &middot; Employee Handbook, Edition 2026
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ ACKNOWLEDGEMENT ══════════════════════ -->
+<section class="break" id="ack">
+  <div class="chapter-open">
+    <div class="chapter-num" style="font-size:26pt;">&#10003;</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Return this page to your manager</p>
+      <h1 class="chapter-title">Handbook Acknowledgement</h1>
+    </div>
+  </div>
+
+  <div class="ack-box">
+    <p>This acknowledges that I have received and read my copy of the Employee Handbook of <strong>TURKUAZ SF INC, doing business as Turquaz</strong> (the "Company"). I understand and agree that it is my responsibility to familiarize myself with the policies and procedures it contains, and to ask questions about anything I do not understand.</p>
+
+    <p>I acknowledge that my employment with the Company is <strong>at-will</strong> — it is not for a specified period of time and may be ended at any time, for any reason or no reason, with or without cause or notice, by me or by the Company. I understand that, except for at-will status, any and all policies or practices may be changed at any time by the Company, and that the Company reserves the right to change my hours, wages and working conditions at any time.</p>
+
+    <p>I understand and agree that no manager, supervisor or representative of the Company other than an officer of the Company has authority to enter into any agreement, express or implied, for employment for a specific period of time, or to make any agreement for employment other than at-will — and then only in writing.</p>
+
+    <p>I understand and agree that nothing in the Employee Handbook creates or is intended to create a promise or representation of continued employment. My signature certifies that I understand that the foregoing agreement on at-will status is the sole and entire agreement between the Company and me concerning the duration of my employment and the circumstances under which it may end, and that it supersedes all prior agreements, understandings and representations.</p>
+
+    <p>I specifically acknowledge that I have read and understand:</p>
+    <ul class="tight">
+      <li>The Anti-Harassment, Reporting and Anti-Retaliation policies (Chapter 3)</li>
+      <li>The Safety, Workplace Violence Prevention and Heat Illness policies (Chapter 4)</li>
+      <li>The <strong>Employee Health Reporting</strong> requirements — that I must report the listed symptoms and diagnoses before my shift (Section 5.2)</li>
+      <li>The <strong>Allergen Awareness</strong> rules, including that I must never guess when a guest asks about an allergen (Section 5.5)</li>
+      <li>The Halal Integrity requirements (Section 5.6)</li>
+      <li>The Timekeeping, Meal Period and Rest Break policies, and that I must report any missed break or unrecorded time (Chapter 8)</li>
+    </ul>
+
+    <div class="sig-row">
+      <div class="sig-label">Employee name<br><span style="font-weight:400;color:var(--text-light);font-size:7pt;">please print</span></div>
+      <div class="sig-line"></div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-label">Position</div>
+      <div class="sig-line"></div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-label">Employee signature</div>
+      <div class="sig-line"></div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-label">Date</div>
+      <div class="sig-line"></div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-label">Received by<br><span style="font-weight:400;color:var(--text-light);font-size:7pt;">Company representative</span></div>
+      <div class="sig-line"></div>
+    </div>
+  </div>
+
+  <p class="muted" style="margin-top:0.16in;">A signed copy is retained in your personnel file. You may request a copy at any time under Section 2.7.</p>
+</section>
+
+<!-- ══════════════════════ MEAL WAIVER ══════════════════════ -->
+<section class="break" id="ack2">
+  <div class="chapter-open">
+    <div class="chapter-num" style="font-size:26pt;">&#9998;</div>
+    <div class="chapter-titles">
+      <p class="chapter-eyebrow">Optional &mdash; entirely voluntary</p>
+      <h1 class="chapter-title">Meal Period Waiver</h1>
+    </div>
+  </div>
+
+  <div class="callout callout-alert">
+    <span class="callout-label">Read This First</span>
+    Signing this form is <strong>completely voluntary</strong>. You will not be disciplined, scheduled differently, or treated adversely in any way if you choose not to sign it. You may <strong>revoke this waiver at any time</strong>, verbally or in writing, simply by telling your supervisor you wish to take your meal period &mdash; no notice period and no explanation required.
+  </div>
+
+  <div class="ack-box">
+    <p>I understand that under California law:</p>
+    <ul>
+      <li>If I work <strong>more than 5 hours</strong> in a workday, I am entitled to an unpaid, uninterrupted, duty-free <strong>30-minute meal period</strong> that must begin before the end of my fifth hour of work.</li>
+      <li>If my total workday is <strong>6 hours or less</strong>, I may waive that first meal period by mutual consent with my employer.</li>
+      <li>If I work <strong>more than 10 hours</strong>, I am entitled to a second 30-minute meal period beginning before the end of my tenth hour; if I work <strong>no more than 12 hours</strong> and actually took my first meal period, I may waive the second by mutual consent.</li>
+    </ul>
+
+    <p>Please initial the waiver(s) you voluntarily elect. Leaving a box blank means you are <em>not</em> waiving that meal period.</p>
+
+    <table>
+      <thead><tr><th style="width:0.9in;">Initial</th><th>Waiver Elected</th></tr></thead>
+      <tbody>
+        <tr><td style="height:0.36in;"></td><td><strong>First meal period</strong> &mdash; on days when my total work will be 6 hours or less</td></tr>
+        <tr><td style="height:0.36in;"></td><td><strong>Second meal period</strong> &mdash; on days when I work more than 10 but not more than 12 hours, and I took my first meal period</td></tr>
+      </tbody>
+    </table>
+
+    <p>I am signing this voluntarily. I understand I may revoke it at any time. I understand that if a required meal period is missed, late, short or interrupted and I have not waived it, I am owed one additional hour of pay at my regular rate of compensation for that day, and that I should report it to my manager.</p>
+
+    <div class="sig-row">
+      <div class="sig-label">Employee name<br><span style="font-weight:400;color:var(--text-light);font-size:7pt;">please print</span></div>
+      <div class="sig-line"></div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-label">Employee signature</div>
+      <div class="sig-line"></div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-label">Date</div>
+      <div class="sig-line"></div>
+    </div>
+    <div class="sig-row">
+      <div class="sig-label">Company representative</div>
+      <div class="sig-line"></div>
+    </div>
+  </div>
+</section>
+
+</article>
+</div>
+
+</body>
+</html>

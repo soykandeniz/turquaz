@@ -1,7 +1,9 @@
 [CmdletBinding()]
 param(
-  [string]$ScriptId = '1ghz-96qRjsHK7YYNkeU_KTI_Ut0UOZLAcVqkDes_gpAjjyHyZxMKCWON',
-  [string]$DeploymentId = 'AKfycbwBKduBq_BzpHv4t0yZ3fRWholk1EIRx2GWUyiVQCV9SHESyBHLAXvZsHd2556HjLp0lw',
+  [Parameter(Mandatory = $true)]
+  [ValidateNotNullOrEmpty()]
+  [string]$ScriptId,
+  [string]$DeploymentId = 'AKfycbxU-2bA8IPsLpl9QyFCP6jaKgjEcOnsjq1lm-G5G202x5sBo1pEWsUqE7gsOe-YXVE',
   [string]$Description = 'Email-only Gmail relay for Cloudflare Worker',
   [switch]$CreateNewDeployment
 )
